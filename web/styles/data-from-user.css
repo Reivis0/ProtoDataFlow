@@ -1,0 +1,9 @@
+.next-btn, .leave-btn{
+    width: 40%;
+    display: inline;
+  }
+  
+.next-btn{
+    margin-right: 15%;
+}
+
