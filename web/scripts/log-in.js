@@ -5,6 +5,8 @@ const error_div = document.getElementById('errorMessage');
 
 //учимся делать новые ветки
 
+alert(error_div)
+
 form.addEventListener('submit', (e) => {
 
     let pair = new Object();  //собрать данные для отправки
@@ -16,6 +18,8 @@ form.addEventListener('submit', (e) => {
     //let answer = JSON.parse(jsonanswer); //ответ от сервера
 
     //let answer = PostFunction(jsonstr); 
+
+    alert("gsfgs")
 
     fetch(url, { //что тут происходит я сам не знаю
         method: 'POST',
@@ -35,7 +39,6 @@ form.addEventListener('submit', (e) => {
     .then(data => {
 
         let answer = data
-        print(data);
         if(answer.status === 'Correct') { //если все хорошо
             sessionStorage.setItem('GlobalLogin', login.value);
             sessionStorage.setItem('GlobalLevel', answer.privilege);
