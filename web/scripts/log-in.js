@@ -12,11 +12,66 @@ form.addEventListener('submit', (e) => {
     pair.password = password.value;
     let jsonstr = JSON.stringify(pair)
 
-    let jsonanswer = tempCheckLoginAndPassword(jsonstr);
-    let answer = JSON.parse(jsonanswer); //ответ от сервера
+    //let jsonanswer = tempCheckLoginAndPassword(jsonstr);
+    //let answer = JSON.parse(jsonanswer); //ответ от сервера
 
     //let answer = PostFunction(jsonstr); 
 
+    fetch(url, { //что тут происходит я сам не знаю
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonstr,
+      }
+    
+    )
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); 
+    })
+    .then(data => {
+
+        let answer = data
+        print(data);
+        if(answer.status === 'Correct') { //если все хорошо
+            sessionStorage.setItem('GlobalLogin', login.value);
+            sessionStorage.setItem('GlobalLevel', answer.privilege);
+            //sessionStorage.setItem("GlobalRedirect", true);
+            e.preventDefault();  
+            if(answer.access === 'true'){  
+                if(answer.agreement === 'false') {
+                    window.location.assign("rules-of-usage.html");
+                }
+                else{
+                    window.location.assign("data-from-user.html");
+                }
+            }
+            else {
+                error_div.innerText = "Доступ закончился";
+                e.preventDefault();
+            }
+    
+        }
+        else if (answer.status === 'User not found'){
+            error_div.innerText = "Неправильный логин";
+            e.preventDefault();
+        }
+        else if (answer.status === 'Incorrect password'){
+            error_div.innerText = "Неправильный пароль";
+            e.preventDefault();
+        }
+
+
+
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+    
+    /*
     alert(jsonanswer);
     if(answer.status === 'Correct') { //если все хорошо
         sessionStorage.setItem('GlobalLogin', login.value);
@@ -45,6 +100,7 @@ form.addEventListener('submit', (e) => {
         error_div.innerText = "Неправильный пароль";
         e.preventDefault();
     }
+    */
 
 })
 
