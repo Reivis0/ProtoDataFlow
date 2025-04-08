@@ -10,13 +10,24 @@ document.addEventListener("DOMContentLoaded", (e) => {
 })
 */
 
-const checkbox = document.getElementById("agreement-in");
+const checkbox1 = document.getElementById("agreement-in");
+const checkbox2 = document.getElementById("personal-data-in");
 const buttonNext = document.getElementById("next");
 const buttonBack = document.getElementById("back");
 
-checkbox.addEventListener("click",  () => {
+checkbox1.addEventListener("click",  () => {
     //alert(checkbox.checked);
-    if(checkbox.checked) { //включать кнопку при галочке 
+    if(checkbox1.checked && checkbox2.checked) { //включать кнопку при галочке 
+        buttonNext.disabled = false;
+    }
+    else{
+        buttonNext.disabled = true;
+    }
+})
+
+checkbox2.addEventListener("click",  () => {
+    //alert(checkbox.checked);
+    if(checkbox1.checked && checkbox2.checked) { //включать кнопку при галочке 
         buttonNext.disabled = false;
     }
     else{
@@ -31,7 +42,6 @@ buttonNext.addEventListener("click", (e) => {
     tempPlaceFlag(JSON.stringify(obj)); //заменить потом на postFunction
     e.preventDefault();
     //window.location.assigsn("log-in.html");
-    sessionStorage.setItem("GlobalRedirect", true);
     window.location.assign("data-from-user.html");
 })
 
