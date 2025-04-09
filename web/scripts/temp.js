@@ -1,21 +1,5 @@
-const x = 'xее';
-const y = 'yее';
-
-console.log(x, y);
-
-function foo(){
-    console.log("afdasfa");
-    return;
-}
-
-//setTimeout(()=> {console.log("adgdrr");}, 1000);
-
-url = 'http://192.168.31.132:8080/api/auth';
-
 jsonstr = JSON.stringify({"login": "admin", "password": "12w1e"})
-console.log(jsonstr);
-
-const answ = fetch(url, { //что тут происходит я сам не знаю
+fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,10 +15,47 @@ const answ = fetch(url, { //что тут происходит я сам не з
     return response.json(); 
 })
 .then(data => {
-    console.log(data);
+
+    let answer = data;
+    console.log(JSON.stringify(data));
+    console.log(data.status);
+   // for(let i =0; i< 100000; i++)
+    //{
+      //  if(i<3) alert('23456');
+    //}
+    if(data.status === 'Correct') { //если все хорошо
+        sessionStorage.setItem('GlobalLogin', login.value);
+        sessionStorage.setItem('GlobalLevel', data.privilege);
+        //sessionStorage.setItem("GlobalRedirect", true);
+        e.preventDefault();  
+        if(data.access === 'true'){  
+            if(data.agreement === 'false') {
+                window.location.assign("rules-of-usage.html");
+            }
+            else{
+                window.location.assign("data-from-user.html");
+            }
+        }
+        else {
+            error_div.innerText = "Доступ закончился";
+            e.preventDefault();
+        }
+
+    }
+    else if (data.status === 'User not found'){
+        console.log('6789');
+        error_div.innerText = "Неправильный логин";
+        e.preventDefault();
+    }
+    else if (data.status === 'Incorrect password'){
+        error_div.innerText = "Неправильный пароль";
+        e.preventDefault();
+    }
+    else {console.log(data.status === 'User not found')};
+    console.log(data.status === 'User not found1');
+
+
 })
 .catch(error => {
     console.error('Error fetching data:', error);
 });
-
-

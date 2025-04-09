@@ -16,8 +16,8 @@ form.addEventListener('submit', (e) => {
     //let answer = JSON.parse(jsonanswer); //ответ от сервера
 
     //let answer = PostFunction(jsonstr); 
-
-    fetch(url, { //что тут происходит я сам не знаю
+    e.preventDefault();
+    fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,15 +34,22 @@ form.addEventListener('submit', (e) => {
     })
     .then(data => {
 
-        let answer = data
-        print(data);
-        if(answer.status === 'Correct') { //если все хорошо
+        let answer = data;
+        alert(JSON.stringify(data));
+        alert(data.status);
+       // for(let i =0; i< 100000; i++)
+        //{
+          //  if(i<3) alert('23456');
+        //}
+       alert( data.status === 'User not found');
+        if(data.status === 'Correct') { //если все хорошо
+            alert('we are in if');
             sessionStorage.setItem('GlobalLogin', login.value);
-            sessionStorage.setItem('GlobalLevel', answer.privilege);
+            sessionStorage.setItem('GlobalLevel', data.privilege);
             //sessionStorage.setItem("GlobalRedirect", true);
             e.preventDefault();  
-            if(answer.access === 'true'){  
-                if(answer.agreement === 'false') {
+            if(data.access){  
+                if(!data.agreement) {
                     window.location.assign("rules-of-usage.html");
                 }
                 else{
@@ -55,15 +62,17 @@ form.addEventListener('submit', (e) => {
             }
     
         }
-        else if (answer.status === 'User not found'){
+        else if (data.status === 'User not found'){
+            alert('we are in another if')
             error_div.innerText = "Неправильный логин";
             e.preventDefault();
         }
-        else if (answer.status === 'Incorrect password'){
+        else if (data.status === 'Incorrect password'){
             error_div.innerText = "Неправильный пароль";
             e.preventDefault();
         }
-
+        else {alert(data.status === 'User not found')};
+        alert(data.status === 'User not found');
 
 
     })

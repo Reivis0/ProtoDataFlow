@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //let num = localStorage.getItem("GlobalNum");
     //localStorage.setItem("GlobalNum", num + 1)
     //localStorage.setItem("GlobalRedirect", false);
+
     if(temp === null){
         let login = sessionStorage.getItem("GlobalLogin");
         if(login === '' || login === null) {
@@ -11,7 +12,8 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
             window.location.href = "log-in.html";
      }
      else{
-        sessionStorage.setItem('GlobalUrl', "свой адрес");
+        sessionStorage.setItem('GlobalUrl', "http://127.0.0.1:8080");
+        
        // localStorage.setItem('GlobalUrl', "свой адрес");  //
         //localStorage.setItem("GlobalNum", 1)
      }
