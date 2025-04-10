@@ -10,12 +10,9 @@ form.addEventListener('submit', (e) => {
     let pair = new Object();  //собрать данные для отправки
     pair.login = login.value;
     pair.password = password.value;
-    let jsonstr = JSON.stringify(pair)
+    let jsonstr = JSON.stringify(pair);
 
-    //let jsonanswer = tempCheckLoginAndPassword(jsonstr);
-    //let answer = JSON.parse(jsonanswer); //ответ от сервера
-
-    //let answer = PostFunction(jsonstr); 
+    /*
     e.preventDefault();
     fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
         method: 'POST',
@@ -34,14 +31,6 @@ form.addEventListener('submit', (e) => {
     })
     .then(data => {
 
-        let answer = data;
-        alert(JSON.stringify(data));
-        alert(data.status);
-       // for(let i =0; i< 100000; i++)
-        //{
-          //  if(i<3) alert('23456');
-        //}
-       alert( data.status === 'User not found');
         if(data.status === 'Correct') { //если все хорошо
             alert('we are in if');
             sessionStorage.setItem('GlobalLogin', login.value);
@@ -79,9 +68,10 @@ form.addEventListener('submit', (e) => {
     .catch(error => {
         console.error('Error fetching data:', error);
     });
+    */
     
-    /*
-    alert(jsonanswer);
+    let jsonanswer = tempCheckLoginAndPassword(jsonstr);
+    let answer = JSON.parse(jsonanswer); //ответ от сервера
     if(answer.status === 'Correct') { //если все хорошо
         sessionStorage.setItem('GlobalLogin', login.value);
         sessionStorage.setItem('GlobalLevel', answer.privilege);
@@ -109,7 +99,7 @@ form.addEventListener('submit', (e) => {
         error_div.innerText = "Неправильный пароль";
         e.preventDefault();
     }
-    */
+    
 
 })
 
@@ -121,39 +111,8 @@ twoInputs.forEach(input => { //стереть сообщение об ошибк
     })
 })
 
-/*
-async function checkLoginAndPassword(jsonstr){
-    //alert(jsonstr); //вывод в браузер что передается
-
-    url = sessionStorage.getItem("GlobalUrl");
-
-    try {
-        const response = await fetch(url, { //что тут происходит я сам не знаю
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonstr,
-        });
-    
-        if (!response.ok) {
-          throw new Error(`Login failed with status: ${response.status}`);
-        }
-    
-        let authData = await response.json();
-        alert(response);
-        alert('Authentication successful');
-        return authData;
-        
-        
-      } catch (error) {
-        console.error('Login error:', error);
-        alert("Error");
-      }
-} */
 
 function tempCheckLoginAndPassword(jsonstr){
-    alert(jsonstr);
     return tempFunction(jsonstr);
 }
 
