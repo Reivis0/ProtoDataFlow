@@ -66,9 +66,13 @@ void add_info_agreement(const http::request<http::string_body>& req, http::respo
     data.push_back({"Patronymic_",patronymic_});
     data.push_back({"AgreementPersonal_","true"});
     data.push_back({"AgreementUse_","true"});
-
-    add_info_into_agreement_baze(conn, data);
-    nlohmann::json result_json = {{"process", "true"}};
+    nlohmann::json result_json;
+    if(processing_agreement(conn, login_))  
+    {
+        result_json = {{"process", true}};
+        add_info_into_agreement_baze(conn, data);
+    }
+    else result_json = {{"process", false}};
     res.body() = result_json.dump();
     log("response agreement prepared");
 }

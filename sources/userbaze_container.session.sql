@@ -1,9 +1,3 @@
-CREATE TABLE user_agreement
-(
-    Login_ VARCHAR NOT NULL,
-    Surname_ VARCHAR NOT NULL,
-    Name_ VARCHAR NOT NULL,
-    Patronymic_ VARCHAR NOT NULL,
-    AgreementPersonal_ BOOLEAN NOT NULL,
-    AgreementUse_ BOOLEAN NOT NULL
-);
+INSERT INTO user_info(Login_, Password_, Status_, Access, Agreement, StartDate, EndTime) 
+VALUES
+('admin', 'admin', 'admin', FALSE, FALSE, '2023-12-04', '2013-10-07');

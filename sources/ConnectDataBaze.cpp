@@ -158,3 +158,23 @@ void add_password(const std::string& password)
     std::string h_password = hash_password(password);
     //добавление в базу
 }
+ 
+bool processing_agreement(pqxx::connection& connect, const std::string& login)
+{
+    try
+    {
+        log("start update agreement");
+        pqxx::work trn(connect);
+
+        trn.exec_params("UPDATE user_info SET Agreement = $1 WHERE Login_ = $2", true, login);
+
+        trn.commit();
+        log("agreement has been successfully updated");
+    }
+    catch(std::exception& ex)
+    {
+        log("ERROR: error of update info");
+        return false;
+    }
+    return true;
+}

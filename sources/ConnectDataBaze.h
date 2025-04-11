@@ -38,7 +38,7 @@ pqxx::connection connection_data_baze();
 
 // база аутентификации
 std::tuple<std::string, bool, bool, std::string> find_user(pqxx::connection& connect, const std::string& login, const std::string& password);
-void processing_agreement();
+bool processing_agreement(pqxx::connection& connect, const std::string& login);
 //для АП
 void add_login();
 void add_password(const std::string& password);
