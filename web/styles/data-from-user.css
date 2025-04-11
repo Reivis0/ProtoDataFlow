@@ -1,3 +1,4 @@
+
 .next-btn, .leave-btn{
     width: 40%;
     display: inline;
@@ -6,4 +7,15 @@
 .next-btn{
     margin-right: 15%;
 }
+
+.for-settings{
+  width: 50%;
+  margin: 0 auto;
+}
+
+.for-settings{
+  margin-top: 10%;
+  display: none;
+}
+
 
