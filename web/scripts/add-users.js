@@ -1,7 +1,6 @@
-const tableBody = document.querySelector('#dataTable tbody');
-const addRowBtn = document.getElementById('addRowBtn');
-const saveBtn = document.getElementById('save');
-addRowBtn.addEventListener('click', addEmptyRow);
+let originalData = []; // массив сохраннных данных
+let gridApi; // Чтобы работала таблица
+let deletedRows = []; // удаленные не пустые строки
 
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
@@ -12,243 +11,421 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         window.location.href = "log-in.html";
     }
 
-    json2Table(receiveData());
+    
+    // fetch("http://127.0.0.1:8080")
+    // .then(response => {
+    // if (!response.ok) {
+    //     throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+    // return response.json(); 
+    // })
+    // .then(data => {
+    //     const gridOptions = {
+    //     columnDefs: columnDefs,
+    //     rowData: loadData(),
+    //     defaultColDef: {
+    //         flex: 1,
+    //         minWidth: 100,
+    //         editable: (params) => {
+    //             // Only allow editing if the row is selected
+    //             return params.node.isSelected();
+    //         },
+    //         filter: true,
+    //         sortable: true,
+    //         resizable: true
+    //     },
+    //     rowSelection: 'multiple',
+    //     rowDragManaged: true,
+    //     animateRows: true,
+    //     suppressRowClickSelection: true, // Allow selection on click
+    //     enableCellTextSelection: true,
+    //     undoRedoCellEditing: true,
+    //     undoRedoCellEditingLimit: 10,
+    //     onCellValueChanged: (params) => {
+    //         // Visual feedback for changed cells
+    //         params.node.setDataValue('__dirty', true);
+    //         const cellEl = params.api.getCellRendererInstances({
+    //             rowNodes: [params.node],
+    //             columns: [params.column]
+    //         })[0]?.getGui();
+    //         if (cellEl) {
+    //             cellEl.style.backgroundColor = '#fffde7';
+    //             setTimeout(() => {
+    //                 cellEl.style.backgroundColor = '';
+    //             }, 1000);
+    //         }
+    //     },
+    //     onRowSelected: (params) => {
+    //         // Refresh the row to update editable state when selection changes
+    //         params.api.refreshCells({
+    //             rowNodes: [params.node],
+    //             force: true
+    //         });
+    //     },
+    //     // Prevent editing when not selected
+    //     onCellEditingStarted: (params) => {
+    //         if (!params.node.isSelected()) {
+    //             // Cancel editing if row isn't selected
+    //             params.api.stopEditing(true);
+    //         }
+    //     }
+    // };
+    
+    // gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
+    // originalData = data;
 
-    /*
-    fetch("http://127.0.0.1:8080")
-    .then(response => {
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json(); 
-    })
-    .then(data => {
-        json2Table(data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
 
-    */
+    
+
+    
+    gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
+    const saveButton = document.getElementById("save");
+    saveButton.addEventListener('click', saveChanges);
 })
 
 
-
-
-
-  // Добавлять новую строку когда послдняя не пустая
-function checkLastRow() {
-  const rows = tableBody.querySelectorAll('tr');
-  if (rows.length === 0) {
-    addEmptyRow();
-    return;
-  }
-  const lastRow = rows[rows.length - 1]; 
-    const cells = lastRow.querySelectorAll('td:not(:first-child):not(:last-child)');
-  let isEmpty = true;
-  cells.forEach(cell => {
-    if (cell.textContent.trim() !== '') isEmpty = false;
-  });
-  if (!isEmpty) addEmptyRow();
+function loadData() {
+    // Эмуляция запроса к серверу
+    const mockData = [
+        { id: 1, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 2, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 3, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 4, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 5, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 6, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
+    ];
+    originalData = JSON.parse(JSON.stringify(mockData));
+    return mockData;
 }
 
-  // Добавление пустой строки
-function addEmptyRow() {
-  const newRow = createEmptyRow();
-  tableBody.appendChild(newRow);
-}
-
-  // Создание пустой строки
-function createEmptyRow() {
-    const tr = document.createElement('tr');
-    
-    // Галочка для изменения
-    const checkCell = document.createElement('td');
-    const checkBox = document.createElement("input");
-    checkBox.type = "checkbox";
-    checkCell.className = 'for-checkbox';
-    //checkBox.disabled = true;
-  
-    checkBox.addEventListener("click",  () => {
-        let row = checkBox.parentElement.parentElement;
-
-        row.querySelectorAll('td:not(.for-checkbox)').forEach(cell => {
-            cell.addEventListener('click', function() {
-                const originalContent = this.textContent;
-                let inputType = 'text';
-            
-                if (this.classList.contains('date-cell')) {
-                    inputType = 'date'; // or 'text' with pattern attribute
-                } else if (this.classList.contains('phone-cell')) {
-                    inputType = 'tel';
-                } else if (this.classList.contains('email-cell')) {
-                    inputType = 'email'
-                }
-                
-                const input = document.createElement('input');
-                input.className = "temp";
-                input.type = inputType;
-                input.value = originalContent;
-                
-                this.innerHTML = '';
-                this.appendChild(input);
-                input.focus();
-                this.style.padding = 0;
-                
-                input.addEventListener('blur', function() {
-                    cell.textContent = this.value;
-                });
-
-                if(input.type === 'tel') {
-
-                    input.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            cell.textContent = e.target.value;
-                        } else if(!(('0' <= e.key) && (e.key <= '9'))) {
-                            e.preventDefault();
-                        }
-                      });
-
-                } else{
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        cell.textContent = e.target.value;
-                        
-                        
-                    }
-                  });
-                }
-          });
-    });
-    
-
-    checkBox.disabled = true;
-  });
-  checkCell.appendChild(checkBox);
-  tr.appendChild(checkCell);
-
-    // Ячейки
-  for (let i = 0; i < 10; i++) {
-    const td = document.createElement('td');
-    td.textContent = '';
-
-    switch(i){
-        case 5:
-            td.className="date-cell";
-            break;
-        case 6:
-            td.className="date-cell";
-            break;
-        case 7:
-            td.className="email-cell";
-            break;
-        case 8:
-            td.className="phone-cell";
-            break
+// Кнопки с действиями
+class ActionsButtons {
+    init(params) {
+        this.params = params;
+        this.eGui = document.createElement("div");
+        this.eGui.style.display = "flex";
+        this.eGui.style.gap = "5px";
+        this.eGui.style.justifyContent = "center";
+        
+        this.insertButton = document.createElement("button"); //вставка строчек
+        this.insertButton.textContent = 'Вставить строки';
+        this.insertButton.classList.add('ag-grid-insert-button');
+        this.insertButton.addEventListener('click', (e) => this.onInsert(e));
+        
+        this.deleteButton = document.createElement("button"); //удаление строчек
+        this.deleteButton.textContent = 'Удалить';
+        this.deleteButton.classList.add('ag-grid-delete-button');
+        this.deleteButton.addEventListener('click', (e) => this.onDelete(e));
+        
+        this.eGui.appendChild(this.insertButton);
+        this.eGui.appendChild(this.deleteButton);
     }
-    tr.appendChild(td);
-  }
 
-  return tr;
+    onInsert(event) {
+      event.stopPropagation();
+      const api = this.params.api;
+      const clickedNode = this.params.node;
+      const selectedNodes = api.getSelectedNodes(); //получить выдленные строки
+      
+      // Нажата ли кнопка в выделенной строке
+      const isBulkInsert = selectedNodes.length > 0 && 
+                         selectedNodes.some(node => node.id === clickedNode.id);
+      
+      const nodesForInsert = isBulkInsert ? selectedNodes : [clickedNode];
+      const defaultCount = 0;
+      const question = isBulkInsert ? "Сколько пустых строк вставить под каждую выбранную?" : "Сколько пустых строк вставить?"
+      const input = prompt(question);
+      const count = parseInt(input) || defaultCount;
+      
+      if (count <= 0) return;
+      
+      // Получаем текущее состояние таблицы
+      const allData = [];
+      api.forEachNode(node => allData.push(node.data));
+      
+      // Накодим максимальный id
+      const maxId = allData.reduce((max, row) => {
+          const rowId = parseInt(row.id);
+          return rowId > max ? rowId : max;
+      }, 0);
+      
+      // Создаем массив новых строчек
+      const inserts = [];
+      let nextId = maxId + 1;
+      
+      nodesForInsert.forEach(node => {
+          const rowIndex = allData.findIndex(row => row === node.data); //находим под какую строку вставлять
+          if (rowIndex !== -1) {
+              const newRows = Array(count).fill().map((_, i) => ({
+                  id: nextId + i,
+                  level: "",
+                  surname: "",
+                  nameAndPatr: "",
+                  login: "",
+                  password: "",
+                  startDate: "",
+                  endDate: "",
+                  email: "",
+                  phone: "",
+                  comment: "",
+                  __isNew: true  // Помечаем новой строкой
+              }));
+              inserts.push({ index: rowIndex + 1, rows: newRows });
+              nextId += count;
+          }
+      });
+      
+      // Добавляем строки
+      inserts.forEach(insert => {
+          allData.splice(insert.index, 0, ...insert.rows);
+      });
+      
+      api.setGridOption('rowData', allData);
+      
+      // Убрать выделение со всех строк
+      if (isBulkInsert) {
+          api.deselectAll();
+      }
+    }
+
+    onDelete(event) {
+        event.stopPropagation();
+        const api = this.params.api;
+        const clickedNode = this.params.node;
+        const selectedNodes = api.getSelectedNodes(); //так же выбираем выделенные строки
+        
+        const isBulkDelete = selectedNodes.length > 0 && 
+                            selectedNodes.includes(clickedNode);
+        
+        const nodesToRemove = isBulkDelete ? selectedNodes : [clickedNode];
+        
+        if (!confirm(`Удалить строк: ${nodesToRemove.length}?`)) return;
+        
+        // В массив уддаленных строк закинуть только непустые
+        const rowsToDelete = nodesToRemove
+            .map(node => node.data)
+            .filter(rowData => !isEmptyRow(rowData));
+        deletedRows = [...deletedRows, ...rowsToDelete];
+        
+        // Удалить строки
+        api.applyTransaction({
+            remove: nodesToRemove.map(node => node.data)
+        });
+        
+        api.deselectAll();
+    }
+    
+
+    getGui() {
+        return this.eGui;
+    }
+
+    destroy() {
+        this.insertButton?.removeEventListener('click', this.onInsert);
+        this.deleteButton?.removeEventListener('click', this.onDelete);
+    }
+}
+function isEmptyRow(rowData) {
+    // Проверка что строка пустая
+    const { id, actions, ...fields } = rowData;
+    return Object.values(fields).every(
+        value => value === '' || value === null || value === undefined
+    );
+}
+// Сохранение данных
+function saveChanges() {
+    if (!gridApi) {
+        console.error('Grid API not initialized');
+        return;
+    }
+
+    const allData = [];
+    gridApi.forEachNode(node => allData.push(node.data)); //состояние таблицы
+    
+    // Находим измененные строки
+    const changedRows = allData.filter(row => {
+        if (row.__isNew) return false;
+        
+        const originalRow = originalData.find(r => r.id === row.id);
+        if (!originalRow) return false; //по идее не должно срабатывать
+        return JSON.stringify(row) !== JSON.stringify(originalRow);
+    });
+    
+    // НАходим новые строки
+    const newRows = allData.filter(row => row.__isNew);
+    
+    const changes = {
+      updated: changedRows,
+      new: newRows,
+      deleted: deletedRows
+    };
+    
+    if (changedRows.length === 0 && deletedRows.length === 0 && newRows.length === 0) {
+        alert('Нет изменений для сохранения');
+        return;
+    }
+    
+    alert('Changes to save:' + JSON.stringify(changes));
+    alert(`Сохранено: 
+    ${changedRows.length} измененных, 
+    ${deletedRows.length} удаленных,
+    ${newRows.length} новых строк`);
+      
+      // отправка на сервер
+      // fetch('/api/save-data', {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(changed)
+      // })
+      // .then(response => response.json())
+      // .then(data => {
+      //     originalData = allData.map(row => ({...row}));
+      //     alert('Изменения успешно сохранены');
+      // });
+      
+
+      //это в fetch
+      //Удалить удаленные строки
+      originalData = originalData.filter(row => 
+        !deletedRows.some(deleted => deleted.id === row.id)
+      );
+      deletedRows = [];
+
+      //Обновить обновленные строки
+      originalData = originalData.map(row => {
+          const changed = changedRows.find(r => r.id === row.id);
+          return changed ? {...changed} : row;
+      });
+
+      //Добавить добавленные строки
+      originalData = [...originalData, ...newRows.map(row => {
+          const { __isNew, ...cleanRow } = row;
+          return cleanRow;
+      })];
+
+      gridApi.forEachNode(node => {
+          if (node.data.__isNew) {
+              const { __isNew, ...cleanData } = node.data;
+              node.setData(cleanData);
+          }
+      });
 }
 
-saveBtn.addEventListener("click", () => {
-    const rows = tableBody.querySelectorAll("tr:not(:first-child)");
-    let message = []
-    rows.forEach(row => {
-        const cols = row.querySelectorAll('td:not(.for-checkbox)');
-        if(row.querySelector("td:first-child").querySelector("input").checked){
-            let obj = new Object();
-            obj.level = cols[0].textContent;
-            obj.login = cols[1].textContent;
-            obj.password = cols[2].textContent
-            obj.nameAndPatronymic = cols[3].textContent;
-            obj.surname = cols[4].textContent;
-            obj.dateStart = cols[5].textContent;
-            obj.dateEnd = cols[6].textContent;
-            obj.mail = cols[7].textContent;
-            obj.phone = cols[8].textContent;
-            obj.comment = cols[9].textContent;
-            message.push(obj);
-        }
-    });
+PREDETERMINED_LIST = [
+    "User",
+    "Admin",
+    "SuperAdmin"
+]
 
-    alert(JSON.stringify(message));
-    fetch("http://127.0.0.1:8080",  {
-        method: 'POST',
-        body: JSON.stringify(message),
-        headers: {
-            'Content-Type': 'application/json',
-            }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
+// Объявление столбцов
+const columnDefs = [
+    { 
+        field: "id",
+        headerName: "",
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        width: 50,
+        rowDrag: true,
+        cellRenderer: params => '',
+        editable: false
+    },
+    {
+        field: "level",
+        headerName: "Группа пользователей",
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: { values: PREDETERMINED_LIST },
+        editable: true
+    },
+    { field: "surname", headerName: "Фамилия", editable: true },
+    { field: "nameAndPatr", headerName: "Имя и отчество", editable: true },
+    { field: "login", headerName: "Логин", editable: true },
+    { field: "password", headerName: "Пароль", editable: true },
+    { 
+        field: "startDate", 
+        headerName: "Дата начала",
+        editable: true,
+        cellEditor: 'agDateCellEditor',
+        cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+        cellEditorParams: {
+            min: '2000-01-01',
+            max: '2100-12-31'
+        }
+    },
+    { 
+        field: "endDate", 
+        headerName: "Дата окончания",
+        editable: true,
+        cellEditor: 'agDateCellEditor',
+        cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+        cellEditorParams: {
+            min: '2000-01-01',
+            max: '2100-12-31'
+        }
+    },
+    { 
+        field: "email", 
+        headerName: "Email",
+        editable: true,
+        cellEditor: 'agTextCellEditor',
+    },
+    { 
+        field: "phone", 
+        headerName: "Телефон",
+        editable: true,
+        cellEditor: 'agNumberCellEditor',
+    },
+    { field: "comment",
+      headerName: "Комментарий",
+      cellEditor: "agLargeTextCellEditor",
+      cellEditorParams: {
+        maxLength: 1000
+      },
+      editable: true },
+    {
+        field: "actions",
+        headerName: "Действия",
+        cellRenderer: ActionsButtons,
+        editable: false,
+        sortable: false,
+        filter: false,
+        flex: 2,
     }
-    )
-    .catch(error => console.log(error))
-})
+];
 
-function json2Table(jsonData) {
-    //alert(JSON.stringify(jsonData));
-    let data = jsonData;
-    data.forEach(row => {
-        const tr = createEmptyRow();
-        const text = [row.level, row.surname, row.nameAndPatronymic, row.login, row.password, row.dateStart, row.dateEnd, row.mail, row.phone, row.comment ]
-        const cells = tr.querySelectorAll('td:not(.for-checkbox)');
-        for(let i = 0; i < 10; i++) {
-            cells[i].textContent = text[i];
+// НАстройки таблицы убрать закоментить когда будет сервер
+const gridOptions = {
+    columnDefs: columnDefs,
+    rowData: loadData(),
+    defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        sortable: true,
+        resizable: true
+    },
+    rowSelection: 'multiple',
+    rowDragManaged: true,
+    animateRows: true,
+    suppressRowClickSelection: true,
+    enableCellTextSelection: true,
+    undoRedoCellEditing: true,
+    undoRedoCellEditingLimit: 20,
+    
+    // Можно редактировать только выделенные строки
+    onCellEditingStarted: (params) => {
+        if (!params.node.isSelected()) {
+            params.api.stopEditing(true);
         }
-        tableBody.appendChild(tr);
-    });
-    checkLastRow();
-  }
-  
-  function receiveData() {
-    let obj1 = new Object();
-    obj1.level = "user"
-    obj1.login = "123"
-    obj1.password = "123";
-    obj1.nameAndPatronymic = "gff";
-    obj1.surname = "reg";
-    obj1.dateStart = '02.03.2005';
-    obj1.dateEnd = "21.03.2005";
-    obj1.mail = "dfdfsd@mail.com";
-    obj1.phone = "98798";
-    obj1.comment = "ffddfd";
-  
-    let obj2 = new Object();
-    obj2.level = "admin"
-    obj2.login = "321"
-    obj2.password = "321";
-    obj2.nameAndPatronymic = "gff";
-    obj2.surname = "reg";
-    obj2.dateStart = '02.03.2005';
-    obj2.dateEnd = "21.03.2005";
-    obj2.mail = "dfdfsd@mail.com";
-    obj2.phone = "98798";
-    obj2.comment = "ffddfd";
-  
-    let obj3 = new Object();
-    obj3.level = "user"
-    obj3.login = "222"
-    obj3.password = "222";
-    obj3.nameAndPatronymic = "gff";
-    obj3.surname = "reg";
-    obj3.dateStart = '02.03.2005';
-    obj3.dateEnd = "21.03.2005";
-    obj3.mail = "dfdfsd@mail.com";
-    obj3.phone = "98798";
-    obj3.comment = "ffddfd";
-  
-    return [obj1, obj2, obj3]
-  }
+    }
+};
   
   document.getElementById("back").addEventListener("click", (e) => {
   
     sessionStorage.clear();
     e.preventDefault();
-     window.location.href = "log-in.html";
+    window.location.href = "log-in.html";
   })

@@ -3,44 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Таблица</title>
-  
+  <title>Новые пользователи</title>
+  <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
   <link rel="stylesheet" href="../styles/style.css">
   <link rel="stylesheet" href="../styles/add-users.css">
+  <style media="only screen">
+    :root,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
 </head>
 <body>
   <div class="my-table" id="my-table">
     <h1 id="tableHeader">Данные пользователей</h1>
-    <table id="dataTable">
-      <thead>
-        <tr>
-          <th>флаг</th>
-          <th>Группа пользователей</th>
-          <th>Фамилия</th>
-          <th>Имя, Отчество</th>
-          <th>Логин</th>
-          <th>Пароль</th>
-          <th>Начало доступа</th>
-          <th>окончание доступа</th>
-          <th>Почта</th>
-          <th>Телефон</th>
-          <th>Комментарий</th>
-        </tr>
-      </thead>
-      <tbody id="dataTableBody">
-        <!-- Rows will be added dynamically -->
-      </tbody>
-    </table>
-    <button class="add-btn" id="addRowBtn">Добавить</button>
-    
+    <div id="gridContainer">
+      <div id="myGrid" class="ag-theme-alpine" style="height: 500px;"></div>
+  </div>
     <div class="for-buttons">
         <button type="button" class="save-btn" id="save">Сохранить</button>
         <button type="button" class="leave-btn" id="back">Выйти</button>
     </div>
   </div>
 
-  <!-- <script src="../scripts/main.js"></script> -->
+  
   <script src="../scripts/add-users.js"></script>
+  <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
+  <script src="../scripts/main.js"></script>
 </body>
 </html>
 </html>
