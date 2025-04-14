@@ -91,12 +91,12 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 function loadData() {
     // Эмуляция запроса к серверу
     const mockData = [
-        { id: 1, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 2, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 3, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 4, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 5, level: "User", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "123", password: "123", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 6, level: "Admin", surname: "fsafasf", nameAndPatr: "dfdfsdf", login: "321", password: "321", startDate: "02.03.2005", endDate: "02.03.2005", email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
+        { id: 1, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 2, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 3, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 4, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 5, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+        { id: 6, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
     ];
     originalData = JSON.parse(JSON.stringify(mockData));
     return mockData;
@@ -164,13 +164,15 @@ class ActionsButtons {
                   id: nextId + i,
                   level: "",
                   surname: "",
-                  nameAndPatr: "",
+                  name: "",
+                  patronymic: "",
                   login: "",
                   password: "",
-                  startDate: "",
-                  endDate: "",
+                  acsess: false,
+                  startDate: null,
+                  endDate: null,
                   email: "",
-                  phone: "",
+                  phone: null,
                   comment: "",
                   __isNew: true  // Помечаем новой строкой
               }));
@@ -190,6 +192,12 @@ class ActionsButtons {
       if (isBulkInsert) {
           api.deselectAll();
       }
+
+      api.forEachNode(node => {
+        if(node.data.__isNew) {
+            node.setSelected(true);
+        }
+      });
     }
 
     onDelete(event) {
@@ -245,6 +253,24 @@ function saveChanges() {
 
     const allData = [];
     gridApi.forEachNode(node => allData.push(node.data)); //состояние таблицы
+
+    const invalidNewRows = allData.filter(
+        row => row.__isNew && (!row.login || !row.password)
+    );
+
+    if (invalidNewRows.length > 0) {
+        alert("Ошибка: Логин и пароль обязательны для новых строк!");
+        return; 
+    }
+
+    const noLevel = allData.filter(
+        row => row.__isNew && (!row.level)
+    );
+
+    if ( noLevel.length > 0) {
+        alert("Ошибка: Группа пользователей должна быть задана для новых строк!");
+        return; 
+    }
     
     // Находим измененные строки
     const changedRows = allData.filter(row => {
@@ -341,15 +367,25 @@ const columnDefs = [
         editable: true
     },
     { field: "surname", headerName: "Фамилия", editable: true },
-    { field: "nameAndPatr", headerName: "Имя и отчество", editable: true },
-    { field: "login", headerName: "Логин", editable: true },
-    { field: "password", headerName: "Пароль", editable: true },
+    { field: "name", headerName: "Имя", editable: true },
+    { field: "patronymic", headerName: "Oтчество", editable: true },
+    { 
+        field: "login",
+        headerName: "Логин",
+        cellClass: params => params.data.__isNew ? '' : 'non-editable-cell1',
+        editable: params => params.node.isSelected() && params.data.__isNew
+    },
+    { 
+        field: "password",
+        headerName: "Пароль",
+        cellClass: params => (params.data.__isNew) ? '' : 'non-editable-cell2',
+        editable: params => params.node.isSelected() && params.data.__isNew
+    },
     { 
         field: "startDate", 
         headerName: "Дата начала",
-        editable: true,
         cellEditor: 'agDateCellEditor',
-        cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+        //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
         cellEditorParams: {
             min: '2000-01-01',
             max: '2100-12-31'
@@ -358,9 +394,8 @@ const columnDefs = [
     { 
         field: "endDate", 
         headerName: "Дата окончания",
-        editable: true,
         cellEditor: 'agDateCellEditor',
-        cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+        //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
         cellEditorParams: {
             min: '2000-01-01',
             max: '2100-12-31'
@@ -369,13 +404,11 @@ const columnDefs = [
     { 
         field: "email", 
         headerName: "Email",
-        editable: true,
         cellEditor: 'agTextCellEditor',
     },
     { 
         field: "phone", 
         headerName: "Телефон",
-        editable: true,
         cellEditor: 'agNumberCellEditor',
     },
     { field: "comment",
@@ -384,7 +417,7 @@ const columnDefs = [
       cellEditorParams: {
         maxLength: 1000
       },
-      editable: true },
+     },
     {
         field: "actions",
         headerName: "Действия",
@@ -405,8 +438,10 @@ const gridOptions = {
         minWidth: 100,
         filter: true,
         sortable: true,
-        resizable: true
+        resizable: true,
+        editable: params => params.node.isSelected()
     },
+   
     rowSelection: 'multiple',
     rowDragManaged: true,
     animateRows: true,
@@ -415,12 +450,12 @@ const gridOptions = {
     undoRedoCellEditing: true,
     undoRedoCellEditingLimit: 20,
     
-    // Можно редактировать только выделенные строки
-    onCellEditingStarted: (params) => {
-        if (!params.node.isSelected()) {
-            params.api.stopEditing(true);
-        }
-    }
+    // // Можно редактировать только выделенные строки
+    // onCellEditingStarted: (params) => {
+    //     if (!params.node.isSelected()) {
+    //         params.api.stopEditing(true);
+    //     }
+    // }
 };
   
   document.getElementById("back").addEventListener("click", (e) => {

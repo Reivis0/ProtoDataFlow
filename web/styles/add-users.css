@@ -68,3 +68,12 @@
   .save-btn{
     margin-right: 30px;
   }
+
+  .non-editable-cell1, .non-editable-cell2  {
+    background-color: #f5f5f5;
+    color: #777;
+}
+.ag-cell-invalid {
+  border: 1px solid #ff4444 !important;
+  background-color: #ffeeee !important;
+}
