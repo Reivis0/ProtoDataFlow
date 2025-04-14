@@ -162,6 +162,7 @@ class ActionsButtons {
           if (rowIndex !== -1) {
               const newRows = Array(count).fill().map((_, i) => ({
                   id: nextId + i,
+                  flag: true,
                   level: "",
                   surname: "",
                   name: "",
@@ -364,7 +365,6 @@ const columnDefs = [
         headerName: "Группа пользователей",
         cellEditor: 'agSelectCellEditor',
         cellEditorParams: { values: PREDETERMINED_LIST },
-        editable: true
     },
     { field: "surname", headerName: "Фамилия", editable: true },
     { field: "name", headerName: "Имя", editable: true },
@@ -380,6 +380,11 @@ const columnDefs = [
         headerName: "Пароль",
         cellClass: params => (params.data.__isNew) ? '' : 'non-editable-cell2',
         editable: params => params.node.isSelected() && params.data.__isNew
+    },
+    {
+        field: "acsess",
+        headerName: "Доступ",
+        cellEditor: "agCheckboxCellEditor"
     },
     { 
         field: "startDate", 
@@ -446,16 +451,65 @@ const gridOptions = {
     rowDragManaged: true,
     animateRows: true,
     suppressRowClickSelection: true,
-    enableCellTextSelection: true,
+    enableCellTextSelection: false,
     undoRedoCellEditing: true,
     undoRedoCellEditingLimit: 20,
+
     
-    // // Можно редактировать только выделенные строки
-    // onCellEditingStarted: (params) => {
-    //     if (!params.node.isSelected()) {
-    //         params.api.stopEditing(true);
-    //     }
-    // }
+    // Можно редактировать только выделенные строки
+    onCellEditingStarted: (params) => {
+        if (!params.node.isSelected()) {
+            params.api.stopEditing(true);
+        }
+    },
+
+    onCellKeyDown: (params) => {
+        if (params.event.ctrlKey && (params.event.key === 'c' || params.event.key === 'с')) {
+            const selectedNodes = gridApi.getSelectedNodes();
+            if (selectedNodes.length > 0) {
+                const copiedData = selectedNodes.map(node => ({...node.data}));
+                localStorage.setItem('agGridCopiedRows', JSON.stringify({
+                    data: copiedData,
+                    count: copiedData.length
+                }));
+                params.event.preventDefault();
+            }
+        }
+        else if (params.event.ctrlKey && (params.event.key === 'v' || params.event.key === 'м')) {
+            const copiedData = localStorage.getItem('agGridCopiedRows');
+            if (copiedData) {
+                const { data: parsedData, count: copiedCount } = JSON.parse(copiedData);
+                const selectedNodes = gridApi.getSelectedNodes();
+               
+                if (selectedNodes.length === 0) {
+                    // showNotification('Нет выбранных строк для вставки', 'error');
+                    return;
+                }32
+               
+                const rowsToPaste = Math.min(copiedCount, selectedNodes.length);
+                const dataToPaste = parsedData.slice(0, rowsToPaste);
+               
+                selectedNodes.slice(0, rowsToPaste).forEach((node, index) => {
+                    const newData = {
+                        ...dataToPaste[index],
+                        isChosen: true
+                    };
+
+                    try{
+                        newData.startDate = new Date(newData.startDate);
+                    } catch {}
+                    try{
+                        newData.endDate = new Date(newData.endDate);
+                    } catch {}
+
+
+                    node.setData(newData);
+                });
+               
+                params.event.preventDefault();
+            }
+        }
+    }
 };
   
   document.getElementById("back").addEventListener("click", (e) => {
