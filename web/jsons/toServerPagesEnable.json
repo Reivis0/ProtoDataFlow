@@ -1,0 +1,88 @@
+{
+    "ObjectTypes": {
+      "Type1": true,
+      "Type2": false,
+      "Type3": true,
+      "Type4": false,
+      "Type5": true,
+      "Type6": false,
+      "Type7": true,
+      "Type8": false,
+      "Type9": true,
+      "Type10": false,
+      "Type11": true,
+      "Type12": true
+    },
+    "Views": {
+      "View1": {
+        "enabled": true,
+        "Components": {
+          "Component1": true,
+          "Component2": false,
+          "Component3": true,
+          "Component4": false,
+          "Component5": true
+        }
+      },
+      "View2": {
+        "enabled": false,
+        "Components": {
+          "Component1": false,
+          "Component2": true,
+          "Component3": false,
+          "Component4": true,
+          "Component5": false
+        }
+      },
+      "View3": {
+        "enabled": true,
+        "Components": {
+          "Component1": true,
+          "Component2": true,
+          "Component3": false,
+          "Component4": false,
+          "Component5": true
+        }
+      },
+      "View4": {
+        "enabled": false,
+        "Components": {
+          "Component1": false,
+          "Component2": false,
+          "Component3": true,
+          "Component4": true,
+          "Component5": false
+        }
+      },
+      "View5": {
+        "enabled": true,
+        "Components": {
+          "Component1": true,
+          "Component2": false,
+          "Component3": true,
+          "Component4": false,
+          "Component5": true
+        }
+      },
+      "View6": {
+        "enabled": false,
+        "Components": {
+          "Component1": false,
+          "Component2": true,
+          "Component3": false,
+          "Component4": true,
+          "Component5": false
+        }
+      },
+      "View7": {
+        "enabled": true,
+        "Components": {
+          "Component1": true,
+          "Component2": false,
+          "Component3": true,
+          "Component4": false,
+          "Component5": true
+        }
+      }
+    }
+  }
