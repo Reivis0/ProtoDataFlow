@@ -109,7 +109,7 @@ std::tuple<std::string, bool, bool, std::string> find_user(pqxx::connection& con
     };
     read.commit();
 
-    if (password != user.password_) return {"Incorrect password", false, false, user.status_};
+    if (verify_password(password, user.password_)) return {"Incorrect password", false, false, user.status_};
     if (!user.accsess_) return {"Correct", false, false, user.status_};
     if (!user.agreement_) return {"Correct",false, true, user.status_};
 
@@ -153,10 +153,44 @@ void add_info_into_agreement_baze(pqxx::connection& connect, const std::vector<s
     log("info was added");
 }
 
-void add_password(const std::string& password)
+bool add_login(pqxx::connection& connect, std::string& login)
 {
-    std::string h_password = hash_password(password);
-    //добавление в базу
+    log("start add login into user base");
+    pqxx::read_transaction read(connect);
+    pqxx::result data = read.exec_params("SELECT Login_ FROM user_info WHERE Login_ = $1 LIMIT 1", login);
+    if(!data.empty()) 
+    {
+        log("the login already exists");
+        return false;
+    }
+    else
+    {
+        pqxx::work trn(connect);
+
+        trn.exec_params("INSER INTO user_info LOGIN_ VALUES $1", login);
+        trn.commit();
+        log("login was added");
+    }
+    read.commit();
+    return true;
+}
+
+bool add_password(pqxx::connection& connect,const std::string& password, const std::string& login)
+{
+    log("start add password into baze");
+    pqxx::work trn(connect);
+
+    auto res = trn.exec_params("UPDATE user_info SET Password_ = $1 WHERE Login_ = $2 RETURNING 1", hash_password(password), login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("password was addede");
+    return true;
 }
  
 bool processing_agreement(pqxx::connection& connect, const std::string& login)
@@ -176,5 +210,131 @@ bool processing_agreement(pqxx::connection& connect, const std::string& login)
         log("ERROR: error of update info");
         return false;
     }
+    return true;
+}
+
+bool add_status(pqxx::connection& connect, const std::string& status, const std::string& login)
+{
+    log("start add status");
+    pqxx::work trn(connect);
+
+    auto res = trn.exec_params("UPDATE user_info SET Status_ = $1 WHERE Login_ = $2 RETURNING 1", status, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("status was added");
+    return true;
+}
+
+bool add_start_data(pqxx::connection& connect, const std::string& startDate, const std::string& login)
+{
+    log("start add start date");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_info SET StartDate = $1 WHERE Login_ = $2 RETURNING 1", startDate, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("start date was added");
+    return true;
+}
+
+bool add_end_data(pqxx::connection& connect, const std::string& endDate, const std::string& login)
+{
+    log("start add end date");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_info SET EndTime = $1 WHERE Login_ = $2 RETURNING 1", endDate, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("end date was added");
+    return true;
+}
+
+bool change_access(pqxx::connection& connect, const bool access, const std::string& login)
+{
+    log("start update access");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_info SET Access = $1 WHERE Login_ = $2 RETURNING 1", access, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("access was updated");
+    return true;
+}
+
+bool add_email(pqxx::connection& connect,const std::string& email, const std::string& login)
+{
+    log("start add email");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_agreement SET Email_ = $1 WHERE Login_ = $2 RETURNING 1", email, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("email was added");
+    return true;
+}
+
+bool add_telephone(pqxx::connection& connect,const std::string& telephone, const std::string& login)
+{
+    log("start add telephone");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_agreement SET Telephone_ = $1 WHERE Login_ = $2 RETURNING 1", telephone, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("telephone was added");
+    return true;
+}
+
+bool add_comments(pqxx::connection& connect,const std::string& comments, const std::string& login)
+{
+    log("start add comments");
+    pqxx::work trn(connect);
+    
+    auto res = trn.exec_params("UPDATE user_agreement SET Comments_ = $1 WHERE Login_ = $2 RETURNING 1", comments, login);
+    if(res.empty()) 
+    {
+        log("login not found");
+        trn.abort();
+        return false;
+    }
+
+    trn.commit();
+    log("comments was added");
     return true;
 }
