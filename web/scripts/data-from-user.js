@@ -2,6 +2,7 @@ const form = document.getElementById('personalDataForm');
 const buttonNext = document.getElementById("next");
 const buttonBack = document.getElementById("back");
 const buttonUsers = document.getElementById("addUsers");
+const buttonSettings = document.getElementById("settings");
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
         let login = sessionStorage.getItem("GlobalLogin");
@@ -10,8 +11,15 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
             window.location.href = "log-in.html";
         }
         else if(sessionStorage.getItem("GlobalLevel") === "admin"){
-            const divSettings = document.getElementById("divSettings");
+            const divSettings = document.getElementById("divSettingsButtons");
             divSettings.style.display = "block";
+            document.getElementById("addUsersButtonDiv").style.display = "inline";
+        }
+        else if(sessionStorage.getItem("GlobalLevel") === "superAdmin"){
+            const divSettings = document.getElementById("divSettingsButtons");
+            divSettings.style.display = "block";
+            document.getElementById("addUsersButtonDiv").style.display = "inline";
+            document.getElementById("SettingsButtonDiv").style.display = "inline";
         }
 
         
@@ -48,6 +56,12 @@ buttonUsers.addEventListener("click", (e) => {
     e.preventDefault();
     //window.location.assigsn("log-in.html");
      window.location.href = "add-users.html";
+})
+
+buttonSettings.addEventListener("click", (e) => {
+    e.preventDefault();
+    //window.location.assigsn("log-in.html");
+     window.location.href = "settings.html";
 })
 
 function sendjson(message){

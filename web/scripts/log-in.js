@@ -137,14 +137,20 @@ function tempFunction(jsonstr) { // 123 123 - user без согласияб 321
         obj.agreement = 'true';
         obj.access = 'false';
     }
-    else if (temp.login !== '321' && temp.login !== '123'){
+    else if (temp.login === '111' && temp.password === '111'){
+        obj.status = 'Correct';
+        obj.privilege = 'superAdmin';
+        obj.agreement = 'true';
+        obj.access = 'true';
+    }
+    else if (temp.login !== '321' && temp.login !== '123' && temp.login !== '222' && temp.login !== '111'){
         obj.status = 'User not found';
         obj.privilege = 'user';
         obj.agreement = 'false';
         obj.access = 'false';
     }
 
-    else if (temp.password !== '321' && temp.password !== '123'){
+    else if (temp.password !== '321' && temp.password !== '123' && temp.password !== '222' && temp.password !== '111'){
         obj.status = 'Incorrect password';
         obj.privilege = 'user';
         obj.agreement = 'false';

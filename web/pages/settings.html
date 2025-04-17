@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <title>AG-Grid Table with Icons</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  
+    <style>
+      :root, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+    </style>
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <link rel="stylesheet" href="../styles/settings.css"/>
+  </head>
+  <body>
+    
+    <div id="generalContainer" class="generalContainer">
+        <h1>Настройки</h1>
+        <div id="gridContainer1" class="gridContainer">
+            <h2>Доступные страницы</h2>
+            <div class="ag-grid-toolbar" >
+                <button class="toolbar-btn" id="insertRowsBtn1" title="Вставить строки">
+                    <span class="material-icons">playlist_add</span>
+                </button>
+                
+                <button class="toolbar-btn" id="deleteRowsBtn1" title="Удалить строки">
+                    <span class="material-icons">delete</span>
+                </button>
+                
+                <button class="toolbar-btn" id="undoBtn1" title="Отменить (Ctrl+Z)">
+                    <span class="material-icons">undo</span>
+                </button>
+                <button class="toolbar-btn" id="redoBtn1" title="Вернуть (Ctrl+Y)">
+                    <span class="material-icons">redo</span>
+                </button>
+
+
+                <div style="flex-grow: 1"></div>
+            
+                <!-- <button class="toolbar-btn" id="saveSelectedBtn1" title="Сохранить выбранные">
+                    <span class="material-icons">save</span>
+                    <span id="selectedCount1" style="margin-left: 5px; font-size: 14px;">0</span>
+                </button> -->
+            
+                <button class="toolbar-btn" id="saveAllBtn1" title="Сохранить всю таблицу">
+                    <span class="material-icons">drafts</span>
+                </button>
+            </div>
+        
+            <div id="myGrid1" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+        </div>
+
+        <div id="gridContainer2" class="gridContainer">
+            <h2>Таблица настроек 2</h2>
+            <div class="ag-grid-toolbar">
+                <button class="toolbar-btn" id="insertRowsBtn2" title="Вставить строки">
+                    <span class="material-icons">playlist_add</span>
+                </button>
+                
+                <button class="toolbar-btn" id="deleteRowsBtn2" title="Удалить строки">
+                    <span class="material-icons">delete</span>
+                </button>
+                
+                <button class="toolbar-btn" id="undoBtn2" title="Отменить (Ctrl+Z)">
+                    <span class="material-icons">undo</span>
+                </button>
+                <button class="toolbar-btn" id="redoBtn2" title="Вернуть (Ctrl+Y)">
+                    <span class="material-icons">redo</span>
+                </button>
+
+
+                <div style="flex-grow: 1"></div>
+            
+                <button class="toolbar-btn" id="saveSelectedBtn2" title="Сохранить выбранные">
+                    <span class="material-icons">save</span>
+                    <span id="selectedCount2" style="margin-left: 5px; font-size: 14px;">0</span>
+                </button>
+            
+                <button class="toolbar-btn" id="saveAllBtn2" title="Сохранить всю таблицу">
+                    <span class="material-icons">drafts</span>
+                </button>
+            </div>
+        
+        <div id="myGrid2" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+        </div>
+    </div>
+
+    <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@33.2.3/dist/ag-grid-enterprise.min.js?t=1744362087726"></script> <!--Новый скрипт-->
+    <script src="../scripts/for-settings/settingsShare.js"></script>
+    <script src="../scripts/for-settings-tables/enabledPages.js"></script>
+    <script src="../scripts/for-settings-tables/secondTable.js"></script>
+    <script src="../scripts/for-settings/settingsLoad.js"></script>
+  </body>
+</html>
