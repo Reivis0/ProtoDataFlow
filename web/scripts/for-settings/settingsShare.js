@@ -163,3 +163,9 @@ class ActionsButtons {
         this.deleteButton?.removeEventListener('click', this.onDelete);
     }
 }
+
+function showSettingsOfEnabled(enabledData){
+    divSettings2 = document.getElementById("gridContainer2");
+    let display = enabledData[0].enabled ? "block" : "none";
+    divSettings2.style.display = display;
+}

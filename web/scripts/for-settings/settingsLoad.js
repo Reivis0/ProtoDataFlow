@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
     gridApi2 = agGrid.createGrid(document.querySelector("#myGrid2"), gridOptions2);
     setupButtons1();
     setupButtons2();
+    showSettingsOfEnabled(enabeledPagesData);
 
     const exitButton = document.createElement('button');
     exitButton.textContent = "Выйти";

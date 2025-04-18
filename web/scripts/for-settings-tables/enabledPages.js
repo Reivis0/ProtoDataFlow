@@ -1,3 +1,5 @@
+const { Component } = require("ag-grid-community");
+
 window.gridApi1 = null;
 
 window.enabeledPagesData = null;
@@ -25,7 +27,7 @@ function createGridOptions1(data) {
                 field: "name",
                 headerName: "Название элемента",
                 flex: 2,
-                rowDrag: true,
+                //rowDrag: true,
     
             },
             {
@@ -34,6 +36,11 @@ function createGridOptions1(data) {
                 width: 50,
                 editable: true,
                 cellClass: 'ag-selection-checkbox',
+                onCellValueChanged: params => {
+                  let dataTemp = [];
+                  params.api.forEachNode(node => dataTemp.push(node.data));
+                  showSettingsOfEnabled(dataTemp);
+                }
             }
         ],
         defaultColDef: {
@@ -47,7 +54,7 @@ function createGridOptions1(data) {
         cellSelection: true,
         enableRangeHandle: true,
         suppressMultiRangeSelection: false,
-        rowDragManaged: true,
+        //rowDragManaged: true,
         animateRows: true,
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
@@ -98,8 +105,24 @@ function setupButtons1() {
     document.getElementById('saveAllBtn1').addEventListener('click', () => {
         const allData = [];
         gridApi1.forEachNode(node => allData.push(node.data));
-        console.log('Saving all:', allData);
         enabeledPagesData = allData;
+
+        message = {
+          ObjectTypes: [],
+          Views: []
+        }
+
+        for(let i = 0; i < 12; ++i){
+          message.ObjectTypes.push({name: (allData[i].name === "тип объекта " + (i+1) ? null : allData[i].name), enabled: allData[i].enabled});
+        }
+        for(let i = 0; i < 7; ++i){
+          message.Views.push({name: (allData[12+6*i].name === "Представление " + (i+1) ? null : allData[12+6*i].name), enabled: allData[12+6*i].enabled, Components: []});
+          for(let j = 1; j < 6; ++j) {
+            message.Views[i].Components.push({name: (allData[12+6*i+j].name === "Компонент " + (i+1) + "."+(j) ? null : allData[12+6*i+j].name), enabled: allData[12+6*i+j].enabled})
+          }
+        }
+        console.log('Saving all:', message);
+        showSettingsOfEnabled(allData);
         showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
     });
 
