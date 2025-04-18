@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
   <head>
-    <title>AG-Grid Table with Icons</title>
+    <title>Общие настройки</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
@@ -28,15 +28,7 @@
         <h1>Настройки</h1>
         <div id="gridContainer1" class="gridContainer">
             <h2>Доступные страницы</h2>
-            <div class="ag-grid-toolbar" >
-                <button class="toolbar-btn" id="insertRowsBtn1" title="Вставить строки">
-                    <span class="material-icons">playlist_add</span>
-                </button>
-                
-                <button class="toolbar-btn" id="deleteRowsBtn1" title="Удалить строки">
-                    <span class="material-icons">delete</span>
-                </button>
-                
+            <div class="ag-grid-toolbar" >  <!--кнопочки -->
                 <button class="toolbar-btn" id="undoBtn1" title="Отменить (Ctrl+Z)">
                     <span class="material-icons">undo</span>
                 </button>
@@ -57,7 +49,7 @@
                 </button>
             </div>
         
-            <div id="myGrid1" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+            <div id="myGrid1" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>  <!--контейнер для таблицы -->
         </div>
 
         <div id="gridContainer2" class="gridContainer hiddenContainer">

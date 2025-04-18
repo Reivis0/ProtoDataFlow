@@ -1,25 +1,11 @@
-const { Component } = require("ag-grid-community");
+//const { Component } = require("ag-grid-community");
 
-window.gridApi1 = null;
+window.gridApi1 = null; //настройки этой таблицы
 
-window.enabeledPagesData = null;
+window.enabeledPagesData = null; //данные этой таблицы
 
-{
-const undo = document.getElementById("undoBtn1") ;
 
-undo.addEventListener("click", (e) => {
-    gridApi1.undoCellEditing();
-})
-
-const redo = document.getElementById("redoBtn1") ;
-
-redo.addEventListener("click", (e) => {
-    gridApi1.redoCellEditing();
-})
-
-}
-
-function createGridOptions1(data) {
+function createGridOptions1(data) { //задание настроек таблицы
     gridOptions = {
         rowData: data,
         columnDefs: [
@@ -73,33 +59,15 @@ function createGridOptions1(data) {
 }
 
 
-
-
-
-// function onSelectionChanged1() {
-//     const selectedCount = gridApi1.getSelectedNodes().length;
-//     const saveBtn = document.getElementById('saveSelectedBtn1');
-//     saveBtn.disabled = selectedCount === 0;
-//     document.getElementById('selectedCount1').textContent = selectedCount;
-// }
-
-
-
-
 function setupButtons1() {
-    // Сохранение выделенного
-    // document.getElementById('saveSelectedBtn1').addEventListener('click', () => {
-    //     const selectedData = gridApi1.getSelectedNodes().map(node => node.data);
-    //     if (selectedData.length === 0) {
-    //         showNotification('Нет выбранных строк!', 'error');
-    //         return;
-    //     }
-    //     console.log('Saving selected:', selectedData);
-    //     showNotification(`Сохранено ${selectedData.length} выбранных строк`);
-    // });
 
+    document.getElementById("redoBtn1").addEventListener("click", (e) => {
+      gridApi1.redoCellEditing();
+    });
 
-
+    document.getElementById("undoBtn1").addEventListener("click", (e) => {
+      gridApi1.undoCellEditing();
+    });
 
     // Сохранение всей таблицы
     document.getElementById('saveAllBtn1').addEventListener('click', () => {
@@ -112,7 +80,7 @@ function setupButtons1() {
           Views: []
         }
 
-        for(let i = 0; i < 12; ++i){
+        for(let i = 0; i < 12; ++i){ //создание сообщения на сервер
           message.ObjectTypes.push({name: (allData[i].name === "тип объекта " + (i+1) ? null : allData[i].name), enabled: allData[i].enabled});
         }
         for(let i = 0; i < 7; ++i){
@@ -125,90 +93,9 @@ function setupButtons1() {
         showSettingsOfEnabled(allData);
         showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
     });
-
-
-
-
-    // Вставка строк (обновлённая версия)
-    document.getElementById('insertRowsBtn1').addEventListener('click', (e) => {
-       //alert("sdsd");
-        if (e.processed) return; // Если событие уже обработано
-        e.processed = true;
-        const selectedNodes = gridApi1.getSelectedNodes();
-        const defaultCount = 0;
-       
-        const question = selectedNodes.length > 0
-            ? "Сколько пустых строк вставить под каждую выбранную?"
-            : "Сколько пустых строк добавить в конец таблицы?";
-       
-        const input = prompt(question, defaultCount);
-        const count = parseInt(input) || defaultCount;
-        if (count <= 0) return;
-       
-        const allData = [];
-        gridApi1.forEachNode(node => allData.push(node.data));
-       
-        const inserts = [];
-        if (selectedNodes.length > 0) {
-            // Вставка под выделенные строки
-            selectedNodes.forEach(node => {
-                const rowIndex = allData.findIndex(row => row === node.data);
-                if (rowIndex !== -1) {
-                    inserts.push({
-                        index: rowIndex + 1,
-                        rows: Array(count).fill().map(() => ({
-                            isChosen: false,
-                            name: "",
-                            quantity: 0,
-                            price: 0
-                        }))
-                    });
-                }
-            });
-        } else {
-            // Вставка в конец
-            inserts.push({
-                index: allData.length,
-                rows: Array(count).fill().map(() => ({
-                    isChosen: false,
-                    name: "",
-                    quantity: 0,
-                    price: 0
-                }))
-            });
-        }
-       
-        inserts.sort((a, b) => b.index - a.index);
-        inserts.forEach(insert => {
-            allData.splice(insert.index, 0, ...insert.rows);
-        });
-       
-        gridApi1.setGridOption('rowData', allData);
-        if (selectedNodes.length > 0) gridApi1.deselectAll();
-    });
-
-
-
-
-    // Удаление строк
-    document.getElementById('deleteRowsBtn1').addEventListener('click', () => {
-        const selectedNodes = gridApi1.getSelectedNodes();
-        if (selectedNodes.length === 0) {
-            showNotification('Нет выделенных строк для удаления!', 'error');
-            return;
-        }
-       
-        if (!confirm(`Удалить ${selectedNodes.length} строк(у)?`)) return;
-       
-        gridApi1.applyTransaction({
-            remove: selectedNodes.map(node => node.data)
-        });
-       
-        gridApi1.deselectAll();
-    });
 }
 
-function convertToEnabled(jsonobj) {
+function convertToEnabled(jsonobj) { //переделать сообщение от сервера в таблицу
     let data = []
 
     for(let i = 0; i < jsonobj.ObjectTypes.length; ++i) {

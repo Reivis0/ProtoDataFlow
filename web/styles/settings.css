@@ -104,7 +104,9 @@
     /* background-color: rgb(227, 231, 20);  */
     padding: 10px;
     width: 80vmax;
-    margin-top: 30%;
+    height: 1000px;
+    margin-top: 10%;
+    /* background-color: #4CAF50; */
   }
 
   h1 {
