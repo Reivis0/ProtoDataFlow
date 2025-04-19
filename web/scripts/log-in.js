@@ -12,63 +12,63 @@ form.addEventListener('submit', (e) => {
     pair.password = password.value;
     let jsonstr = JSON.stringify(pair);
 
-    /*
-    e.preventDefault();
-    fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonstr,
-      }
     
-    )
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(data => {
-
-        if(data.status === 'Correct') { //если все хорошо
-            alert('we are in if');
-            sessionStorage.setItem('GlobalLogin', login.value);
-            sessionStorage.setItem('GlobalLevel', data.privilege);
-            //sessionStorage.setItem("GlobalRedirect", true);
-            e.preventDefault();  
-            if(data.access){  
-                if(!data.agreement) {
-                    window.location.assign("rules-of-usage.html");
-                }
-                else{
-                    window.location.assign("data-from-user.html");
-                }
-            }
-            else {
-                error_div.innerText = "Доступ закончился";
-                e.preventDefault();
-            }
+    // e.preventDefault();
+    // fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: jsonstr,
+    //   }
     
-        }
-        else if (data.status === 'User not found'){
-            alert('we are in another if')
-            error_div.innerText = "Неправильный логин";
-            e.preventDefault();
-        }
-        else if (data.status === 'Incorrect password'){
-            error_div.innerText = "Неправильный пароль";
-            e.preventDefault();
-        }
-        else {alert(data.status === 'User not found')};
-        alert(data.status === 'User not found');
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(data => {
+
+    //     if(data.status === 'Correct') { //если все хорошо
+    //         alert('we are in if');
+    //         sessionStorage.setItem('GlobalLogin', login.value);
+    //         sessionStorage.setItem('GlobalLevel', data.privilege);
+    //         //sessionStorage.setItem("GlobalRedirect", true);
+    //         e.preventDefault();  
+    //         if(data.access){  
+    //             if(!data.agreement) {
+    //                 window.location.assign("rules-of-usage.html");
+    //             }
+    //             else{
+    //                 window.location.assign("data-from-user.html");
+    //             }
+    //         }
+    //         else {
+    //             error_div.innerText = "Доступ закончился";
+    //             e.preventDefault();
+    //         }
+    
+    //     }
+    //     else if (data.status === 'User not found'){
+    //         alert('we are in another if')
+    //         error_div.innerText = "Неправильный логин";
+    //         e.preventDefault();
+    //     }
+    //     else if (data.status === 'Incorrect password'){
+    //         error_div.innerText = "Неправильный пароль";
+    //         e.preventDefault();
+    //     }
+    //     else {alert(data.status === 'User not found')};
+    //     alert(data.status === 'User not found');
 
 
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-    */
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+    
     
     let jsonanswer = tempCheckLoginAndPassword(jsonstr);
     let answer = JSON.parse(jsonanswer); //ответ от сервера

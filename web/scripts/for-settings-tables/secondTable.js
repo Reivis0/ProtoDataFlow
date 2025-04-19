@@ -2,20 +2,6 @@ window.gridApi2 = null;
 
 window.TableData2 = null;
 
-{
-const undo = document.getElementById("undoBtn2") ;
-
-undo.addEventListener("click", (e) => {
-    gridApi2.undoCellEditing();
-})
-
-const redo = document.getElementById("redoBtn2") ;
-
-redo.addEventListener("click", (e) => {
-    gridApi2.redoCellEditing();
-})
-}
-
 
 function createGridOptions2(data) {
 
@@ -90,6 +76,18 @@ function onSelectionChanged2() {
 
 
 function setupButtons2() {
+
+    const undo = document.getElementById("undoBtn2") ;
+
+    undo.addEventListener("click", (e) => {
+        gridApi2.undoCellEditing();
+    })
+
+    const redo = document.getElementById("redoBtn2") ;
+
+    redo.addEventListener("click", (e) => {
+        gridApi2.redoCellEditing();
+    })
     // Сохранение выделенного
     document.getElementById('saveSelectedBtn2').addEventListener('click', () => {
         const selectedData = gridApi2.getSelectedNodes().map(node => node.data);

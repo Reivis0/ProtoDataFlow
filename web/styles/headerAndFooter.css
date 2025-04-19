@@ -1,0 +1,101 @@
+header{
+    display: flex;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #f9e5f9;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #ddd;
+    align-items: center;
+    margin-bottom: 20px;
+    
+}
+
+
+.mainFormName{
+    width: 40%;
+    margin: 0 auto;
+    /* background-color: #4CAF50; */
+}
+
+.code{
+    /* background-color: aqua; */
+    margin-left: 20px;
+    border: 2px solid lightgray;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.buttons{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    /* background-color: red; */
+}
+
+.helpButton{
+    background: none;
+    width: 50px;
+    border: 2px solid #f9e5f9;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.helpButton .material-icons svg{
+    font-size: 24px;
+    fill: #555;
+    }
+
+.helpButton:hover {
+    background: #ffe8ff;
+    border: 2px solid #fbcefb;
+    }
+
+footer{
+    background: #eae5f9;
+    display: flex; 
+    gap: 8px; 
+    padding: 10px 15px; 
+    border: 1px solid #ddd; 
+    align-items: center; 
+    /* margin-top: 20px;  */
+    border-radius: 4px 4px 0 0; 
+    margin-bottom: 0;
+    padding-bottom: 20px; 
+    height: 60px;
+}
+
+.footer-btn{
+    background: none;
+    width: 70px;
+    border: 2px solid #eae5f9;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.footer-btn .material-icons svg{
+    font-size: 24px;
+    fill: #555;
+    }
+
+.footer-btn:hover {
+    background: #edeaf7;
+    border: 2px solid #d4c9f6;
+}
+
+main {
+    flex: 1;
+  }
+
+main, footer, header{
+    width: 100vw;
+}
+  
+    
