@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
   <head>
-    <title>Требования исходные</title>
+    <title>Перечень моделируемых объектов</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
@@ -22,81 +22,34 @@
     <link rel="stylesheet" href="../styles/style.css"/>
     <link rel="stylesheet" href="../styles/ag-grid.css">
     <link rel="stylesheet" href="../styles/headerAndFooter.css">
-    <link rel="stylesheet" href="../styles/initial-requrements.css"/>
+    <link rel="stylesheet" href="../styles/all-objects.css"/>
   </head>
   <body>
     <header>
-      <div style="flex-grow: 0.1"></div>
-        <h2 id="code" class="code">Код</h2>
-        <div style="flex-grow: 1"></div>
-        <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
-        <div style="flex-grow: 1"></div>
-        <div class="buttons">
-          <button class="helpButton" id="loadPM" title="Загрузить ЭМ">
-              <span class="material-icons">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" transform="scale (-1, 1)" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
-              </span>
-          </button>
-      
-          <button class="helpButton" id="loadExmple" title="Загрузить пример">
-              <span class="material-icons">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
-              </span>
-          </button>
-      </div>
-      <div style="flex-grow: 0.05"></div>
-    </header>
-    <main>
-
-      <div class="for-lists">
-
-        <label>Источник требований</label>
-        <div class="dropdown Source">
-          <div class="dropdown-content" id="sourceOptions">
-              <button class="dropdownBtn sourceBtn specialBtn">Все</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-          </div>
-          <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">
-            Все
-          </button>
-        </div>
-
-        <label>Объект</label>
-        <div class="dropdown">
-            <div class="dropdown-content" id="objectOptions">
-                <button class="dropdownBtn objectBtn specialBtn">Все</button>
-                <button class="dropdownBtn objectBtn">Ссылка 2</button>
-                <button class="dropdownBtn objectBtn">kykjyuk</button>
-                <button class="dropdownBtn objectBtn">Ссылка 4</button>
-                <button class="dropdownBtn objectBtn">Ссылка 5</button>
-                <button class="dropdownBtn objectBtn">Ссылка 6</button>
-                <button class="dropdownBtn objectBtn">Ссылка 7</button>
-            </div>
-            <button class="listObjectBtn" id="listObjectBtn" title="Отображать данные для выбранного объекта">
-              Все
+        <div style="flex-grow: 0.1"></div>
+          <h2 id="code" class="code">Код</h2>
+          <div style="flex-grow: 1"></div>
+          <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
+          <div style="flex-grow: 1"></div>
+          <div class="buttons">
+            <button class="helpButton" id="loadPM" title="Загрузить ЭМ">
+                <span class="material-icons">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" transform="scale (-1, 1)" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+                </span>
+            </button>
+        
+            <button class="helpButton" id="loadExmple" title="Загрузить пример">
+                <span class="material-icons">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+                </span>
             </button>
         </div>
-      </div>
+        <div style="flex-grow: 0.05"></div>
+    </header>
+    <main>
       
       <div id="gridContainer" class="gridContainer">
           <div class="ag-grid-toolbar">
-              <button class="toolbar-btn" id="insertRowsBtn" title="Вставить строки">
-                  <span class="material-icons">
-                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,10H3v2h11V10z M14,6H3v2h11V6z M18,14v-4h-2v4h-4v2h4v4h2v-4h4v-2H18z M3,16h7v-2H3V16z"/></g></svg>
-                  </span>
-              </button>
-              
-              <button class="toolbar-btn" id="deleteRowsBtn" title="Удалить строки">
-                  <span class="material-icons">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                  </span>
-              </button>
-              
               <button class="toolbar-btn" id="undoBtn" title="Отменить (Ctrl+Z)">
                   <span class="material-icons">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
@@ -126,6 +79,7 @@
       <div id="myGrid" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
       </div>
     </main>
+    
     <footer>
       <footer class="innerFooter">
 
@@ -199,6 +153,6 @@
 
     <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@33.2.3/dist/ag-grid-enterprise.min.js?t=1744362087726"></script> <!--Новый скрипт-->
-    <script src="../scripts/initial-requrements.js"></script>
+    <script src="../scripts/all-objects.js"></script>
   </body>
 </html>

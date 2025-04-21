@@ -3,8 +3,8 @@
 function loadData(){
     let answer = {
         information: {
-            code: "ADW-32",
-            name: "Начальные требования",
+            code: "ADW-15",
+            name: "Требования (Спецификация)",
             headers: [
                 {
                     header: "Источник требований",
@@ -15,7 +15,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Объект",
+                    header: "Категория требований",
                     type: "string",
                     maxSmth: 50,
                     name: "column2",
@@ -204,7 +204,7 @@ function localSave() {
 }
 
 const listSourceBtn = document.getElementById("listSourceBtn");
-const listObjectBtn = document.getElementById("listObjectBtn");
+const listCategoryBtn = document.getElementById("listCategoryBtn");
 
 function setupButtons() {
 
@@ -263,7 +263,7 @@ function setupButtons() {
                          rows: Array(count).fill().map((_, i) => ({
                             "id" : nextId+i,
                             "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
-                            "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
+                            "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                             "column3" : "",
                             "column4" : "",
                             "column5" : null,
@@ -280,7 +280,7 @@ function setupButtons() {
                  rows: Array(count).fill().map((_, i) => ({
                         "id" : nextId+i,
                         "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
-                        "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
+                        "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                         "column3" : "",
                         "column4" : "",
                         "column5" : null,
@@ -385,11 +385,19 @@ function setupButtons() {
         
 }
 
+let initialRequrements = [];
+let currentObjAndType;
+
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     let serverData = loadData();
 
-    localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
+    document.getElementById("objectName").textContent = currentObjAndType.Object;
+    document.getElementById("objectType").textContent = currentObjAndType.Type;
     let GrdOptions;
+
+    console.log(initialRequrements);
 
     if(!localSaveData) {
         GrdOptions = returnGridOptions(serverData.information, serverData.data);
@@ -403,6 +411,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
     }
     else{
+        console.log(currentObjAndType);
+        localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
+        localSaveData.forEach(row => row.column2 = "");
+        console.log(localSaveData);
         GrdOptions = returnGridOptions(serverData.information, localSaveData);
         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
     }
@@ -412,12 +424,12 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("code").textContent = serverData.information.code;
 
     document.getElementById("listSourceBtn").textContent = "Все";
-    document.getElementById("listObjectBtn").textContent = "Все";
+    document.getElementById("listCategoryBtn").textContent = "Все";
     addSourceListener(document.getElementById("sourceOptions").children[0])
-    addObjectListener(document.getElementById("objectOptions").children[0])
+    addCategoryListener(document.getElementById("categoryOptions").children[0])
 
     CreateSourceOptions();
-    CreateObjectOptions();
+    CreateCategoryOptions();
 
 });
 
@@ -466,8 +478,11 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
             }
         }
     }
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
-    //window.location.href = "log-in.html";
+    let counter1 = sessionStorage.getItem("counter1");
+    --counter1;
+    sessionStorage.setItem("counter1", counter1);
+    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
+    window.location.href = "all-objects.html";
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
@@ -491,12 +506,15 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    sessionStorage.setItem("counter1", -1);
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    sessionStorage.setItem("all-objects", JSON.stringify(localSaveData));
+    sessionStorage.setItem("counter2", 0);
+    sessionStorage.setItem("counter3", -1);
+    sessionStorage
+
     // console.log(sessionStorage.getItem("counter1"));
 
 
-    window.location.href = "all-objects.html";
+    window.location.href = "View.html";
 })
 
 document.getElementById("exitBtn").addEventListener("click", (e) => {
@@ -508,7 +526,11 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    console.log(sessionStorage.getItem("initial-requrements-data"));
+    const message = {
+        object: currentObjAndType.Object,
+        data: localSaveData
+    };
+    console.log(message);
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 
@@ -533,26 +555,26 @@ function CreateSourceOptions(){
 
 listSourceBtn.addEventListener("click", CreateSourceOptions);
 
-function CreateObjectOptions(){
-    allObjects = new Set();
-    dataForFilter.forEach(node => allObjects.add(node.column2));
-    const objectOptions = document.getElementById("objectOptions");
+function CreateCategoryOptions(){
+    allCategorys = new Set();
+    dataForFilter.forEach(node => allCategorys.add(node.column2));
+    const categoryOptions = document.getElementById("categoryOptions");
     
-    objectOptions.querySelectorAll('button:not(:first-child)')
+    categoryOptions.querySelectorAll('button:not(:first-child)')
     .forEach(button =>  button.remove() );
 
 
-    Array.from(allObjects).sort().forEach(object => {
-        const newObject = document.createElement("button");
-        newObject.classList.add("dropdownBtn");
-        newObject.classList.add("objectBtn");
-        newObject.textContent = object;
-        addObjectListener(newObject);
-        objectOptions.appendChild(newObject);
+    Array.from(allCategorys).sort().forEach(category => {
+        const newCategory = document.createElement("button");
+        newCategory.classList.add("dropdownBtn");
+        newCategory.classList.add("categoryBtn");
+        newCategory.textContent = category;
+        addCategoryListener(newCategory);
+        categoryOptions.appendChild(newCategory);
     })
 }
 
-listObjectBtn.addEventListener("click", CreateObjectOptions);
+listCategoryBtn.addEventListener("click", CreateCategoryOptions);
 
 function addSourceListener(sourceBtn){
     sourceBtn.addEventListener("click", (e) => {
@@ -583,27 +605,27 @@ function addSourceListener(sourceBtn){
         dataForFilter = JSON.parse(JSON.stringify(newData));
 
         if(listSourceBtn.textContent === "Все"){
-            if(listObjectBtn.textContent === "Все"){
+            if(listCategoryBtn.textContent === "Все"){
                 gridApi.setGridOption('rowData', newData);
             }
             else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listObjectBtn.textContent));
+                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent));
             }
         }
         else{
-            if(listObjectBtn.textContent === "Все"){
+            if(listCategoryBtn.textContent === "Все"){
                 gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent));
             }
             else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent && element.column2 === listObjectBtn.textContent));
+                gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent && element.column2 === listCategoryBtn.textContent));
             }
         }
     })
 }
 
-function addObjectListener(objectBtn){
-    objectBtn.addEventListener("click", (e) => {
-        listObjectBtn.textContent = e.target.textContent;
+function addCategoryListener(categoryBtn){
+    categoryBtn.addEventListener("click", (e) => {
+        listCategoryBtn.textContent = e.target.textContent;
 
         const filteredData = [];
         gridApi.forEachNode(node => filteredData.push(node.data));
@@ -631,7 +653,7 @@ function addObjectListener(objectBtn){
 
         dataForFilter = JSON.parse(JSON.stringify(newData));
 
-        if(listObjectBtn.textContent === "Все"){
+        if(listCategoryBtn.textContent === "Все"){
             if(listSourceBtn.textContent === "Все"){
                 gridApi.setGridOption('rowData', newData);
             }
@@ -641,10 +663,10 @@ function addObjectListener(objectBtn){
         }
         else{
             if(listSourceBtn.textContent === "Все"){
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listObjectBtn.textContent));
+                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent));
             }
             else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listObjectBtn.textContent && element.column1 === listSourceBtn.textContent));
+                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent && element.column1 === listSourceBtn.textContent));
             }
         }
     })

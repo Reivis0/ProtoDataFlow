@@ -10,7 +10,7 @@ body {
 .gridContainer{
     margin-bottom: 20px;
     /* background-color: aqua; */
-    height: 70vh;
+    height: 60vh;
     width: 80vw;
     padding: 20px;
     margin: 0 auto;
@@ -21,12 +21,30 @@ body {
     box-shadow: 0 1vh 5px rgba(0,0,0,0.1);
   }
 
-.for-lists{
+.for-lists, .for-object{
   /* background-color: aqua; */
   width: 60%;
   margin: 0 auto;
   align-items: center;
   width: 60vw;
+}
+
+.for-object{
+    margin-bottom: 20px;
+    font-size: 14px;
+    padding: 10px 0;
+    background-color:  #fdeaf2;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+}
+
+.for-object div{
+    display: inline;
+    margin-left: 10px;
+}
+
+#objectName{
+    margin-right: 300px;
 }
 
 label {
@@ -42,11 +60,11 @@ label {
   margin-left: 20px;
 }
 
-.Source{
+.Source, .left{
   margin-right: 60px;
 }
 
-.listObjectBtn, .listSourceBtn{
+.listCategoryBtn, .listSourceBtn{
   background: #fefcfc;
   min-width: 200px;
   height: 60px;
@@ -54,7 +72,7 @@ label {
   transition: all 0.2s;  
 }
 
-.listObjectBtn:hover, .listSourceBtn:hover{
+.listCategoryBtn:hover, .listSourceBtn:hover{
   background: #ffffff;
   border: 2px solid rgb(160, 196, 213);
 }

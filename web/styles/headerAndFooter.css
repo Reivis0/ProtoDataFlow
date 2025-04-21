@@ -2,9 +2,9 @@ header{
     display: flex;
     gap: 8px;
     padding: 10px 15px;
-    background: #f9e5f9;
+    background: #ffffff;
     border-radius: 4px 4px 0 0;
-    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     align-items: center;
     margin-bottom: 20px;
     
@@ -14,35 +14,38 @@ header{
 .mainFormName{
     width: 40%;
     margin: 0 auto;
-    /* background-color: #4CAF50; */
 }
 
 .code{
-    /* background-color: aqua; */
-    margin-left: 20px;
-    border: 2px solid lightgray;
-    border-radius: 4px;
-    padding: 5px;
+    /* font-size: 1.2rem; Вика раскомментируй это!!!!!!!! */
+    font-weight: 500;
+    color: #1f1f1f;
+    white-space: nowrap;
+}
+
+.mainFormName {
+  /* font-size: 1.5rem; Вика раскомментируй это!!!!!!!! */
+  font-weight: 700;
+  color: #1f1f1f;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .buttons{
     display: flex;
-    gap: 8px;
-    align-items: center;
-    /* background-color: red; */
+    gap: 10px;
 }
 
 .helpButton{
-    background: none;
-    width: 50px;
-    border: 2px solid #f9e5f9;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
-    transition: all 0.2s;  
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: none;
+  border: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
 }
 .helpButton .material-icons svg{
     font-size: 24px;
@@ -50,28 +53,33 @@ header{
     }
 
 .helpButton:hover {
-    background: #ffe8ff;
-    border: 2px solid #fbcefb;
+    background: #fdecfd;
+    border: 2px solid #fcd8fc;
     }
 
 footer{
-    background: #eae5f9;
+    background: white;
     display: flex; 
     gap: 8px; 
-    padding: 10px 15px; 
-    border: 1px solid #ddd; 
+    padding: 10px 20px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
     align-items: center; 
-    /* margin-top: 20px;  */
     border-radius: 4px 4px 0 0; 
     margin-bottom: 0;
-    /* padding-bottom: 20px;  */
     height: 60px;
+}
+.innerFooter{
+  margin: 0 auto;
+  width: 97%;
+  height: 70%;
+  align-items: center;
+
 }
 
 .footer-btn{
     background: none;
-    width: 70px;
-    border: 2px solid #eae5f9;
+    width: 60px;
+    border: 2px solid transparent;
     cursor: pointer;
     padding: 8px;
     border-radius: 4px;
@@ -86,13 +94,13 @@ footer{
     }
 
 .footer-btn:hover {
-    background: #edeaf7;
-    border: 2px solid #d4c9f6;
+    background: #eae2ff;
+    border: 2px solid #bcb0e2;
 }
 
-main {
-    flex: 1;
-  }
+/* main {
+    flex: 1; Раскомментриуй если footer будет не в самом низу
+  } */
 
 main, footer, header{
     width: 100%;
@@ -107,8 +115,9 @@ main, footer, header{
     display: none;
     position: absolute;
     bottom: 100%; /* выпадает наверх */
-    background-color: #f9f9f9;
-    min-width: 160px;
+    background-color: white;
+    min-width: 220px;
+    max-width: 300px;
     max-height: 250px; /* максимальная высота списка*/
     overflow-y: auto; /* появление scroll-bar */
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -117,22 +126,50 @@ main, footer, header{
     left: 50%; /* что-то для центрирования */
     transform: translateX(-50%); /* что-то для центрирования 2 */
     flex-direction: column-reverse;
+    border-radius: 4px;
   }
   
-  .dropUp-content button {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    border: none;
+  .dropUpBtn {
+    background: none;
+    background-color: white;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1f1f1f;
+    border-radius: 0;
+    padding: 10px 16px;
+    /* white-space: nowrap; */
+    font-family: 'IBM Plex Sans', sans-serif;
+    margin-top: 3px;
   }
 
   .specialBtn{
-    background-color: #c5c4c4;
-    border-radius: 0;
+    font-weight: 600;
+    color: #1a73e8;
+    border-top: 2px solid #eee;
+    background-color: #ffffff;
+    margin-bottom: 3px;
   }
   
-  .dropUp-content button:hover {background-color: #dedcdc}
+  .sourceBtn:hover, .objectBtn:hover {
+    background-color: #f5f5f5;
+    border: 2px solid transparent;
+  }
+
+  .dropUp-content {
+    animation: fadeInUp 0.2s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform:translateX(-50%) translateY(5%);
+    }
+    to {
+      opacity: 1;
+      transform:translateX(-50%) translateY(0);;
+    }
+  }
 
   #exitBtn{
     margin-right: 20px;
@@ -141,4 +178,19 @@ main, footer, header{
   #backBtn{
     margin-left: 20px;
   }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    color: white;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+  }
+  
+  .toast-success { background: #4CAF50; }
+  .toast-error { background: #f44336; }
+  .toast-info { background: #2196F3; }
     
