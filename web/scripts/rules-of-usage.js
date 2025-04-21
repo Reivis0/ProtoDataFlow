@@ -1,4 +1,4 @@
-/*
+
 
 document.addEventListener("DOMContentLoaded", (e) => {
     let login = sessionStorage.getItem("GlobalLogin");
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
         window.location.href = "log-in.html";
     }
 })
-*/
 
 const checkbox1 = document.getElementById("agreement-in");
 const checkbox2 = document.getElementById("personal-data-in");

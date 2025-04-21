@@ -509,7 +509,7 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
     sessionStorage.setItem("all-objects", JSON.stringify(localSaveData));
     sessionStorage.setItem("counter2", 0);
     sessionStorage.setItem("counter3", -1);
-    sessionStorage
+    // sessionStorage
 
     // console.log(sessionStorage.getItem("counter1"));
 
