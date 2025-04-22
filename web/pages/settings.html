@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <title>Общие настройки</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  
+    <style>
+      :root, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+    </style>
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <link rel="stylesheet" href="../styles/settings.css"/>
+    <link rel="stylesheet" href="../styles/ag-grid.css" />
+  </head>
+  <body>
+    
+    <div id="generalContainer" class="generalContainer">
+        <h1>Настройки</h1>
+        <div id="gridContainer1" class="gridContainer">
+            <h2>Доступные страницы</h2>
+            <div class="ag-grid-toolbar" >  <!--кнопочки -->
+                <button class="toolbar-btn" id="undoBtn1" title="Отменить (Ctrl+Z)">
+                    <span class="material-icons">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                    </span>
+                </button>
+                <button class="toolbar-btn" id="redoBtn1" title="Вернуть (Ctrl+Y)">
+                    <span class="material-icons">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+                    </span>
+                </button>
+
+
+                <div style="flex-grow: 1"></div>
+            
+                <!-- <button class="toolbar-btn" id="saveSelectedBtn1" title="Сохранить выбранные">
+                    <span class="material-icons">save</span>
+                    <span id="selectedCount1" style="margin-left: 5px; font-size: 14px;">0</span>
+                </button> -->
+            
+                <button class="toolbar-btn" id="saveAllBtn1" title="Сохранить всю таблицу">
+                    <span class="material-icons">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                    </span>
+                </button>
+            </div>
+        
+            <div id="myGrid1" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>  <!--контейнер для таблицы -->
+        </div>
+
+        <div id="gridContainer2" class="gridContainer hiddenContainer">
+            <h2>Таблица настроек 2</h2>
+            <div class="ag-grid-toolbar">
+                <button class="toolbar-btn" id="insertRowsBtn2" title="Вставить строки">
+                    <span class="material-icons">
+                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,10H3v2h11V10z M14,6H3v2h11V6z M18,14v-4h-2v4h-4v2h4v4h2v-4h4v-2H18z M3,16h7v-2H3V16z"/></g></svg>
+                      </span>
+                </button>
+                
+                <button class="toolbar-btn" id="deleteRowsBtn2" title="Удалить строки">
+                    <span class="material-icons">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                      </span>
+                </button>
+                
+                <button class="toolbar-btn" id="undoBtn2" title="Отменить (Ctrl+Z)">
+                    <span class="material-icons">
+                        <span class="material-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                          </span>
+                    </span>
+                </button>
+                <button class="toolbar-btn" id="redoBtn2" title="Вернуть (Ctrl+Y)">
+                    <span class="material-icons">
+                        <span class="material-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+                          </span>
+                    </span>
+                </button>
+
+
+                <div style="flex-grow: 1"></div>
+            
+                <button class="toolbar-btn" id="saveSelectedBtn2" title="Сохранить выбранные">
+                    <span class="material-icons">
+                        <span class="material-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                          </span>
+                    </span>
+                    <span id="selectedCount2" style="margin-left: 5px; font-size: 14px;">0</span>
+                </button>
+            
+                <button class="toolbar-btn" id="saveAllBtn2" title="Сохранить всю таблицу">
+                    <span class="material-icons">
+                        <span class="material-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2l-.01-10zM12 13L3.74 7.84 12 3l8.26 4.84L12 13z"/></svg>
+                          </span>
+                    </span>
+                </button>
+            </div>
+        
+        <div id="myGrid2" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+        </div>
+    </div>
+
+    <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@33.2.3/dist/ag-grid-enterprise.min.js?t=1744362087726"></script> <!--Новый скрипт-->
+    <script src="../scripts/for-settings/settingsShare.js"></script>
+    <script src="../scripts/for-settings-tables/enabledPages.js"></script>
+    <script src="../scripts/for-settings-tables/secondTable.js"></script>
+    <script src="../scripts/for-settings/settingsLoad.js"></script>
+  </body>
+</html>

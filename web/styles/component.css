@@ -1,0 +1,147 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 95vh;
+    margin: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  header{
+    display: block;
+  }
+
+  header div{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+
+.gridContainer{
+    margin-bottom: 20px;
+    /* background-color: aqua; */
+    height: 68vh;
+    width: 80vw;
+    padding: 20px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+
+  #myGrid{
+    box-shadow: 0 1vh 5px rgba(0,0,0,0.1);
+  }
+
+.for-lists, .for-object{
+  /* background-color: aqua; */
+  width: 60%;
+  margin: 0 auto;
+  align-items: center;
+  width: 60vw;
+}
+
+.for-object{
+    margin-bottom: 20px;
+    font-size: 14px;
+    padding: 10px 0;
+    background-color:  #fdeaf2;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+}
+
+.for-object div{
+    display: inline;
+    margin-left: 10px;
+}
+
+#objectName{
+    margin-right: 300px;
+}
+
+label {
+  font-size: 120%;
+  /* margin-left: 5%; */
+  font-weight: bold;
+  overflow-x: hidden;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.Source, .left{
+  margin-right: 60px;
+}
+
+.listCategoryBtn, .listSourceBtn{
+  background: #fefcfc;
+  min-width: 200px;
+  height: 60px;
+  border-radius: 5px;
+  transition: all 0.2s;  
+}
+
+.listCategoryBtn:hover, .listSourceBtn:hover{
+  background: #ffffff;
+  border: 2px solid rgb(160, 196, 213);
+}
+
+.dropdown-content {
+  display: none;
+    position: absolute;
+    top: 100%;
+    background-color: white;
+    min-width: 220px;
+    max-width: 300px;
+    max-height: 250px; /* максимальная высота списка*/
+    overflow-y: auto; /* появление scroll-bar */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 3;
+    overflow-x: hidden; /* убирает прокрутку по горизонтали */
+    left: 50%; /* что-то для центрирования */
+    transform: translateX(-50%); /* что-то для центрирования 2 */
+    flex-direction: column;
+    border-radius: 4px;
+}
+
+.dropdownBtn {
+  background: none;
+  background-color: white;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1f1f1f;
+  border-radius: 0;
+  padding: 10px 16px;
+  /* white-space: nowrap; */
+  font-family: 'IBM Plex Sans', sans-serif;
+  margin-top: 3px;
+}
+
+.specialBtn{
+  font-weight: 600;
+  color: #1a73e8;
+  border-bottom: 2px solid #eee;
+  background-color: #ffffff;
+  margin-top: 3px;
+}
+
+.dropDownBtn:hover {
+  background-color: #f5f5f5;
+  border: 2px solid transparent;
+}
+
+.dropdown-content {
+  animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform:translateX(-50%) translateY(-5%);
+  }
+  to {
+    opacity: 1;
+    transform:translateX(-50%) translateY(0);;
+  }
+}

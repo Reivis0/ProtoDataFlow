@@ -6,7 +6,7 @@ let deletedRows = []; // удаленные не пустые строки
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     let status = sessionStorage.getItem('GlobalLevel');
     //alert(status);
-    if(status !== 'admin') {
+    if(status !== 'admin' && status !== "superAdmin") {
         e.preventDefault();
         window.location.href = "log-in.html";
     }

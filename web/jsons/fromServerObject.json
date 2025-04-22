@@ -1,8 +1,82 @@
 {
     "Objects": ["dfdsfsd", "dfsdfsdf", "aaeo,l"],
-    "Types": ["Type1", "Type4", "Type 12"],
-    "data" : {
-        "asfaf": "ASasfaf",
-        "adaf": "aasfasfa"
-    }
+    "Types": [
+        {
+            "num" : 1,
+            "name": "Type1"
+        },
+        {
+            "num" : 4,
+            "name": "Type4"
+        },
+        {
+            "num" : 12,
+            "name": "Type12"
+        }
+    ],
+    "data" : [
+            {
+                "Object": "dfdsfsd",
+                "Type": 4
+            },
+            {
+                "Object": "dfsdfsdf",
+                "Type": null
+            },
+            {
+                "Object": "aaeo,l",
+                "Type": 12
+            }
+        ],
+    "Settings": [
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": false,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":false
+        },
+        {
+            "PM": true,
+            "example":true
+        }
+
+    ]
 }

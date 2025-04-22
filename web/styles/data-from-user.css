@@ -9,13 +9,20 @@
 }
 
 .for-settings{
-  width: 50%;
+  width: 100%;
   margin: 0 auto;
 }
 
-.for-settings{
-  margin-top: 10%;
+.for-settings, .addUsersButtonDiv, .SettingsButtonDiv{
+  margin-top: 20%;
   display: none;
 }
 
+.settings-btn {
+  width: 40%;
+}
+
+.SettingsButtonDiv {
+  margin-left: 15%;
+}
 

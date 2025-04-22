@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <title>Требования исходные</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  
+    <style>
+      :root, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+    </style>
+    <link rel="stylesheet" href="../styles/style.css"/>
+    <link rel="stylesheet" href="../styles/ag-grid.css">
+    <link rel="stylesheet" href="../styles/headerAndFooter.css">
+    <link rel="stylesheet" href="../styles/initial-requrements.css"/>
+  </head>
+  <body>
+    <header>
+      <div style="flex-grow: 0.1"></div>
+        <h2 id="code" class="code">Код</h2>
+        <div style="flex-grow: 1"></div>
+        <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
+        <div style="flex-grow: 1"></div>
+        <div class="buttons">
+          <button class="helpButton" id="What2do" title="Что делать">
+              <span class="material-icons">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" transform="scale (-1, 1)" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+              </span>
+          </button>
+      
+          <button class="helpButton" id="How2do" title="Как делать">
+              <span class="material-icons">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+              </span>
+          </button>
+      </div>
+      <div style="flex-grow: 0.1"></div>
+    </header>
+    <main>
+
+      <div class="for-lists">
+
+        <label>Источник требований</label>
+        <div class="dropdown Source">
+          <div class="dropdown-content" id="sourceOptions">
+              <button class="dropdownBtn sourceBtn specialBtn">Все</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+              <button class="dropdownBtn sourceBtn">sss</button>
+          </div>
+          <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">
+            Все
+          </button>
+        </div>
+
+        <label>Объект</label>
+        <div class="dropdown">
+            <div class="dropdown-content" id="objectOptions">
+                <button class="dropdownBtn objectBtn specialBtn">Все</button>
+                <button class="dropdownBtn objectBtn">Ссылка 2</button>
+                <button class="dropdownBtn objectBtn">kykjyuk</button>
+                <button class="dropdownBtn objectBtn">Ссылка 4</button>
+                <button class="dropdownBtn objectBtn">Ссылка 5</button>
+                <button class="dropdownBtn objectBtn">Ссылка 6</button>
+                <button class="dropdownBtn objectBtn">Ссылка 7</button>
+            </div>
+            <button class="listObjectBtn" id="listObjectBtn" title="Отображать данные для выбранного объекта">
+              Все
+            </button>
+        </div>
+      </div>
+      
+      <div id="gridContainer" class="gridContainer">
+          <div class="ag-grid-toolbar">
+              <button class="toolbar-btn" id="insertRowsBtn" title="Вставить строки">
+                  <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,10H3v2h11V10z M14,6H3v2h11V6z M18,14v-4h-2v4h-4v2h4v4h2v-4h4v-2H18z M3,16h7v-2H3V16z"/></g></svg>
+                  </span>
+              </button>
+              
+              <button class="toolbar-btn" id="deleteRowsBtn" title="Удалить строки">
+                  <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  </span>
+              </button>
+              
+              <button class="toolbar-btn" id="undoBtn" title="Отменить (Ctrl+Z)">
+                  <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                  </span>
+              </button>
+              <button class="toolbar-btn" id="redoBtn" title="Вернуть (Ctrl+Y)">
+                  <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+                  </span>
+              </button>
+
+              <button class="toolbar-btn" id="removeFiltersBtn" title="Сбросить фильтры">
+                <span class="material-icons">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M791-55 55-791l57-57 736 736-57 57ZM633-440l-80-80h167v80h-87ZM433-640l-80-80h487v80H433Zm-33 400v-80h160v80H400ZM240-440v-80h166v80H240ZM120-640v-80h86v80h-86Z"/></svg>
+                </span>
+              </button>
+
+              <div style="flex-grow: 1"></div>
+          
+              <button class="toolbar-btn" id="saveAllBtn" title="Сохранить всю таблицу">
+                  <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                  </span>
+              </button>
+          </div>
+      
+      <div id="myGrid" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+      </div>
+    </main>
+    <footer>
+      <footer class="innerFooter">
+
+        <button class="footer-btn" id="backBtn" title="Назад">
+          <span class="material-icons">
+            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" style="transform: rotate(180deg)" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg>
+          </span>
+        </button>
+        <div style="flex-grow: 0.2"></div>
+        
+        <button class="footer-btn" id="nextBtn" title="Вперед">
+            <span class="material-icons">
+              <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg>
+            </span>
+        </button>
+
+        <div style="flex-grow: 1.1"></div>
+
+        <button class="footer-btn" id="toServerBtn" title="Добавить в модель">
+            <span class="material-icons">
+              <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M450-120v-330H120v-60h330v-330h60v330h330v60H510v330h-60Z"/></svg>
+        </button>
+
+        <div style="flex-grow: 0.7"></div>
+        
+        <div class="dropUp">
+          <div class="dropUp-content">
+              <button class="dropUpBtn specialBtn">Новая матрица соответствия</button>
+              <button class="dropUpBtn">Ссылка 2</button>
+              <button class="dropUpBtn">Ссылка 3</button>
+              <button class="dropUpBtn">Ссылка 4</button>
+              <button class="dropUpBtn">Ссылка 5</button>
+              <button class="dropUpBtn">Ссылка 6</button>
+              <button class="dropUpBtn">фывафацафафыафыафафафыафафафафафыафафафа йхалй-л ай- л-й йал-зцуалхзфылда</button>
+          </div>
+          <button class="footer-btn" id="equalsBtn" title="Установить соответствие">
+            <span class="material-icons">
+              <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" style="transform: rotate(90deg)" height="36px" viewBox="0 0 20 20" width="36px" fill="#1f1f1f"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g/><polygon points="11,7 14,7 10,3.01 6,7 9,7 9,13 6,13 10,16.99 14,13 11,13"/></g></svg>
+            </span>
+          </button>
+      </div>
+
+      <div class="dropUp">
+        <div class="dropUp-content">
+            <button class="dropUpBtn specialBtn">Новая матрица верификации</button>
+            <button class="dropUpBtn">Ссылка 2</button>
+            <button class="dropUpBtn">Ссылка 3</button>
+            <button class="dropUpBtn">Ссылка 4</button>
+            <button class="dropUpBtn">Ссылка 5</button>
+            <button class="dropUpBtn">Ссылка 6</button>
+            <button class="dropUpBtn">Ссылка 7</button>
+        </div>
+        <button class="footer-btn" id="verificationBtn" title="Перейти к верификации">
+          <span class="material-icons">
+            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M480-80 317-243l44-44 89 89v-189h60v189l89-89 44 44L480-80ZM238-322 80-480l159-159 44 44-85 85h189v60H198l84 84-44 44Zm484 0-44-44 84-84H574v-60h188l-84-84 44-44 158 158-158 158ZM450-574v-188l-84 84-44-44 158-158 158 158-44 44-84-84v188h-60Z"/></svg>
+          </span>
+        </button>
+      </div>
+
+        <div style="flex-grow: 0.4"></div>
+
+        <button class="footer-btn" id="exitBtn" title="Выйти">
+          <span class="material-icons">
+            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M120-120v-60h92v-660h390v45h147v615h91v60H689v-615h-87v615H120Zm331-320q17 0 28.5-11.5T491-480q0-17-11.5-28.5T451-520q-17 0-28.5 11.5T411-480q0 17 11.5 28.5T451-440Z"/></svg>
+          </span>
+        </button>
+
+
+      </footer>
+    </footer>
+
+    <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@33.2.3/dist/ag-grid-enterprise.min.js?t=1744362087726"></script> <!--Новый скрипт-->
+    <script src="../scripts/initial-requrements.js"></script>
+  </body>
+</html>
