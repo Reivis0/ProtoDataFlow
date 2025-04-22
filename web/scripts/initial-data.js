@@ -34,7 +34,7 @@ function configureForm(labels, inputs, serverData) {
 }
 
 // Мок-данные
-function receiveData() {
+function receiveData() { //тут должны быть еще заголовки
     return [
         { name: "Основной замысел", maxLength: 10 },
         { name: "Условия работы", maxLength: 1000 },

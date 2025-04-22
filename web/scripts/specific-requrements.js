@@ -395,9 +395,66 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
-    let serverData = loadData();
 
-    console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
+    // let messageForIdentification = {login: login, model: "model", variant: "var"};
+    // fetch('http://127.0.0.1:8080/api/auth', { 
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(messageForIdentification),
+    //   }
+    
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(serverData => {
+    //     initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    //     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
+    //     document.getElementById("objectName").textContent = currentObjAndType.Object;
+    //     document.getElementById("objectType").textContent = currentObjAndType.Type;
+    //     let GrdOptions;
+
+    //     if(!localSaveData) {
+    //         GrdOptions = returnGridOptions(serverData.information, serverData.data);
+    //         localSaveData = JSON.parse(JSON.stringify(serverData.data));
+    //         let id = 0;
+    //         for(let i = 0; i < localSaveData.length; ++i) {
+    //             localSaveData[i].id = id
+    //             ++id;
+    //         }
+
+    //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+    //     }
+    //     else{
+    //         localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
+    //         localSaveData.forEach(row => row.column2 = "");
+    //         GrdOptions = returnGridOptions(serverData.information, localSaveData);
+    //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+    //     }
+    //     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
+    //     setupButtons();
+    //     document.getElementById("mainFormName").textContent = serverData.information.name;
+    //     document.getElementById("code").textContent = serverData.information.code;
+
+    //     document.getElementById("listSourceBtn").textContent = "Все";
+    //     document.getElementById("listCategoryBtn").textContent = "Все";
+    //     addSourceListener(document.getElementById("sourceOptions").children[0])
+    //     addCategoryListener(document.getElementById("categoryOptions").children[0])
+
+    //     CreateSourceOptions();
+    //     CreateCategoryOptions();
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+
+
+    let serverData = loadData();
 
     initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
@@ -533,7 +590,26 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
         object: currentObjAndType.Object,
         data: localSaveData
     };
-    console.log(message);
+    fetch('http://127.0.0.1:8080/api/auth', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({information:"asda", data:message}),
+      }
+      )
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json(); 
+      })
+      .then(answer => {
+          console.log(answer);
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 

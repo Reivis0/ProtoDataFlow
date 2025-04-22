@@ -447,25 +447,48 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
-    console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
     counter2 = sessionStorage.getItem("counter2");
     Views = JSON.parse(sessionStorage.getItem("Views"));
     View = Views[counter2];
-    numOfView = View.number;
     sessionStorage.setItem("currentView", JSON.stringify(View));
     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
-    settings = loadSettings(numOfView - 1); 
     View.components.forEach(component => componentsDictionary[component.number] = component.name);
     GrdOptions = createGridOptions(View);
-
     
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
     document.getElementById("mainFormName").textContent = View.header;
     document.getElementById("code").textContent = View.code;
+    
+    // numOfView = View.number;
+    // fetch('http://127.0.0.1:8080/api/auth', { 
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(numOfView - 1),
+    //   }
+    
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(serverData => {
+    //     setTimeout(() => {
+    //         gridApi.forEachNode(node => enableButtons(node));
+    //     }, 0);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
 
+    numOfView = View.number;
+    settings = loadSettings(numOfView - 1); 
     setTimeout(() => {
         gridApi.forEachNode(node => enableButtons(node));
     }, 0);

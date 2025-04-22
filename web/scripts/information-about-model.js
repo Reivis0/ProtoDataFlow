@@ -40,6 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("forCentring").style.flexGrow = "0.6";
     }
+
+
+    //тут fetch с данными и все что ниже будет в .then
     
     // Получаем все label элементы
     const labels = inputs.map(input => document.querySelector(`label[for="${input.id}"]`));
