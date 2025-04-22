@@ -386,6 +386,14 @@ function setupButtons() {
 }
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
+
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+    
     let serverData = loadData();
 
     localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
@@ -448,8 +456,6 @@ function showNotification(message, type = 'success') { //показать уве
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData, dataForFilter);
-    console.log(typeof localSaveData, typeof dataForFilter)
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -467,7 +473,7 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
         }
     }
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
-    //window.location.href = "log-in.html";
+    window.location.href = "initial-data.html";
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {

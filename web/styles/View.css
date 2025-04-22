@@ -9,12 +9,14 @@ body {
 
   .gridContainer{
     width: 90vw;
-    height: 70vh;
-    margin-bottom: 5px;
+    height: 73vh;
+    margin-bottom: 0;
+    align-items: center;
   }
 
   #myGrid{
     box-shadow: 0 1vh 10px rgba(0,0,0,0.1);
+    height: 100%;
   }
 
 
@@ -41,7 +43,7 @@ body {
     /* background-color: aqua; */
     margin: 0 auto;
     align-items: center;
-    width: 60vw;
+    width: 80vw;
     margin-bottom: 20px;
     font-size: 14px;
     padding: 10px 0;
@@ -56,5 +58,5 @@ body {
   }
 
   #objectName{
-    margin-right: 400px;
+    margin-right: 300px;
 }

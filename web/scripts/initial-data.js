@@ -43,7 +43,7 @@ function receiveData() {
     ];
 }
 
-// Сохранение данных в localStorage
+// Сохранение данных в sessionStorage
 function saveDataLocally(inputs, callback) {
     const formData = {
         concept: inputs[0].value.trim(),
@@ -54,7 +54,7 @@ function saveDataLocally(inputs, callback) {
     };
     
     try {
-        localStorage.setItem('formData', JSON.stringify(formData));
+        sessionStorage.setItem('formData', JSON.stringify(formData));
         showToast('Данные сохранены!', 'success');
         if (callback) callback();
     } catch (e) {
@@ -64,7 +64,7 @@ function saveDataLocally(inputs, callback) {
 
 // Загрузка сохранённых данных
 function loadSavedData(inputs) {
-    const savedData = localStorage.getItem('formData');
+    const savedData = sessionStorage.getItem('formData');
     if (!savedData) return;
 
     try {
@@ -89,7 +89,7 @@ function setupFormSubmit(inputs) {
 // Настройка обработчиков кнопок footer
 function setupActionButtons(inputs) {
     const navigateWithCheck = (url) => {
-        const savedData = localStorage.getItem('formData');
+        const savedData = sessionStorage.getItem('formData');
         const currentData = {
             concept: inputs[0].value.trim(),
             conditions: inputs[1].value.trim(),
@@ -116,13 +116,13 @@ function setupActionButtons(inputs) {
     // Кнопка "Назад"
     document.getElementById("backBtn").addEventListener("click", (e) => {
         e.preventDefault();
-        navigateWithCheck("log-in.html");
+        navigateWithCheck("information-about-model.html");
     });
     
     // Кнопка "Вперед"
     document.getElementById("nextBtn").addEventListener("click", (e) => {
         e.preventDefault();
-        navigateWithCheck("../form2/form2.html");
+        navigateWithCheck("initial-requrements.html");
     });
     
     // Кнопка "Добавить"
@@ -133,7 +133,7 @@ function setupActionButtons(inputs) {
     // Кнопка "Выйти"
     document.getElementById('exitBtn').addEventListener('click', () => {
         if (confirm('Удалить все сохранённые данные?')) {
-            localStorage.removeItem('formData');
+            sessionStorage.removeItem('formData');
             document.getElementById('data-input').reset();
             showToast('Данные удалены!', 'info');
         }
@@ -142,13 +142,13 @@ function setupActionButtons(inputs) {
 
 // Настройка кнопок header
 function setupHeaderButtons() {
-    document.getElementById("helpBtn").addEventListener("click", () => {
-        showToast("Раздел помощи будет реализован позже", "info");
-    });
+    // document.getElementById("helpBtn").addEventListener("click", () => {
+    //     showToast("Раздел помощи будет реализован позже", "info");
+    // });
     
-    document.getElementById("settingsBtn").addEventListener("click", () => {
-        showToast("Настройки будут доступны в следующей версии", "info");
-    });
+    // document.getElementById("settingsBtn").addEventListener("click", () => {
+    //     showToast("Настройки будут доступны в следующей версии", "info");
+    // });
 }
 
 // Настройка выпадающих меню
@@ -201,7 +201,7 @@ function closeAllMenus() {
 
 // Функция перехода
 function navigateTo(url) {
-    sessionStorage.clear();
+    // sessionStorage.clear();
     window.location.href = url;
 }
 

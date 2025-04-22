@@ -250,6 +250,10 @@ class ActionsButtons {
         this.eGui.appendChild(this.loadPMButton);
         this.eGui.appendChild(this.loadExampleButton);
 
+        this.gotoComponentButton.title = "Перейти к требованиям к объекту";
+        this.loadPMButton.title = "Загрузить ЭМ";
+        this.loadExampleButton.title = "Загрузить пример";
+
         this.gotoComponentButton.addEventListener("click", (e) => {
             e.preventDefault();
             
@@ -431,15 +435,21 @@ function setupButtons() {
 }
 
 let counter2;
-let Views
+let Views;
 let View;
 let numOfView;
 let currentObjAndType;
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+    console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
     counter2 = sessionStorage.getItem("counter2");
     Views = JSON.parse(sessionStorage.getItem("Views"));
-    console.log(Views);
     View = Views[counter2];
     numOfView = View.number;
     sessionStorage.setItem("currentView", JSON.stringify(View));
@@ -464,12 +474,13 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    if(counter2 === 0) {
+    if(parseInt(counter2) === 0) {
         window.location.href = "specific-requrements.html";
     }
     else{
         --counter2;
         sessionStorage.setItem("counter2", counter2);
+        sessionStorage.setItem("currentView", JSON.stringify(Views[counter2]));
         let counter3 = Views[counter2].components.length - 1;
         let nextComp = Views[counter2].components[counter3];
         sessionStorage.setItem("counter3", counter3);
@@ -482,11 +493,9 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    
-    let counter3 = sessionStorage.getItem("counter3");
-    ++counter3;
-    let nextComp = View.components[counter3];
-    sessionStorage.setItem("counter3", counter3);
+
+    let nextComp = View.components[0];
+    sessionStorage.setItem("counter3", 0);
     sessionStorage.setItem("curComp", JSON.stringify(nextComp));
     sessionStorage.setItem("cellBtnPressed", false);
     window.location.href = "component.html";

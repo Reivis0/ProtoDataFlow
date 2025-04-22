@@ -75,14 +75,13 @@ form.addEventListener('submit', (e) => {
     if(answer.status === 'Correct') { //если все хорошо
         sessionStorage.setItem('GlobalLogin', login.value);
         sessionStorage.setItem('GlobalLevel', answer.privilege);
-        //sessionStorage.setItem("GlobalRedirect", true);
         e.preventDefault();  
         if(answer.access === 'true'){  
             if(answer.agreement === 'false') {
                 window.location.assign("rules-of-usage.html");
             }
             else{
-                window.location.assign("data-from-user.html");
+                window.location.assign("information-about-model.html");
             }
         }
         else {

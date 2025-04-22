@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
     exitButton.style.bottom = '20px';
     exitButton.style.right = '20px';
     exitButton.style.width = "9%";
+    exitButton.style.backgroundColor = "white";
+    exitButton.style.zIndex = "5";
     
 
 

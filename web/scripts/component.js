@@ -7,7 +7,7 @@ function loadData(){
             name: "Требования (Спецификация)",
             headers: [
                 {
-                    header: "Источник требований",
+                    header: "Название 1",
                     type: "string",
                     maxSmth: 50,
                     name: "column1",
@@ -15,7 +15,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Категория требований",
+                    header: "Название 2",
                     type: "string",
                     maxSmth: 50,
                     name: "column2",
@@ -23,7 +23,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Требование",
+                    header: "Название 3",
                     type: "string",
                     maxSmth: 50,
                     name: "column3",
@@ -31,7 +31,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Ед. изм.",
+                    header: "Название 4",
                     type: "string",
                     maxSmth: 50,
                     name: "column4",
@@ -39,7 +39,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Количество 1",
+                    header: "Название 5",
                     type: "num",
                     maxSmth: 10000,
                     name: "column5",
@@ -47,7 +47,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Количество 2",
+                    header: "Название 6",
                     type: "num",
                     maxSmth: 10000,
                     name: "column6",
@@ -55,7 +55,7 @@ function loadData(){
 
                 },
                 {
-                    header: "Код",
+                    header: "Название 7",
                     type: "string",
                     maxSmth: 50,
                     name: "column7",
@@ -164,47 +164,18 @@ function returnGridOptions(information, data){ //получить настрой
 
 let gridApi;
 
-let localSaveData = []; //для локального сохранения
-let dataForFilter = []; //для локального сохранения
-
-let deletedNodes = [];
+let localSaveData; //для локального сохранения
 
 function localSave() {
-    let newData = JSON.parse(JSON.stringify(dataForFilter));
-    let filteredData = [];
-    gridApi.forEachNode(node => filteredData.push(node.data));
-
-
-    // for(let i = 0; i < deletedNodes.length; ++i){
-    //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]))
-    //     if(index !== -1){
-    //         newData.splice(index, 1);
-    //     }
-    // }
-
-    data = [];
-
-    for(let i = 0; i < filteredData.length; ++i){
-        const index = newData.findIndex(element => element.id === filteredData[i].id)
-        if(index !== -1){
-            newData[index] = filteredData[i]
-        }
-        else{
-            newData.push(filteredData[i]);
-        }
-    }
-
-
-    localSaveData = JSON.parse(JSON.stringify(newData));
-
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
-    console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${localSaveData.length}`);
+    const allData = [];
+    gridApi.forEachNode(node => allData.push(node.data));
+    localSaveData = JSON.parse(JSON.stringify(allData));
+    sessionStorage.setItem("all-objects", JSON.stringify(allData));
+    console.log('Saving all:', allData);
+    showNotification(`Сохранено ${allData.length} строк (вся таблица)`);
     
 }
 
-const listSourceBtn = document.getElementById("listSourceBtn");
-const listCategoryBtn = document.getElementById("listCategoryBtn");
 
 function setupButtons() {
 
@@ -243,16 +214,8 @@ function setupButtons() {
          const allData = [];
          gridApi.forEachNode(node => allData.push(node.data));
         
-         const maxId = dataForFilter.reduce((max, row) => {
-            const rowId = parseInt(row.id);
-            return rowId > max ? rowId : max;
-            }, 0);
-
-            console.log(maxId)
-        
         // Создаем массив новых строчек
         const inserts = [];
-        let nextId = maxId + 1;
          if (selectedNodes.length > 0) {
              // Вставка под выделенные строки
              selectedNodes.forEach(node => {
@@ -261,9 +224,8 @@ function setupButtons() {
                      inserts.push({
                          index: rowIndex + 1,
                          rows: Array(count).fill().map((_, i) => ({
-                            "id" : nextId+i,
-                            "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
-                            "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
+                            "column1" : "",
+                            "column2" : "",
                             "column3" : "",
                             "column4" : "",
                             "column5" : null,
@@ -278,9 +240,8 @@ function setupButtons() {
              inserts.push({
                  index: allData.length,
                  rows: Array(count).fill().map((_, i) => ({
-                        "id" : nextId+i,
-                        "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
-                        "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
+                        "column1" : "",
+                        "column2" : "",
                         "column3" : "",
                         "column4" : "",
                         "column5" : null,
@@ -296,7 +257,6 @@ function setupButtons() {
          });
         
          gridApi.setGridOption('rowData', allData);
-         console.log(allData)
          if (selectedNodes.length > 0) gridApi.deselectAll();
      });
 
@@ -312,18 +272,10 @@ function setupButtons() {
        
         if (!confirm(`Удалить ${selectedNodes.length} строк(у)?`)) return;
 
-        deletedNodes = deletedNodes.concat(selectedNodes.map(node => node.data));
 
         gridApi.applyTransaction({
             remove: selectedNodes.map(node => node.data)
         });
-
-        for(let i = 0; i < deletedNodes.length; ++i){
-            const index = dataForFilter.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
-            if(index !== -1){
-                dataForFilter.splice(index, 1);
-            }
-        }
         gridApi.deselectAll();
     });
 
@@ -353,40 +305,13 @@ function setupButtons() {
         dropUpBtns[i].addEventListener('click', function() {
             console.log(this.textContent);
         });
-    }
-    
-    const dropDowns = Array.from(document.getElementsByClassName("dropdown"));
-
-    for (let i = 0; i < dropDowns.length; ++i) {
-        dropDowns[i].addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isOpen = dropDowns[i].children[0].style.display === 'flex';
-            dropDowns[i].children[0].style.display = isOpen ? 'none' : 'flex';
-        });
-
-        dropDowns[i].addEventListener('mouseleave', function() {
-            setTimeout(() => {
-            if (!dropDowns[i].children[0].matches(':hover')) {
-                dropDowns[i].children[0].style.display = 'none';
-            }
-            }, 200);
-        });
-    }
-
-    let dropDownBtns = Array.from(document.getElementsByClassName("dropdownBtn"));
-
-    for(let i = 0; i  < dropDownBtns.length; ++i) {
-        dropDownBtns[i].addEventListener('click', function() {
-            // console.log(this.textContent);
-        });
-    }
-
-    
-        
+    }     
 }
 
 let initialRequrements = [];
 let currentObjAndType;
+let curView;
+let curComp;
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     let login = sessionStorage.getItem("GlobalLogin");
@@ -396,10 +321,17 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         window.location.href = "log-in.html";
     }
     let serverData = loadData();
-
     console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
 
-    initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    curView = JSON.parse(sessionStorage.getItem("currentView"));
+
+    document.getElementById("ViewCode").textContent = curView.code;
+    document.getElementById("ViewName").textContent = curView.header;
+    curComp = JSON.parse(sessionStorage.getItem("curComp"));
+    document.getElementById("CompCode").textContent = curComp.code;
+    document.getElementById("CompName").textContent = curComp.name;
+
+
     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
@@ -408,33 +340,15 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     if(!localSaveData) {
         GrdOptions = returnGridOptions(serverData.information, serverData.data);
         localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        let id = 0;
-        for(let i = 0; i < localSaveData.length; ++i) {
-            localSaveData[i].id = id
-            ++id;
-        }
-
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
     }
     else{
-        localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
-        localSaveData.forEach(row => row.column2 = "");
+        console.log(localSaveData);
         GrdOptions = returnGridOptions(serverData.information, localSaveData);
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
     }
+
+
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
-    document.getElementById("mainFormName").textContent = serverData.information.name;
-    document.getElementById("code").textContent = serverData.information.code;
-
-    document.getElementById("listSourceBtn").textContent = "Все";
-    document.getElementById("listCategoryBtn").textContent = "Все";
-    addSourceListener(document.getElementById("sourceOptions").children[0])
-    addCategoryListener(document.getElementById("categoryOptions").children[0])
-
-    CreateSourceOptions();
-    CreateCategoryOptions();
-
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -462,18 +376,23 @@ function showNotification(message, type = 'success') { //показать уве
     }, 2000);
 }
 
+let counter3;
+
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData, dataForFilter);
-    console.log(typeof localSaveData, typeof dataForFilter)
-    if(dataForFilter.length !== localSaveData.length){
+    let curDat = [];
+    gridApi.forEachNode(node => {
+        curDat.push(node.data)
+    });
+
+    if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
         }
     }
     else{
-        for(let i = 0; i < dataForFilter.length; ++i){
-            if(JSON.stringify(dataForFilter[i]) !== JSON.stringify(localSaveData[i])){
+        for(let i = 0; i < curDat.length; ++i){
+            if(JSON.stringify(curDat[i]) !== JSON.stringify(localSaveData[i])){
                 
                 if(confirm(`Сохранить данные в табице?`)){
                     localSave();
@@ -482,25 +401,36 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
             }
         }
     }
-    let counter1 = sessionStorage.getItem("counter1");
-    --counter1;
-    sessionStorage.setItem("counter1", counter1);
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
-    window.location.href = "all-objects.html";
+
+    counter3 = sessionStorage.getItem("counter3");
+    --counter3;
+    sessionStorage.setItem("counter3", counter3);
+    if(counter3 === -1){
+        
+        window.location.href = "View.html";
+    }
+    else{
+        sessionStorage.setItem("curComp", JSON.stringify(curView.components[counter3]));
+        window.location.href = "component.html";
+    }
+    
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData);
-
-    if(dataForFilter.length !== localSaveData.length){
+    let curDat = [];
+    gridApi.forEachNode(node => {
+        curDat.push(node.data)
+    });
+    // console.log(curDat, localSaveData);
+    if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
         }
     }
     else{
-        for(let i = 0; i < dataForFilter.length; ++i){
-            if(JSON.stringify(dataForFilter[i]) !== JSON.stringify(localSaveData[i])){
+        for(let i = 0; i < curDat.length; ++i){
+            if(JSON.stringify(curDat[i]) !== JSON.stringify(localSaveData[i])){
                 
                 if(confirm(`Сохранить данные в табице?`)){
                     localSave();
@@ -510,14 +440,42 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
-    sessionStorage.setItem("counter2", 0);
-    // sessionStorage
+    counter3 = sessionStorage.getItem("counter3");
+    if(parseInt(counter3) === curView.components.length -1){
+        sessionStorage.setItem("counter3", -1);
+        let counter2 = sessionStorage.getItem("counter2");
+        
+        let numOfViews = JSON.parse(sessionStorage.getItem("Views")).length;
+        if(parseInt(counter2) === numOfViews - 1){
+            sessionStorage.setItem("counter2", 0);
+            let counter1 = sessionStorage.getItem("counter1");
+            let numOfObj = JSON.parse(sessionStorage.getItem("all-objects")).length;
+            console.log(typeof counter1, typeof numOfObj, "counter 1");
+            console.log(JSON.parse(sessionStorage.getItem("all-objects")));
+            
+            if(parseInt(counter1) === numOfObj - 1) {
+                showNotification("Дальше идут матрицы");
+                sessionStorage.setItem("counter1", -1);
+            }
+            else{
+                window.location.href = "all-objects.html";
+            }
+        }
+        else{
+            ++counter2;
+            sessionStorage.setItem("counter2", counter2);
+            window.location.href = "View.html";
+        }
+    }
+    else{
+        ++counter3;
+        sessionStorage.setItem("counter3", counter3);
+        sessionStorage.setItem("curComp", JSON.stringify(curView.components[counter3]));
+        //alert(counter3);
+        window.location.href = "component.html";
+    }
+    
 
-    // console.log(sessionStorage.getItem("counter1"));
-
-
-    window.location.href = "View.html";
 })
 
 document.getElementById("exitBtn").addEventListener("click", (e) => {
@@ -537,140 +495,4 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 
-function CreateSourceOptions(){
-    allSourses = new Set();
-    dataForFilter.forEach(node => allSourses.add(node.column1));
-    const sourceOptions = document.getElementById("sourceOptions");
-    
-    sourceOptions.querySelectorAll('button:not(:first-child)')
-    .forEach(button =>  button.remove() );
 
-
-    Array.from(allSourses).sort().forEach(source => {
-        const newSource = document.createElement("button");
-        newSource.classList.add("dropdownBtn");
-        newSource.classList.add("sourceBtn");
-        newSource.textContent = source;
-        addSourceListener(newSource);
-        sourceOptions.appendChild(newSource);
-    })
-}
-
-listSourceBtn.addEventListener("click", CreateSourceOptions);
-
-function CreateCategoryOptions(){
-    allCategorys = new Set();
-    dataForFilter.forEach(node => allCategorys.add(node.column2));
-    const categoryOptions = document.getElementById("categoryOptions");
-    
-    categoryOptions.querySelectorAll('button:not(:first-child)')
-    .forEach(button =>  button.remove() );
-
-
-    Array.from(allCategorys).sort().forEach(category => {
-        const newCategory = document.createElement("button");
-        newCategory.classList.add("dropdownBtn");
-        newCategory.classList.add("categoryBtn");
-        newCategory.textContent = category;
-        addCategoryListener(newCategory);
-        categoryOptions.appendChild(newCategory);
-    })
-}
-
-listCategoryBtn.addEventListener("click", CreateCategoryOptions);
-
-function addSourceListener(sourceBtn){
-    sourceBtn.addEventListener("click", (e) => {
-        listSourceBtn.textContent = e.target.textContent;
-
-        const filteredData = [];
-        gridApi.forEachNode(node => filteredData.push(node.data));
-       
-        filteredData.sort((a, b) => a.id - b.id)
-        const newData = JSON.parse(JSON.stringify(dataForFilter));
-
-
-        // for(let i = 0; i < deletedNodes.length; ++i){
-        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
-        //     if(index !== -1){
-        //         newData.splice(index, 1);
-        //     }
-        // }
-        for(let i = 0; i < filteredData.length; ++i){
-            const index = newData.findIndex(element => element.id === filteredData[i].id)
-            if(index !== -1){
-                newData[index] = filteredData[i]
-            }
-            else{
-                newData.push(filteredData[i]);
-            }
-        }
-        dataForFilter = JSON.parse(JSON.stringify(newData));
-
-        if(listSourceBtn.textContent === "Все"){
-            if(listCategoryBtn.textContent === "Все"){
-                gridApi.setGridOption('rowData', newData);
-            }
-            else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent));
-            }
-        }
-        else{
-            if(listCategoryBtn.textContent === "Все"){
-                gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent));
-            }
-            else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent && element.column2 === listCategoryBtn.textContent));
-            }
-        }
-    })
-}
-
-function addCategoryListener(categoryBtn){
-    categoryBtn.addEventListener("click", (e) => {
-        listCategoryBtn.textContent = e.target.textContent;
-
-        const filteredData = [];
-        gridApi.forEachNode(node => filteredData.push(node.data));
-        filteredData.sort((a, b) => a.id - b.id)
-        const newData = JSON.parse(JSON.stringify(dataForFilter));
-
-
-        // for(let i = 0; i < deletedNodes.length; ++i){
-        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
-        //     if(index !== -1){
-        //         newData.splice(index, 1);
-        //     }
-        // }
-
-
-        for(let i = 0; i < filteredData.length; ++i){
-            const index = newData.findIndex(element => element.id === filteredData[i].id)
-            if(index !== -1){
-                newData[index] = filteredData[i]
-            }
-            else{
-                newData.push(filteredData[i]);
-            }
-        }
-
-        dataForFilter = JSON.parse(JSON.stringify(newData));
-
-        if(listCategoryBtn.textContent === "Все"){
-            if(listSourceBtn.textContent === "Все"){
-                gridApi.setGridOption('rowData', newData);
-            }
-            else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column1 === listSourceBtn.textContent));
-            }
-        }
-        else{
-            if(listSourceBtn.textContent === "Все"){
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent));
-            }
-            else{
-                gridApi.setGridOption('rowData', newData.filter(element => element.column2 === listCategoryBtn.textContent && element.column1 === listSourceBtn.textContent));
-            }
-        }
-    })
-}

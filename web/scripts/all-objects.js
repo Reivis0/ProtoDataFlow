@@ -98,22 +98,22 @@ function loadViews(){
     let views = [
         {
             "number": 1,
-            "header": "dgfgf",
+            "header": "dgfgf_1",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd",
-                    "code": "fafa-53"
+                    "name": "sdd_1",
+                    "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd",
+                    "name": "sddfdd_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa",
+                    "name": "sddaaa_3",
                     "code": "fafa-55"
                 }
             ]
@@ -122,22 +122,22 @@ function loadViews(){
         },
         {
             "number": 2,
-            "header": "dgfgf",
+            "header": "dgfgf_2",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd",
-                    "code": "fafa-53"
+                    "name": "sdd_1",
+                    "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd",
+                    "name": "sddfdd_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa",
+                    "name": "sddaaa_3",
                     "code": "fafa-55"
                 }
             ]
@@ -146,22 +146,22 @@ function loadViews(){
         },
         {
             "number": 5,
-            "header": "dgfgf",
+            "header": "dgfgf_5",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd",
-                    "code": "fafa-53"
+                    "name": "sdd_1",
+                    "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd",
+                    "name": "sddfdd_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa",
+                    "name": "sddaaa_3",
                     "code": "fafa-55"
                 }
             ]
@@ -257,6 +257,10 @@ class ActionsButtons {
         this.goToViewsButton.classList.add("actionButton")
 
         this.goToViewsButton.disabled = true;
+
+        this.goToViewsButton.title = "Перейти к требованиям к объекту";
+        this.loadPMButton.title = "Загрузить ЭМ";
+        this.loadExampleButton.title = "Загрузить пример";
         
         this.eGui.appendChild(this.goToViewsButton);
         this.eGui.appendChild(this.loadPMButton);
@@ -574,8 +578,9 @@ function setupButtons() {
 }
 
 function localSave(){
-    const allData = [];
+    let allData = [];
     gridApi.forEachNode(node => allData.push(node.data));
+    allData = allData.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
     localSaveData = JSON.parse(JSON.stringify(allData));
     sessionStorage.setItem("all-objects", JSON.stringify(allData));
     console.log('Saving all:', allData);
@@ -586,6 +591,14 @@ let counter1;
 let Views;
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
+
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+    
     let serverData = loadData();
 
     enabledButtons = serverData.information.Settings;
@@ -593,7 +606,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
      localSaveData = JSON.parse(sessionStorage.getItem("all-objects"));
      let GrdOptions;
 
-    //  console.log(localSaveData);
+    console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
 
      if(!localSaveData) {
 
@@ -649,6 +662,8 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
         curDat.push(node.data)
     });
 
+    curDat = curDat.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
+
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -675,6 +690,8 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
     gridApi.forEachNode(node => {
         curDat.push(node.data)
     });
+
+    curDat = curDat.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
     // console.log(curDat, localSaveData);
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){

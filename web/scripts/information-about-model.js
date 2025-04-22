@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Получаем все элементы формы
+
+
     const inputs = [
         document.getElementById("author"),
         document.getElementById("organization"),
@@ -9,6 +11,35 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("systemInfo"),
         document.getElementById("comments")
     ];
+
+    const status = sessionStorage.getItem('GlobalLevel');
+    console
+
+    if(status === "admin"){
+        const settings = document.getElementById("Settings");
+        settings.style.display = "block";
+        settings.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.location.href = "settings.html";
+        });
+        document.getElementById("forCentring").style.flexGrow = "0.75";
+    }
+    else if (status === "superAdmin"){
+        const addUsers = document.getElementById("AddUsers");
+        addUsers.style.display = "block";
+        addUsers.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.location.href = "add-users.html";
+        });
+        const settings = document.getElementById("Settings");
+        settings.style.display = "block";
+        settings.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.location.href = "settings.html";
+        });
+
+        document.getElementById("forCentring").style.flexGrow = "0.6";
+    }
     
     // Получаем все label элементы
     const labels = inputs.map(input => document.querySelector(`label[for="${input.id}"]`));
@@ -94,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadSavedModels() {
-        const modelsData = localStorage.getItem('savedModels');
+        const modelsData = sessionStorage.getItem('savedModels');
         if (modelsData) {
             savedModels = JSON.parse(modelsData);
             updateModelList();
@@ -102,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function saveModels() {
-        localStorage.setItem('savedModels', JSON.stringify(savedModels));
+        sessionStorage.setItem('savedModels', JSON.stringify(savedModels));
     }
 
     function updateModelList() {
@@ -178,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveModels();
         
         try {
-            localStorage.setItem('formData', JSON.stringify(model.data));
+            sessionStorage.setItem('formData', JSON.stringify(model.data));
             showToast('Данные сохранены!', 'success');
             if (callback) callback();
         } catch (e) {
@@ -187,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadSavedData(inputs) {
-        const savedData = localStorage.getItem('formData');
+        const savedData = sessionStorage.getItem('formData');
         if (!savedData) return;
 
         try {
@@ -251,12 +282,12 @@ document.addEventListener("DOMContentLoaded", () => {
         
         document.getElementById("backBtn").addEventListener("click", (e) => {
             e.preventDefault();
-            navigateWithCheck("../form/form1.html");
+            navigateWithCheck("log-in.html");
         });
         
         document.getElementById("nextBtn").addEventListener("click", (e) => {
             e.preventDefault();
-            navigateWithCheck("smth.html");
+            navigateWithCheck("initial-data.html");
         });
         
         document.getElementById('toServerBtn').addEventListener('click', () => {
@@ -265,15 +296,17 @@ document.addEventListener("DOMContentLoaded", () => {
         
         document.getElementById('exitBtn').addEventListener('click', () => {
             if (confirm('Удалить все сохранённые данные?')) {
-                localStorage.removeItem('formData');
+                sessionStorage.removeItem('formData');
                 document.getElementById('data-input').reset();
                 showToast('Данные удалены!', 'info');
+                
             }
+            window.location.href = "log-in.html";
         });
     }
 
     function hasUnsavedChanges(inputs) {
-        const savedData = localStorage.getItem('formData');
+        const savedData = sessionStorage.getItem('formData');
         if (!savedData) return inputs.some(input => input.value.trim() !== '');
         
         try {
@@ -288,13 +321,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setupHeaderButtons() {
-        document.getElementById("helpBtn").addEventListener("click", () => {
-            showToast("Раздел помощи будет реализован позже", "info");
-        });
+        // document.getElementById("helpBtn").addEventListener("click", () => {
+        //     showToast("Раздел помощи будет реализован позже", "info");
+        // });
         
-        document.getElementById("settingsBtn").addEventListener("click", () => {
-            showToast("Настройки будут доступны в следующей версии", "info");
-        });
+        // document.getElementById("settingsBtn").addEventListener("click", () => {
+        //     showToast("Настройки будут доступны в следующей версии", "info");
+        // });
     }
 
     function setupDropUpMenus() {
@@ -335,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function navigateTo(url) {
-        sessionStorage.clear();
+        // sessionStorage.clear();
         window.location.href = url;
     }
 

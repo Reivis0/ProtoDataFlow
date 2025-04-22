@@ -67,7 +67,7 @@ form.addEventListener('submit', (e) => {
     });
     
     //window.location.assigsn("log-in.html");
-    window.location.assign("data-from-user.html");
+    window.location.assign("information-about-model.html");
 
 })
 /*

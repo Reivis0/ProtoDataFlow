@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
   <head>
-    <title>Требования (спецификация)</title>
+    <title>Компонент</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
@@ -22,14 +22,23 @@
     <link rel="stylesheet" href="../styles/style.css"/>
     <link rel="stylesheet" href="../styles/ag-grid.css">
     <link rel="stylesheet" href="../styles/headerAndFooter.css">
-    <link rel="stylesheet" href="../styles/specific-requrements.css"/>
+    <link rel="stylesheet" href="../styles/component.css"/>
   </head>
   <body>
     <header>
-      <div style="flex-grow: 0.1"></div>
-        <h2 id="code" class="code">Код</h2>
+      <div>
+        <div style="flex-grow: 0.1"></div>
+        <h2 id="ViewCode" class="code">Код</h2>
         <div style="flex-grow: 1"></div>
-        <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
+        <h1 id="ViewName" class="mainFormName">Требования исходные</h1>
+        <div style="flex-grow: 1.23"></div>
+        
+      </div>
+      <div>
+        <div style="flex-grow: 0.1"></div>
+        <h2 id="CompCode" class="code">Код</h2>
+        <div style="flex-grow: 1"></div>
+        <h1 id="CompName" class="mainFormName">Требования исходные</h1>
         <div style="flex-grow: 1"></div>
         <div class="buttons">
           <button class="helpButton" id="What2do" title="Что делать">
@@ -43,8 +52,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
             </span>
         </button>
+        </div>
       </div>
-      <div style="flex-grow: 0.05"></div>
     </header>
     <main>
 
@@ -52,47 +61,14 @@
 
             <label>Для объекта: </label>
             <div class="objectName" id="objectName">
+                Все
             </div>
     
             <label>Вид объекта: </label>
             <div class="objectType" id="objectType">
+                Все
             </div>
           </div>
-
-      <div class="for-lists">
-
-        <label>Источник требований</label>
-        <div class="dropdown Source">
-          <div class="dropdown-content" id="sourceOptions">
-              <button class="dropdownBtn sourceBtn specialBtn">Все</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-              <button class="dropdownBtn sourceBtn">sss</button>
-          </div>
-          <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">
-            Все
-          </button>
-        </div>
-
-        <label>Категория требований</label>
-        <div class="dropdown">
-            <div class="dropdown-content" id="categoryOptions">
-                <button class="dropdownBtn categoryBtn specialBtn">Все</button>
-                <button class="dropdownBtn categoryBtn">Ссылка 2</button>
-                <button class="dropdownBtn categoryBtn">kykjyuk</button>
-                <button class="dropdownBtn categoryBtn">Ссылка 4</button>
-                <button class="dropdownBtn categoryBtn">Ссылка 5</button>
-                <button class="dropdownBtn categoryBtn">Ссылка 6</button>
-                <button class="dropdownBtn categoryBtn">Ссылка 7</button>
-            </div>
-            <button class="listCategoryBtn" id="listCategoryBtn" title="Отображать данные для выбранной категории требований">
-              Все
-            </button>
-        </div>
-      </div>
       
       <div id="gridContainer" class="gridContainer">
           <div class="ag-grid-toolbar">
@@ -134,7 +110,7 @@
               </button>
           </div>
       
-      <div id="myGrid" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+            <div id="myGrid" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
       </div>
     </main>
     <footer>
@@ -210,6 +186,6 @@
 
     <script src="../ag-grid/ag-grid-community.min.js?t=1744362097518"></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@33.2.3/dist/ag-grid-enterprise.min.js?t=1744362087726"></script> <!--Новый скрипт-->
-    <script src="../scripts/specific-requrements.js"></script>
+    <script src="../scripts/component.js"></script>
   </body>
 </html>
