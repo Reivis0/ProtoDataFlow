@@ -35,15 +35,7 @@ form.addEventListener('submit', (e) => {
     .then(data => {
 
         let answer = data;
-        alert(JSON.stringify(data));
-        alert(data.status);
-       // for(let i =0; i< 100000; i++)
-        //{
-          //  if(i<3) alert('23456');
-        //}
-       alert( data.status === 'User not found');
         if(data.status === 'Correct') { //если все хорошо
-            alert('we are in if');
             sessionStorage.setItem('GlobalLogin', login.value);
             sessionStorage.setItem('GlobalLevel', data.privilege);
             //sessionStorage.setItem("GlobalRedirect", true);
@@ -63,7 +55,6 @@ form.addEventListener('submit', (e) => {
     
         }
         else if (data.status === 'User not found'){
-            alert('we are in another if')
             error_div.innerText = "Неправильный логин";
             e.preventDefault();
         }
@@ -71,9 +62,6 @@ form.addEventListener('submit', (e) => {
             error_div.innerText = "Неправильный пароль";
             e.preventDefault();
         }
-        else {alert(data.status === 'User not found')};
-        alert(data.status === 'User not found');
-
 
     })
     .catch(error => {
@@ -153,7 +141,6 @@ async function checkLoginAndPassword(jsonstr){
 } */
 
 function tempCheckLoginAndPassword(jsonstr){
-    alert(jsonstr);
     return tempFunction(jsonstr);
 }
 
