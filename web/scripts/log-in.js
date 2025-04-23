@@ -31,10 +31,6 @@ form.addEventListener('submit', (e) => {
     })
     .then(data => {
 
-<<<<<<< HEAD
-        let answer = data;
-=======
->>>>>>> frontend
         if(data.status === 'Correct') { //если все хорошо
             sessionStorage.setItem('GlobalLogin', login.value);
             sessionStorage.setItem('GlobalLevel', data.privilege);
@@ -148,18 +144,12 @@ twoInputs.forEach(input => { //стереть сообщение об ошибк
 //         obj.access = 'false';
 //     }
 
-<<<<<<< HEAD
-function tempCheckLoginAndPassword(jsonstr){
-    return tempFunction(jsonstr);
-}
-=======
 //     else if (temp.password !== '321' && temp.password !== '123' && temp.password !== '222' && temp.password !== '111'){
 //         obj.status = 'Incorrect password';
 //         obj.privilege = 'user';
 //         obj.agreement = 'false';
 //         obj.access = 'false';
 //     }
->>>>>>> frontend
 
 //     return JSON.stringify(obj);
 // }
