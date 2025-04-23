@@ -29,6 +29,20 @@ struct User
     //startDate;
     //endTime;
 };
+struct User_info
+{
+    std::string login;
+    std::string password;
+    std::string surname;
+    std::string name;
+    std::string patronymic;
+    bool access;
+    std::string start_date;
+    std::string end_date;
+    std::string email;
+    std::string telephone;
+    std::string comments; 
+};
 
 std::string generate_salt_secure();
 std::string hash_password(const std::string& password);
@@ -54,5 +68,9 @@ void add_info_into_agreement_baze(pqxx::connection& connect, const std::vector<s
 bool add_email(pqxx::connection& connect, const std::string& email, const std::string& login);
 bool add_telephone(pqxx::connection& connect, const std::string& telephone, const std::string& login);
 bool add_comments(pqxx::connection& connect, const std::string& comments, const std::string& login);
+
+//вывод информации для АП
+void  get_info_from_user_info(pqxx::connection& conn,std::string user_status,std::vector<User_info>& info);
+void get_info_from_user_agreement(pqxx::connection& conn, std::vector<User_info>& info);
 
 #endif

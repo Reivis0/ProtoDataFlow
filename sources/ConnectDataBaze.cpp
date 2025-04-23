@@ -338,3 +338,66 @@ bool add_comments(pqxx::connection& connect,const std::string& comments, const s
     log("comments was added");
     return true;
 }
+
+void  get_info_from_user_info(pqxx::connection& conn,std::string user_status,std::vector<User_info>& info)
+{
+    log("start get info from user_info baze");
+    pqxx::read_transaction read(conn);
+    pqxx::result data;
+    User_info user;
+
+    if(user_status != "all")
+    {
+        data = read.exec_params("SELECT Login_, Password_ ,Status_, Access, Agreement, StartDate, EndTime FROM user_info WHERE Status_ = $1", user_status);
+        for(const auto row:data)
+        {
+            user.login;
+            user.password;
+            user.access;
+            user.start_date;
+            user.end_date;
+
+            info.push_back(user);
+        }
+    }
+    else
+    {
+       data = read.exec("SELECT Login_, Password_ ,Status_, Access, Agreement, StartDate, EndTime FROM user_info");
+        for(const auto row:data)
+        {
+            user.login = row.at("Login_").as<std::string>();
+            user.password = row.at("Password_").as<std::string>();
+            user.access = row.at("Access").as<bool>();
+            user.start_date = row.at("StartDate").as<std::string>();
+            user.end_date = row.at("EndTime").as<std::string>();
+
+            info.push_back(user);
+        }
+    }
+    log("info was added");
+}
+
+void get_info_from_user_agreement(pqxx::connection& conn, std::vector<User_info>& info)
+{
+    log("start get info from user_agreement");
+    pqxx::read_transaction read(conn);
+    pqxx::result data;
+    for(auto &el : info)
+    {
+        data = read.exec_params("SELECT Surname_, Name_ ,Patronymic_, Email_, Telephone_, Comments_ FROM user_agreement Where Login_ = $1", el.login);
+        auto res = data.at(0);
+        el.surname = res.at("Surname_").as<std::string>();
+        std::cout<<el.surname<<std::endl;
+        el.name = res.at("Name_").as<std::string>();
+        el.patronymic = res.at("Patronymic_").as<std::string>();
+        el.email = res.at("Email_").as<std::string>();
+        el.telephone = res.at("Telephone_").as<std::string>();
+        el.comments = res.at("Comments_").as<std::string>();
+    }
+    log("info was added");
+
+}
+
+
+
+
