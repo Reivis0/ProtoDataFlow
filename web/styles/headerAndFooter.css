@@ -1,0 +1,196 @@
+header{
+    display: flex;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #ffffff;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    align-items: center;
+    margin-bottom: 20px;
+    
+}
+
+
+.mainFormName{
+    width: 40%;
+    margin: 0 auto;
+}
+
+.code{
+    /* font-size: 1.2rem; Вика раскомментируй это!!!!!!!! */
+    font-weight: 500;
+    color: #1f1f1f;
+    white-space: nowrap;
+}
+
+.mainFormName {
+  /* font-size: 1.5rem; Вика раскомментируй это!!!!!!!! */
+  font-weight: 700;
+  color: #1f1f1f;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.buttons{
+    display: flex;
+    gap: 10px;
+}
+
+.helpButton{
+  background: none;
+  border: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+}
+.helpButton .material-icons svg{
+    font-size: 24px;
+    fill: #555;
+    }
+
+.helpButton:hover {
+    background: #fdecfd;
+    border: 2px solid #fcd8fc;
+    }
+
+footer{
+    background: white;
+    display: flex; 
+    gap: 8px; 
+    padding: 10px 20px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    align-items: center; 
+    border-radius: 4px 4px 0 0; 
+    margin-bottom: 0;
+    height: 60px;
+}
+.innerFooter{
+  margin: 0 auto;
+  width: 97%;
+  height: 70%;
+  align-items: center;
+
+}
+
+.footer-btn{
+    background: none;
+    width: 60px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.footer-btn .material-icons svg{
+    font-size: 24px;
+    fill: #555;
+    }
+
+.footer-btn:hover {
+    background: #eae2ff;
+    border: 2px solid #bcb0e2;
+}
+
+/* main {
+    flex: 1; Раскомментриуй если footer будет не в самом низу
+  } */
+
+main, footer, header{
+    width: 100%;
+}
+
+.dropUp {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropUp-content {
+    display: none;
+    position: absolute;
+    bottom: 100%; /* выпадает наверх */
+    background-color: white;
+    min-width: 220px;
+    max-width: 300px;
+    max-height: 250px; /* максимальная высота списка*/
+    overflow-y: auto; /* появление scroll-bar */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    overflow-x: hidden; /* убирает прокрутку по горизонтали */
+    left: 50%; /* что-то для центрирования */
+    transform: translateX(-50%); /* что-то для центрирования 2 */
+    flex-direction: column-reverse;
+    border-radius: 4px;
+  }
+  
+  .dropUpBtn {
+    background: none;
+    background-color: white;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1f1f1f;
+    border-radius: 0;
+    padding: 10px 16px;
+    /* white-space: nowrap; */
+    font-family: 'IBM Plex Sans', sans-serif;
+    margin-top: 3px;
+  }
+
+  .specialBtn{
+    font-weight: 600;
+    color: #1a73e8;
+    border-top: 2px solid #eee;
+    background-color: #ffffff;
+    margin-bottom: 3px;
+  }
+  
+  .dropUpBtn:hover {
+    background-color: #e9e9e9;
+    border: 2px solid transparent;
+  }
+
+  .dropUp-content {
+    animation: fadeInUp 0.2s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform:translateX(-50%) translateY(5%);
+    }
+    to {
+      opacity: 1;
+      transform:translateX(-50%) translateY(0);;
+    }
+  }
+
+  #exitBtn{
+    margin-right: 20px;
+  }
+
+  #backBtn{
+    margin-left: 20px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    color: white;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+  }
+  
+  .toast-success { background: #4CAF50; }
+  .toast-error { background: #f44336; }
+  .toast-info { background: #2196F3; }
+    

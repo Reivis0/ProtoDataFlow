@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Данные моделирования</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/headerAndFooter.css">
+    <link rel="stylesheet" href="../styles/information-about-model.css">
+</head>
+<body>
+    <header>
+        <div style="flex-grow: 0.1"></div>
+          <h2 id="code" class="code">Код</h2>
+          <div style="flex-grow: 1"></div>
+          <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
+          <div id="forCentring" style="flex-grow: 0.9"></div>
+          <div class="buttons">
+
+            <button class="helpButton" id="AddUsers" title="Добавить пользователей">
+                <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M720-400v-120H600v-80h120v-120h80v120h120v80H800v120h-80Zm-360-80q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm80-80h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0-80Zm0 400Z"/></svg>
+                </span>
+            </button>
+
+            <button class="helpButton" id="Settings" title="Настройки">
+                <span class="material-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z"/></svg>
+                </span>
+            </button>
+
+
+            <button class="helpButton" id="What2do" title="Что делать">
+                <span class="material-icons">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" transform="scale (-1, 1)" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+                </span>
+            </button>
+        
+            <button class="helpButton" id="How2do" title="Как делать">
+                <span class="material-icons">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+                </span>
+            </button>
+        </div>
+        <div style="flex-grow: 0.05"></div>
+    </header>
+    <main>
+    <div class="container">
+        <form id="data-input">
+            <div class="input-group">
+                <label for="author" class="required">Автор модели</label>
+                <input type="text" id="author" name="author" required placeholder="ФИО автора">
+            </div>
+            
+            <div class="input-group">
+                <label for="organization" class="required">Организация</label>
+                <input type="text" id="organization" name="organization" required placeholder="Название организации">
+            </div>
+            
+            <div class="input-group">
+                <label for="modelName" class="required">Название модели</label>
+                <input type="text" id="modelName" name="modelName" required placeholder="Название модели">
+            </div>
+            
+            <div class="input-group">
+                <label for="modelCode">Код модели</label>
+                <input type="text" id="modelCode" name="modelCode" placeholder="Формат: АБВ-01">
+            </div>
+            
+            <div class="input-group">
+                <label for="modelCharacteristics">Характеристика модели</label>
+                <textarea id="modelCharacteristics" name="modelCharacteristics" placeholder="Опишите характеристики модели (несколько абзацев)"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="systemInfo" class="required">Сведения о моделируемой системе</label>
+                <textarea id="systemInfo" name="systemInfo" required placeholder="Опишите моделируемую систему (несколько абзацев)"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="comments">Комментарии</label>
+                <textarea id="comments" name="comments" placeholder="Дополнительные комментарии (пара абзацев)"></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submit-btn">Сохранить данные</button>
+        </form>
+    </div>
+    </main>
+    <footer>
+        <footer>
+            <div class="footer-buttons">
+                <button class="footer-btn" id="backBtn" title="Назад">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" style="transform: rotate(180deg)" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg>
+                </button>
+                <div style="flex-grow: 0.2"></div>
+                
+                <button class="footer-btn" id="nextBtn" title="Вперед">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#1f1f1f"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg>
+                </button>
+        
+                <div style="flex-grow: 1.1"></div>
+        
+                <button class="footer-btn" id="toServerBtn" title="Добавить в модель">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M450-120v-330H120v-60h330v-330h60v330h330v60H510v330h-60Z"/></svg>
+                </button>
+        
+                <div style="flex-grow: 0.7"></div>
+
+                <div class="dropUp">
+                    <div class="dropUp-content" id="modelList">
+                        <button class="dropUpBtn specialBtn" id="createNewModelBtn">
+                            <span class="material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#1a73e8"><path d="M450-120v-330H120v-60h330v-330h60v330h330v60H510v330h-60Z"/></svg></span> Новая модель
+                        </button>
+                        <!-- Сюда будут добавляться сохраненные модели -->
+                    </div>
+                    <button class="footer-btn" id="loadModelBtn" title="Загрузить модель или вариант">
+                        <span class="material-icons">cloud_download</span>
+                    </button>
+                </div>
+                
+                <div class="dropUp">
+                    <div class="dropUp-content" id="matrixCompliance">
+                        <button class="dropUpBtn specialBtn">Новая матрица соответствия</button>
+                        <button class="dropUpBtn">Матрица 1</button>
+                        <button class="dropUpBtn">Матрица 2</button>
+                        <button class="dropUpBtn">Матрица 3</button>
+                    </div>
+                    <button class="footer-btn" id="equalsBtn" title="Установить соответствие">
+                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" style="transform: rotate(90deg)" height="36px" viewBox="0 0 20 20" width="36px" fill="#1f1f1f"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g/><polygon points="11,7 14,7 10,3.01 6,7 9,7 9,13 6,13 10,16.99 14,13 11,13"/></g></svg>
+                    </button>
+                </div>
+        
+                <div class="dropUp">
+                    <div class="dropUp-content" id="matrixVerification">
+                        <button class="dropUpBtn specialBtn">Новая матрица верификации</button>
+                        <button class="dropUpBtn">Матрица A</button>
+                        <button class="dropUpBtn">Матрица B</button>
+                        <button class="dropUpBtn">Матрица C</button>
+                    </div>
+                    <button class="footer-btn" id="verificationBtn" title="Перейти к верификации">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M480-80 317-243l44-44 89 89v-189h60v189l89-89 44 44L480-80ZM238-322 80-480l159-159 44 44-85 85h189v60H198l84 84-44 44Zm484 0-44-44 84-84H574v-60h188l-84-84 44-44 158 158-158 158ZM450-574v-188l-84 84-44-44 158-158 158 158-44 44-84-84v188h-60Z"/></svg>
+                    </button>
+                </div>
+        
+                <div style="flex-grow: 0.4"></div>
+        
+                <button class="footer-btn" id="exitBtn" title="Выйти">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M120-120v-60h92v-660h390v45h147v615h91v60H689v-615h-87v615H120Zm331-320q17 0 28.5-11.5T491-480q0-17-11.5-28.5T451-520q-17 0-28.5 11.5T411-480q0 17 11.5 28.5T451-440Z"/></svg>
+                </button>
+            </div>
+        </footer>
+    </footer>
+
+    <script src="../scripts/information-about-model.js"></script>
+</body>
+</html>

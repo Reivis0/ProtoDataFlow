@@ -1,17 +1,3 @@
-/*
-document.addEventListener('DOMContentLoaded', (e) => {
-
-  let login = sessionStorage.getItem("GlobalLogin");
-  if(login === '' || login === null) {
-    e.preventDefault();
-    //window.location.assigsn("log-in.html");
-    window.location.href = "log-in.html";
-  }
-});
-
-*/
-
-
 const tableBody = document.querySelector('#dataTable tbody');
 const addRowBtn = document.getElementById('addRowBtn');
 

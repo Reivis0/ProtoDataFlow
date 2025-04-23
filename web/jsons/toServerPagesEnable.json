@@ -1,0 +1,282 @@
+{
+    "ObjectTypes": [
+      {
+        "name": null,
+        "enabled" : true
+      },
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+        
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      }
+
+    ],
+    "Views": [
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      }
+    ]
+  }

@@ -1,3 +1,4 @@
+
 .next-btn, .leave-btn{
     width: 40%;
     display: inline;
@@ -5,5 +6,23 @@
   
 .next-btn{
     margin-right: 15%;
+}
+
+.for-settings{
+  width: 100%;
+  margin: 0 auto;
+}
+
+.for-settings, .addUsersButtonDiv, .SettingsButtonDiv{
+  margin-top: 20%;
+  display: none;
+}
+
+.settings-btn {
+  width: 40%;
+}
+
+.SettingsButtonDiv {
+  margin-left: 15%;
 }
 

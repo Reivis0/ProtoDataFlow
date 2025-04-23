@@ -10,12 +10,9 @@ form.addEventListener('submit', (e) => {
     let pair = new Object();  //собрать данные для отправки
     pair.login = login.value;
     pair.password = password.value;
-    let jsonstr = JSON.stringify(pair)
+    let jsonstr = JSON.stringify(pair);
 
-    //let jsonanswer = tempCheckLoginAndPassword(jsonstr);
-    //let answer = JSON.parse(jsonanswer); //ответ от сервера
-
-    //let answer = PostFunction(jsonstr); 
+    
     e.preventDefault();
     fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
         method: 'POST',
@@ -34,7 +31,10 @@ form.addEventListener('submit', (e) => {
     })
     .then(data => {
 
+<<<<<<< HEAD
         let answer = data;
+=======
+>>>>>>> frontend
         if(data.status === 'Correct') { //если все хорошо
             sessionStorage.setItem('GlobalLogin', login.value);
             sessionStorage.setItem('GlobalLevel', data.privilege);
@@ -45,7 +45,7 @@ form.addEventListener('submit', (e) => {
                     window.location.assign("rules-of-usage.html");
                 }
                 else{
-                    window.location.assign("data-from-user.html");
+                    window.location.assign("information-about-model.html");
                 }
             }
             else {
@@ -68,36 +68,36 @@ form.addEventListener('submit', (e) => {
         console.error('Error fetching data:', error);
     });
     
-    /*
-    alert(jsonanswer);
-    if(answer.status === 'Correct') { //если все хорошо
-        sessionStorage.setItem('GlobalLogin', login.value);
-        sessionStorage.setItem('GlobalLevel', answer.privilege);
-        //sessionStorage.setItem("GlobalRedirect", true);
-        e.preventDefault();  
-        if(answer.access === 'true'){  
-            if(answer.agreement === 'false') {
-                window.location.assign("rules-of-usage.html");
-            }
-            else{
-                window.location.assign("data-from-user.html");
-            }
-        }
-        else {
-            error_div.innerText = "Доступ закончился";
-            e.preventDefault();
-        }
+    
+    // let jsonanswer = tempCheckLoginAndPassword(jsonstr);
+    // let answer = JSON.parse(jsonanswer); //ответ от сервера
+    // if(answer.status === 'Correct') { //если все хорошо
+    //     sessionStorage.setItem('GlobalLogin', login.value);
+    //     sessionStorage.setItem('GlobalLevel', answer.privilege);
+    //     e.preventDefault();  
+    //     if(answer.access === 'true'){  
+    //         if(answer.agreement === 'false') {
+    //             window.location.assign("rules-of-usage.html");
+    //         }
+    //         else{
+    //             window.location.assign("information-about-model.html");
+    //         }
+    //     }
+    //     else {
+    //         error_div.innerText = "Доступ закончился";
+    //         e.preventDefault();
+    //     }
 
-    }
-    else if (answer.status === 'User not found'){
-        error_div.innerText = "Неправильный логин";
-        e.preventDefault();
-    }
-    else if (answer.status === 'Incorrect password'){
-        error_div.innerText = "Неправильный пароль";
-        e.preventDefault();
-    }
-    */
+    // }
+    // else if (answer.status === 'User not found'){
+    //     error_div.innerText = "Неправильный логин";
+    //     e.preventDefault();
+    // }
+    // else if (answer.status === 'Incorrect password'){
+    //     error_div.innerText = "Неправильный пароль";
+    //     e.preventDefault();
+    // }
+    
 
 })
 
@@ -109,75 +109,57 @@ twoInputs.forEach(input => { //стереть сообщение об ошибк
     })
 })
 
-/*
-async function checkLoginAndPassword(jsonstr){
-    //alert(jsonstr); //вывод в браузер что передается
 
-    url = sessionStorage.getItem("GlobalUrl");
+// function tempCheckLoginAndPassword(jsonstr){
+//     return tempFunction(jsonstr);
+// }
 
-    try {
-        const response = await fetch(url, { //что тут происходит я сам не знаю
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonstr,
-        });
-    
-        if (!response.ok) {
-          throw new Error(`Login failed with status: ${response.status}`);
-        }
-    
-        let authData = await response.json();
-        alert(response);
-        alert('Authentication successful');
-        return authData;
-        
-        
-      } catch (error) {
-        console.error('Login error:', error);
-        alert("Error");
-      }
-} */
+// function tempFunction(jsonstr) { // 123 123 - user без согласияб 321 321 - admin с согласием, 222 222 - доступ кончился по времени
+//     let temp = JSON.parse(jsonstr);
+//     let obj = new Object();
+//     if (temp.login === '123' && temp.password === '123') {
+//         obj.status = 'Correct';
+//         obj.privilege = 'user';
+//         obj.agreement = 'false';
+//         obj.access = 'true';
+//     }
+//     else if (temp.login === '321' && temp.password === '321') {
+//         obj.status = 'Correct';
+//         obj.privilege = 'admin';
+//         obj.agreement = 'true';
+//         obj.access = 'true';
+//     }
+//     else if (temp.login === '222' && temp.password === '222'){
+//         obj.status = 'Correct';
+//         obj.privilege = 'user';
+//         obj.agreement = 'true';
+//         obj.access = 'false';
+//     }
+//     else if (temp.login === '111' && temp.password === '111'){
+//         obj.status = 'Correct';
+//         obj.privilege = 'superAdmin';
+//         obj.agreement = 'true';
+//         obj.access = 'true';
+//     }
+//     else if (temp.login !== '321' && temp.login !== '123' && temp.login !== '222' && temp.login !== '111'){
+//         obj.status = 'User not found';
+//         obj.privilege = 'user';
+//         obj.agreement = 'false';
+//         obj.access = 'false';
+//     }
 
+<<<<<<< HEAD
 function tempCheckLoginAndPassword(jsonstr){
     return tempFunction(jsonstr);
 }
+=======
+//     else if (temp.password !== '321' && temp.password !== '123' && temp.password !== '222' && temp.password !== '111'){
+//         obj.status = 'Incorrect password';
+//         obj.privilege = 'user';
+//         obj.agreement = 'false';
+//         obj.access = 'false';
+//     }
+>>>>>>> frontend
 
-function tempFunction(jsonstr) { // 123 123 - user без согласияб 321 321 - admin с согласием, 222 222 - доступ кончился по времени
-    let temp = JSON.parse(jsonstr);
-    let obj = new Object();
-    if (temp.login === '123' && temp.password === '123') {
-        obj.status = 'Correct';
-        obj.privilege = 'user';
-        obj.agreement = 'false';
-        obj.access = 'true';
-    }
-    else if (temp.login === '321' && temp.password === '321') {
-        obj.status = 'Correct';
-        obj.privilege = 'admin';
-        obj.agreement = 'true';
-        obj.access = 'true';
-    }
-    else if (temp.login === '222' && temp.password === '222'){
-        obj.status = 'Correct';
-        obj.privilege = 'user';
-        obj.agreement = 'true';
-        obj.access = 'false';
-    }
-    else if (temp.login !== '321' && temp.login !== '123'){
-        obj.status = 'User not found';
-        obj.privilege = 'user';
-        obj.agreement = 'false';
-        obj.access = 'false';
-    }
-
-    else if (temp.password !== '321' && temp.password !== '123'){
-        obj.status = 'Incorrect password';
-        obj.privilege = 'user';
-        obj.agreement = 'false';
-        obj.access = 'false';
-    }
-
-    return JSON.stringify(obj);
-}
+//     return JSON.stringify(obj);
+// }

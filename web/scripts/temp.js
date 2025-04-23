@@ -1,61 +1,300 @@
-jsonstr = JSON.stringify({"login": "admin", "password": "12w1e"})
-fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonstr,
-  }
+let jsonobj = {
+    "ObjectTypes": [
+      {
+        "name": null,
+        "enabled" : true
+      },
+      {
+        "name": null,
+        "enabled" : true
+      },
 
-)
-.then(response => {
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json(); 
-})
-.then(data => {
+      {
+        "name": null,
+        "enabled" : false
+      },
 
-    let answer = data;
-    console.log(JSON.stringify(data));
-    console.log(data.status);
-   // for(let i =0; i< 100000; i++)
-    //{
-      //  if(i<3) alert('23456');
-    //}
-    if(data.status === 'Correct') { //если все хорошо
-        sessionStorage.setItem('GlobalLogin', login.value);
-        sessionStorage.setItem('GlobalLevel', data.privilege);
-        //sessionStorage.setItem("GlobalRedirect", true);
-        e.preventDefault();  
-        if(data.access === 'true'){  
-            if(data.agreement === 'false') {
-                window.location.assign("rules-of-usage.html");
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      },
+        
+      {
+        "name": null,
+        "enabled" : false
+      },
+
+      {
+        "name": null,
+        "enabled" : true
+      }
+
+    ],
+    "Views": [
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
             }
-            else{
-                window.location.assign("data-from-user.html");
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
             }
-        }
-        else {
-            error_div.innerText = "Доступ закончился";
-            e.preventDefault();
-        }
 
-    }
-    else if (data.status === 'User not found'){
-        console.log('6789');
-        error_div.innerText = "Неправильный логин";
-        e.preventDefault();
-    }
-    else if (data.status === 'Incorrect password'){
-        error_div.innerText = "Неправильный пароль";
-        e.preventDefault();
-    }
-    else {console.log(data.status === 'User not found')};
-    console.log(data.status === 'User not found1');
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
 
+            {
+              "name": null,
+              "enabled" : false
+            },
 
-})
-.catch(error => {
-    console.error('Error fetching data:', error);
-});
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      },
+      {
+        "name": null,
+        "enabled": true,
+        "Components": [
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            },
+
+            {
+              "name": null,
+              "enabled" : false
+            }
+
+          ]
+      }
+    ]
+  };
+
+let data = []
+
+for(let i = 0; i < jsonobj.ObjectTypes.length; ++i) {
+    data.push({name: !(jsonobj.ObjectTypes[i].name === undefined | jsonobj.ObjectTypes[i].name === null | jsonobj.ObjectTypes[i].name === "") ?
+        jsonobj.ObjectTypes[i].name : "тип объекта " + (i+1), enabled: jsonobj.ObjectTypes[i].enabled });
+}
+
+for(let i = 0; i < jsonobj.Views.length; ++i) {
+    data.push({name: !(jsonobj.Views[i].name === undefined | jsonobj.Views[i].name === null | jsonobj.Views[i].name === "") ?
+        jsonobj.Views[i].name : "Представление " + (i+1), enabled: jsonobj.Views[i].enabled });
+    for(let j = 0; j < jsonobj.Views[i].Components.length; ++j) {
+        data.push({name: !(jsonobj.Views[i].Components[j].name === undefined | jsonobj.Views[i].Components[j].name === null | jsonobj.Views[i].Components[j].name === "") ?
+            jsonobj.Views[i].Components[j].name : "Компонент " + (i+1) + "."+(j+1), enabled: jsonobj.Views[i].Components[j].enabled });
+    }
+}
+
+console.log(data);
