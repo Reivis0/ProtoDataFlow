@@ -62,6 +62,21 @@ function saveDataLocally(inputs, callback) {
     }
 }
 
+function validateRequiredFields(inputs) {
+    const requiredFields = [0]; // Индексы обязательных полей: АХХАХА ОНО ТУТ ОДНО ЛООЛ
+    let isValid = true;
+    
+    for (const index of requiredFields) {
+        if (!inputs[index].value.trim()) {
+            showToast(`Поле "${inputs[index].previousElementSibling.textContent}" обязательно для заполнения`, 'error');
+            inputs[index].focus();
+            isValid = false;
+            break;
+        }
+    }
+    
+    return isValid;
+}
 // Загрузка сохранённых данных
 function loadSavedData(inputs) {
     const savedData = sessionStorage.getItem('formData');
@@ -116,12 +131,20 @@ function setupActionButtons(inputs) {
     // Кнопка "Назад"
     document.getElementById("backBtn").addEventListener("click", (e) => {
         e.preventDefault();
+        if (!validateRequiredFields(inputs)) {
+            document.getElementById('data-input').dispatchEvent(new Event('submit'));
+            return;
+        }
         navigateWithCheck("information-about-model.html");
     });
     
     // Кнопка "Вперед"
     document.getElementById("nextBtn").addEventListener("click", (e) => {
         e.preventDefault();
+        if (!validateRequiredFields(inputs)) {
+            document.getElementById('data-input').dispatchEvent(new Event('submit'));
+            return;
+        }
         navigateWithCheck("initial-requrements.html");
     });
     
