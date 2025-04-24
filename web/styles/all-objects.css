@@ -21,7 +21,7 @@ body {
 .actionButton {
     border: 2px solid transparent;
     width: 55px;
-    background-color: rgb(230, 230, 240);
+    background-color: rgb(125, 125, 150);
     border-radius: 10px;
 }
 .actionButton:disabled{
@@ -30,7 +30,7 @@ body {
     border: 2px solid rgb(230, 230, 230);
 }
 .actionButton:hover{
-  border: 2px solid rgb(182, 194, 255);
+  border: 2px solid rgb(205, 209, 227);
 }
 
 .actionButton:disabled:hover{

@@ -321,7 +321,7 @@ function createGridOptions(data) {
     let defs2 = [
         {
             field: "name",
-            headerName: "Тип объекта",
+            headerName: "Компонент",
             width: 50,
         },
         {

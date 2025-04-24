@@ -90,6 +90,7 @@ function setupButtons1() {
           }
         }
         console.log('Saving all:', message);
+        
         showSettingsOfEnabled(allData);
         showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
     });

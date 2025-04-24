@@ -20,10 +20,10 @@ body {
   }
 
 
-.actionButton {
+  .actionButton {
     border: 2px solid transparent;
     width: 55px;
-    background-color: rgb(230, 230, 240);
+    background-color: rgb(125, 125, 150);
     border-radius: 10px;
 }
 .actionButton:disabled{
@@ -32,7 +32,7 @@ body {
     border: 2px solid rgb(230, 230, 230);
 }
 .actionButton:hover{
-  border: 2px solid rgb(182, 194, 255);
+  border: 2px solid rgb(205, 209, 227);
 }
 
 .actionButton:disabled:hover{
@@ -47,7 +47,7 @@ body {
     margin-bottom: 20px;
     font-size: 14px;
     padding: 10px 0;
-    background-color:  #fdeaf2;
+    background-color:  #ffffff;
     border-radius: 10px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
 }

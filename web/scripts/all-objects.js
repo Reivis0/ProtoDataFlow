@@ -98,22 +98,22 @@ function loadViews(){
     let views = [
         {
             "number": 1,
-            "header": "dgfgf_1",
+            "header": "Представление_1",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd_1",
+                    "name": "Компонент_1",
                     "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd_2",
+                    "name": "Компонент_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa_3",
+                    "name": "Компонент_3",
                     "code": "fafa-55"
                 }
             ]
@@ -122,22 +122,22 @@ function loadViews(){
         },
         {
             "number": 2,
-            "header": "dgfgf_2",
+            "header": "Представление_2",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd_1",
+                    "name": "Компонент_1",
                     "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd_2",
+                    "name": "Компонент_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa_3",
+                    "name": "Компонент_3",
                     "code": "fafa-55"
                 }
             ]
@@ -146,22 +146,22 @@ function loadViews(){
         },
         {
             "number": 5,
-            "header": "dgfgf_5",
+            "header": "Представление_5",
             "code": "SDFS-3",
             "components": [
                 {
                     "number": 1,
-                    "name": "sdd_1",
+                    "name": "Компонент_1",
                     "code": "fafa-53_"
                 },
                 {
                     "number": 2,
-                    "name": "sddfdd_2",
+                    "name": "Компонент_2",
                     "code": "fafa-54"
                 },
                 {
                     "number": 3,
-                    "name": "sddaaa_3",
+                    "name": "Компонент_3",
                     "code": "fafa-55"
                 }
             ]
@@ -608,37 +608,30 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     console.log(JSON.parse(sessionStorage.getItem("all-objects")), "after loading");
 
-     if(!localSaveData) {
+    const previousData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    // console.log(previousData);
+    if(!previousData){
 
-        const previousData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
-        // console.log(previousData);
-        if(!previousData){
-
-            GrdOptions = createGridOptions(serverData, true);
-            localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        }
-        else{
-            
-            let ConvertedObjects = new Set();
-            previousData.forEach(row =>{
-                ConvertedObjects.add(row.column2);
-            });
-        
-            let ConvertedData = [];
-            const arrayObjects = Array.from(ConvertedObjects);
-            arrayObjects.forEach(obj => {
-                ConvertedData.push({Object: obj, Type: "(нет)"});
-            });
-
-            serverData.data = JSON.parse(JSON.stringify(ConvertedData));
-            serverData.Objects = JSON.parse(JSON.stringify(arrayObjects));
-            GrdOptions = createGridOptions(serverData, false);
-            localSaveData = JSON.parse(JSON.stringify(ConvertedData));
-        }
+        GrdOptions = createGridOptions(serverData, true);
+        localSaveData = JSON.parse(JSON.stringify(serverData.data));
     }
     else{
-        serverData.data = JSON.parse(JSON.stringify(localSaveData));
+        
+        let ConvertedObjects = new Set();
+        previousData.forEach(row =>{
+            ConvertedObjects.add(row.column2);
+        });
+    
+        let ConvertedData = [];
+        const arrayObjects = Array.from(ConvertedObjects);
+        arrayObjects.forEach(obj => {
+            ConvertedData.push({Object: obj, Type: "(нет)"});
+        });
+
+        serverData.data = JSON.parse(JSON.stringify(ConvertedData));
+        serverData.Objects = JSON.parse(JSON.stringify(arrayObjects));
         GrdOptions = createGridOptions(serverData, false);
+        localSaveData = JSON.parse(JSON.stringify(ConvertedData));
     }
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
