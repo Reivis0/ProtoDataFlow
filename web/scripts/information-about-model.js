@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    
     // Получаем все элементы формы
-
-
     const inputs = [
         document.getElementById("author"),
         document.getElementById("organization"),
@@ -10,7 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modelCharacteristics"),
         document.getElementById("systemInfo"),
         document.getElementById("comments")
-    ];
+    ]
+    // Получаем данные с сервера
+    const serverData = receiveData();
+    
+    // Настраиваем форму
+    configureForm(
+        inputs.map(input => document.querySelector(`label[for="${input.id}"]`)),
+        inputs,
+        serverData
+    );
 
     const status = sessionStorage.getItem('GlobalLevel');
     console
@@ -49,11 +57,30 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentModelId = null;
 
     // Основные функции
+    function validateRequiredFields(inputs) {
+        const requiredFields = [0, 1, 2, 5]; // Индексы обязательных полей: author, organization, modelName, systemInfo
+        let isValid = true;
+        
+        for (const index of requiredFields) {
+            if (!inputs[index].value.trim()) {
+                showToast(`Поле "${inputs[index].previousElementSibling.textContent}" обязательно для заполнения`, 'error');
+                inputs[index].focus();
+                isValid = false;
+                break;
+            }
+        }
+        
+        return isValid;
+    }
+    
     function configureForm(labels, inputs, serverData) {
-        labels.forEach((label, i) => {
-            const fieldData = serverData[i] || {};
-            if (label && fieldData.name) {
-                label.textContent = fieldData.name;
+        // Устанавливаем заголовок формы
+        document.getElementById('mainFormName').textContent = serverData.formTitle || 'Требования исходные';
+        
+        // Настраиваем поля формы
+        serverData.fields.forEach((fieldData, i) => {
+            if (labels[i] && fieldData.name) {
+                labels[i].textContent = fieldData.name;
             }
             
             const defaultMaxLen = inputs[i].tagName === 'TEXTAREA' ? 2000 : 150;
@@ -64,15 +91,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function receiveData() {
-        return [
-            { name: "Автор модели", maxLength: 100 },
-            { name: "Организация", maxLength: 150 },
-            { name: "Название модели", maxLength: 120 },
-            { name: "Код модели", maxLength: 10 },
-            { name: "Характеристика модели", maxLength: 2000 },
-            { name: "Сведения о системе", maxLength: 2000 },
-            { name: "Комментарии", maxLength: 1000 }
-        ];
+        return {
+            formTitle: "Требования исходные", // Приходит)
+            fields: [
+                { name: "Автор модели", maxLength: 100 },
+                { name: "Организация", maxLength: 150 },
+                { name: "Название модели", maxLength: 120 },
+                { name: "Код модели", maxLength: 10 },
+                { name: "Характеристика модели", maxLength: 2000 },
+                { name: "Сведения о системе", maxLength: 2000 },
+                { name: "Комментарии", maxLength: 1000 }
+            ]
+        };
     }
 
     function initModelLoader() {
@@ -282,11 +312,19 @@ document.addEventListener("DOMContentLoaded", () => {
         
         document.getElementById("backBtn").addEventListener("click", (e) => {
             e.preventDefault();
+            if (!validateRequiredFields(inputs)) {
+                document.getElementById('data-input').dispatchEvent(new Event('submit'));
+                return;
+            }
             navigateWithCheck("log-in.html");
         });
         
         document.getElementById("nextBtn").addEventListener("click", (e) => {
             e.preventDefault();
+            if (!validateRequiredFields(inputs)) {
+                document.getElementById('data-input').dispatchEvent(new Event('submit'));
+                return;
+            }
             navigateWithCheck("initial-data.html");
         });
         
