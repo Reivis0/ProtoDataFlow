@@ -58,9 +58,6 @@ form.addEventListener('submit', (e) => {
             error_div.innerText = "Неправильный пароль";
             e.preventDefault();
         }
-        else {alert(data.status === 'User not found')};
-        alert(data.status === 'User not found');
-
 
     })
     .catch(error => {
