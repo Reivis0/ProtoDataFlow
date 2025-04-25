@@ -92,6 +92,26 @@ function setupButtons1() {
         console.log('Saving all:', message);
         
         showSettingsOfEnabled(allData);
+        fetch('http://127.0.0.1:8080/api/auth', { 
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        }
+        )
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); 
+        })
+        .then(answer => {
+            console.log(answer);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });  
         showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
     });
 }
