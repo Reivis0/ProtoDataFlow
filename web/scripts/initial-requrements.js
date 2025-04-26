@@ -1,5 +1,3 @@
-// const { jsx } = require("react/jsx-runtime");
-
 function loadData(){
     let answer = {
         information: {
@@ -402,16 +400,68 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         window.location.href = "log-in.html";
     }
     
-    let serverData = loadData();
-
-    localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
-    let GrdOptions;
-
-    if(!localSaveData) {
-        GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        let id = 0;
-        for(let i = 0; i < localSaveData.length; ++i) {
+    
+    // let messageForIdentification = {login: login, model: "model", variant: "var"};
+    // fetch('http://127.0.0.1:8080/api/auth', { 
+        //     method: 'POST',
+        //     headers: {
+            //       'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(messageForIdentification),
+            //   }
+            
+            // )
+            // .then(response => {
+                //     if (!response.ok) {
+                    //         throw new Error(`HTTP error! status: ${response.status}`);
+                    //     }
+                    //     return response.json(); 
+                    // })
+                    // .then(serverData => {
+                        //     localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+                        //     let GrdOptions;
+                        
+                        //     if(!localSaveData) {
+                            //         GrdOptions = returnGridOptions(serverData.information, serverData.data);
+                            //         localSaveData = JSON.parse(JSON.stringify(serverData.data));
+                            //         let id = 0;
+                            //         for(let i = 0; i < localSaveData.length; ++i) {
+                                //             localSaveData[i].id = id
+                                //             ++id;
+                                //         }
+                                
+                                //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+                                //     }
+                                //     else{
+                                    //         GrdOptions = returnGridOptions(serverData.information, localSaveData);
+                                    //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+                                    //     }
+    //     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
+    //     setupButtons();
+    //     document.getElementById("mainFormName").textContent = serverData.information.name;
+    //     document.getElementById("code").textContent = serverData.information.code;
+    
+    //     document.getElementById("listSourceBtn").textContent = "Все";
+    //     document.getElementById("listObjectBtn").textContent = "Все";
+    //     addSourceListener(document.getElementById("sourceOptions").children[0])
+    //     addObjectListener(document.getElementById("objectOptions").children[0])
+    
+    //     CreateSourceOptions();
+    //     CreateObjectOptions();
+    // })
+    // .catch(error => {
+        //     console.error('Error fetching data:', error);
+        // });
+        
+        let serverData = loadData();
+        localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+        let GrdOptions;
+        
+        if(!localSaveData) {
+            GrdOptions = returnGridOptions(serverData.information, serverData.data);
+            localSaveData = JSON.parse(JSON.stringify(serverData.data));
+            let id = 0;
+            for(let i = 0; i < localSaveData.length; ++i) {
             localSaveData[i].id = id
             ++id;
         }
@@ -522,7 +572,28 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    console.log(sessionStorage.getItem("initial-requrements-data"));
+    let message = sessionStorage.getItem("initial-requrements-data");
+    console.log(message);
+    fetch('http://127.0.0.1:8080/api/auth', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({information:"asda", data:message}),
+      }
+      )
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json(); 
+      })
+      .then(answer => {
+          console.log(answer);
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 
