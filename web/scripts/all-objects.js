@@ -619,7 +619,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         
         let ConvertedObjects = new Set();
         previousData.forEach(row =>{
-            ConvertedObjects.add(row.column2);
+            if(row.flag)
+            {
+                ConvertedObjects.add(row.column2);
+            }
         });
     
         let ConvertedData = [];

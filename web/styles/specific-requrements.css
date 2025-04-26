@@ -28,7 +28,9 @@ body {
   align-items: center;
   width: 60vw;
 }
-
+.for-lists {
+  width: 100vw;
+}
 .for-object{
     margin-bottom: 20px;
     font-size: 14px;
