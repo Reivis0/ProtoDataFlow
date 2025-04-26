@@ -704,23 +704,23 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         gridApi.forEachNode(node => enableButtons(node));
     }, 0);
     
-    fetch('http://127.0.0.1:8080/api/auth')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(Views => {
-        console.log(Views);
-        sessionStorage.setItem("Views", JSON.stringify(Views));
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
+    // fetch('http://127.0.0.1:8080/api/auth')
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(Views => {
+    //     console.log(Views);
+    //     sessionStorage.setItem("Views", JSON.stringify(Views));
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
 
-    // Views = loadViews();
-    // sessionStorage.setItem("Views", JSON.stringify(Views));
+    Views = loadViews();
+    sessionStorage.setItem("Views", JSON.stringify(Views));
     
 });
 
