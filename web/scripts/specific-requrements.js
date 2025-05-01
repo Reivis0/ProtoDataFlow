@@ -126,13 +126,23 @@ function returnGridOptions(information, data){ //получить настрой
     let id = 0
 
     for(let i = 0; i < data.length; ++i) {
-        if(!(data[i].id === undefined || data[i].id === null)){
-            break
-        }
         data[i].id = id;
         ++id;
     }
 
+    while(data.length < 15){
+        data.push({
+                   "id" : ++id,
+                   "flag": false,
+                   "column1" : "",
+                   "column2" : "",
+                   "column3" : "",
+                   "column4" : "",
+                   "column5" : null,
+                   "column6" : null,
+                   "column7" : "",
+        });
+    }
     let gridOptions = {
         rowData: data,
         columnDefs: coldefs,
@@ -204,9 +214,20 @@ function localSave() {
 
     localSaveData = JSON.parse(JSON.stringify(newData));
 
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+    forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${localSaveData.length}`);
+    showNotification(`Сохранено строк: ${tempArray.length}`);
     
 }
 
@@ -269,6 +290,7 @@ function setupButtons() {
                          index: rowIndex + 1,
                          rows: Array(count).fill().map((_, i) => ({
                             "id" : nextId+i,
+                            "flag": false,
                             "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                             "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                             "column3" : "",
@@ -286,6 +308,7 @@ function setupButtons() {
                  index: allData.length,
                  rows: Array(count).fill().map((_, i) => ({
                         "id" : nextId+i,
+                        "flag": false,
                         "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                         "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                         "column3" : "",
@@ -482,6 +505,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     }
     else{
         localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
+        console.log(localSaveData)
         localSaveData.forEach(row => row.column2 = "");
         GrdOptions = returnGridOptions(serverData.information, localSaveData);
         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
@@ -548,8 +572,19 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     }
     let counter1 = sessionStorage.getItem("counter1");
     --counter1;
-    sessionStorage.setItem("counter1", counter1);
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
+    sessionStorage.setItem("counter1", Math.max(counter1, -1));
+    // forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    // tempArray = []
+    // localSaveData.forEach(row => {
+    //     const {id, flag, ...data } = row;
+    //     if(!Array.from(Object.keys(data)).every(el => {
+    //         return (data[el] === "" || data[el] == null)
+    //     })){
+    //         tempArray.push(row);
+    //     }
+    // });
+    // forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
+    // sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     window.location.href = "all-objects.html";
 })
 
@@ -574,13 +609,24 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
     sessionStorage.setItem("counter2", 0);
     // sessionStorage
 
     // console.log(sessionStorage.getItem("counter1"));
 
-
+    // forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    // tempArray = []
+    // localSaveData.forEach(row => {
+    //     const {id, flag, ...data } = row;
+    //     if(!Array.from(Object.keys(data)).every(el => {
+    //         return (data[el] === "" || data[el] == null)
+    //     })){
+    //         tempArray.push(row);
+    //     }
+    // });
+    // forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
+    // sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    // console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     window.location.href = "View.html";
 })
 

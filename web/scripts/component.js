@@ -69,22 +69,22 @@ function loadData(){
         data: [
             {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
             {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
+            // {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
         ]
     };
     return answer;
@@ -121,11 +121,25 @@ function returnGridOptions(information, data){ //получить настрой
     let id = 0
 
     for(let i = 0; i < data.length; ++i) {
-        if(!(data[i].id === undefined || data[i].id === null)){
-            break
-        }
+        // if(!(data[i].id === undefined || data[i].id === null)){
+        //     break
+        // }
         data[i].id = id;
         ++id;
+    }
+
+    while(data.length < 15){
+        data.push({
+                   "id" : ++id,
+                   "flag": false,
+                   "column1" : "",
+                   "column2" : "",
+                   "column3" : "",
+                   "column4" : "",
+                   "column5" : null,
+                   "column6" : null,
+                   "column7" : "",
+        });
     }
 
     let gridOptions = {
@@ -172,9 +186,23 @@ function localSave() {
     const allData = [];
     gridApi.forEachNode(node => allData.push(node.data));
     localSaveData = JSON.parse(JSON.stringify(allData));
-    sessionStorage.setItem("all-objects", JSON.stringify(allData));
+
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+    forMatricies[currentObjAndType.Object]["views"][`${curView.header}`][`${curComp.name}`] = tempArray;
+
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     console.log('Saving all:', allData);
-    showNotification(`Сохранено ${allData.length} строк (вся таблица)`);
+    showNotification(`Сохранено ${tempArray.length} строк (вся таблица)`);
     
 }
 
@@ -381,6 +409,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("ViewCode").textContent = curView.code;
     document.getElementById("ViewName").textContent = curView.header;
     curComp = JSON.parse(sessionStorage.getItem("curComp"));
+    console.log(curComp);
     document.getElementById("CompCode").textContent = curComp.code;
     document.getElementById("CompName").textContent = curComp.name;
 
@@ -456,7 +485,7 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     }
 
     counter3 = sessionStorage.getItem("counter3");
-    --counter3;
+    counter3 = Math.max(-1, counter3 - 1);
     sessionStorage.setItem("counter3", counter3);
     if(counter3 === -1){
         
@@ -493,6 +522,11 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
+    if(sessionStorage.getItem("cellBtnPressed") === "true"){
+        window.location.href = "View.html";
+        return
+    }
+
     counter3 = sessionStorage.getItem("counter3");
     if(parseInt(counter3) === curView.components.length -1){
         sessionStorage.setItem("counter3", -1);
@@ -503,8 +537,6 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
             sessionStorage.setItem("counter2", 0);
             let counter1 = sessionStorage.getItem("counter1");
             let numOfObj = JSON.parse(sessionStorage.getItem("all-objects")).length;
-            console.log(typeof counter1, typeof numOfObj, "counter 1");
-            console.log(JSON.parse(sessionStorage.getItem("all-objects")));
             
             if(parseInt(counter1) === numOfObj - 1) {
                 showNotification("Дальше идут матрицы");

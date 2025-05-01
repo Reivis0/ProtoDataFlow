@@ -65,24 +65,24 @@ function loadData(){
 
         },
         data: [
-            {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
+            {"flag": true, "column1": "11111", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            {"flag": true, "column1": "22222", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "33333", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "Объект 4", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "Объект 5", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "Объект 6", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "11111", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "22222", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "33333", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "Объект 4", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "Объект 5", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "Объект 6", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
         ]
     };
     return answer;
@@ -125,11 +125,25 @@ function returnGridOptions(information, data){ //получить настрой
     let id = 0
 
     for(let i = 0; i < data.length; ++i) {
-        if(!(data[i].id === undefined || data[i].id === null)){
-            break
-        }
+        // if(!(data[i].id === undefined || data[i].id === null)){
+        //     break
+        // }
         data[i].id = id;
         ++id;
+    }
+
+    while(data.length < 15){
+        data.push({
+                   "id" : ++id,
+                   "flag": false,
+                   "column1" : "",
+                   "column2" : "",
+                   "column3" : "",
+                   "column4" : "",
+                   "column5" : null,
+                   "column6" : null,
+                   "column7" : "",
+        });
     }
 
     let gridOptions = {
@@ -268,6 +282,7 @@ function setupButtons() {
                          index: rowIndex + 1,
                          rows: Array(count).fill().map((_, i) => ({
                             "id" : nextId+i,
+                            "flag": false,
                             "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                             "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
                             "column3" : "",
@@ -285,6 +300,7 @@ function setupButtons() {
                  index: allData.length,
                  rows: Array(count).fill().map((_, i) => ({
                         "id" : nextId+i,
+                        "flag": false,
                         "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                         "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
                         "column3" : "",
@@ -555,6 +571,18 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
+    if(!sessionStorage.getItem("for-matricies")){
+        forMatricies = {};
+        localSaveData.forEach(row =>{
+            if(row.flag)
+            {
+                //obj = row.column2
+                forMatricies[`${row.column2}`] = {"specific-requrements": null, views: {}}
+            }
+        });
+        sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies))
+    }
+    //console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     sessionStorage.setItem("counter1", -1);
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
     // console.log(sessionStorage.getItem("counter1"));

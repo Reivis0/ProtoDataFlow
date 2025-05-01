@@ -259,15 +259,15 @@ class ActionsButtons {
             
             let compName = this.params.data.name;
 
-            sessionStorage.setItem("cellBtnPressed", false);
+            sessionStorage.setItem("cellBtnPressed", true);
 
 
             const compNums = Object.keys(settings);
             for(let i = 0; i < compNums.length; ++i) {
                 if(componentsDictionary[compNums[i]] === compName){
-                    let nextComp = View.components[compNums[i]];
+                    let nextComp = View.components[Number.parseInt(compNums[i])-1];
+                    
                     sessionStorage.setItem("curComp", JSON.stringify(nextComp));
-                    sessionStorage.setItem("cellBtnPressed", false);
 
                     window.location.href = "component.html";
                     break
@@ -449,6 +449,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     }
     counter2 = sessionStorage.getItem("counter2");
     Views = JSON.parse(sessionStorage.getItem("Views"));
+    console.log(counter2);
     View = Views[counter2];
     sessionStorage.setItem("currentView", JSON.stringify(View));
     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
@@ -488,7 +489,13 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // });
 
     numOfView = View.number;
-    settings = loadSettings(numOfView - 1); 
+    settings = loadSettings(numOfView - 1);
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    //console.log(forMatricies);
+    forMatricies[currentObjAndType.Object]["views"][`${View.header}`] = {};
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    //console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
+    
     setTimeout(() => {
         gridApi.forEachNode(node => enableButtons(node));
     }, 0);

@@ -779,10 +779,10 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
     ++counter1;
+    console.log(counter1);
     sessionStorage.setItem("counter1", counter1);
     sessionStorage.setItem("all-objects", JSON.stringify(localSaveData));
     sessionStorage.setItem("currentObjAndType", JSON.stringify(localSaveData[counter1]));
-    // console.log(JSON.stringify(localSaveData[counter1]));
     window.location.href = "specific-requrements.html";
 })
 

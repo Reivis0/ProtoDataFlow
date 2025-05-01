@@ -12,77 +12,77 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     }
 
     
-    fetch("http://127.0.0.1:8080")
-    .then(response => {
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json(); 
-    })
-    .then(data => {
-        const gridOptions = {
-        columnDefs: columnDefs,
-        rowData: data,
-        defaultColDef: {
-            flex: 1,
-            minWidth: 100,
-            editable: (params) => {
-                // Only allow editing if the row is selected
-                return params.node.isSelected();
-            },
-            filter: true,
-            sortable: true,
-            resizable: true
-        },
-        rowSelection: 'multiple',
-        rowDragManaged: true,
-        animateRows: true,
-        suppressRowClickSelection: true, // Allow selection on click
-        enableCellTextSelection: true,
-        undoRedoCellEditing: true,
-        undoRedoCellEditingLimit: 10,
-        onCellValueChanged: (params) => {
-            // Visual feedback for changed cells
-            params.node.setDataValue('__dirty', true);
-            const cellEl = params.api.getCellRendererInstances({
-                rowNodes: [params.node],
-                columns: [params.column]
-            })[0]?.getGui();
-            if (cellEl) {
-                cellEl.style.backgroundColor = '#fffde7';
-                setTimeout(() => {
-                    cellEl.style.backgroundColor = '';
-                }, 1000);
-            }
-        },
-        onRowSelected: (params) => {
-            // Refresh the row to update editable state when selection changes
-            params.api.refreshCells({
-                rowNodes: [params.node],
-                force: true
-            });
-        },
-        // Prevent editing when not selected
-        onCellEditingStarted: (params) => {
-            if (!params.node.isSelected()) {
-                // Cancel editing if row isn't selected
-                params.api.stopEditing(true);
-            }
-        }
-    };
-    
-    gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
-    originalData = data;
-
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-
-    
-
+    // fetch("http://127.0.0.1:8080")
+    // .then(response => {
+    // if (!response.ok) {
+    //     throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+    // return response.json(); 
+    // })
+    // .then(data => {
+    //     const gridOptions = {
+    //     columnDefs: columnDefs,
+    //     rowData: data,
+    //     defaultColDef: {
+    //         flex: 1,
+    //         minWidth: 100,
+    //         editable: (params) => {
+    //             // Only allow editing if the row is selected
+    //             return params.node.isSelected();
+    //         },
+    //         filter: true,
+    //         sortable: true,
+    //         resizable: true
+    //     },
+    //     rowSelection: 'multiple',
+    //     rowDragManaged: true,
+    //     animateRows: true,
+    //     suppressRowClickSelection: true, // Allow selection on click
+    //     enableCellTextSelection: true,
+    //     undoRedoCellEditing: true,
+    //     undoRedoCellEditingLimit: 10,
+    //     onCellValueChanged: (params) => {
+    //         // Visual feedback for changed cells
+    //         params.node.setDataValue('__dirty', true);
+    //         const cellEl = params.api.getCellRendererInstances({
+    //             rowNodes: [params.node],
+    //             columns: [params.column]
+    //         })[0]?.getGui();
+    //         if (cellEl) {
+    //             cellEl.style.backgroundColor = '#fffde7';
+    //             setTimeout(() => {
+    //                 cellEl.style.backgroundColor = '';
+    //             }, 1000);
+    //         }
+    //     },
+    //     onRowSelected: (params) => {
+    //         // Refresh the row to update editable state when selection changes
+    //         params.api.refreshCells({
+    //             rowNodes: [params.node],
+    //             force: true
+    //         });
+    //     },
+    //     // Prevent editing when not selected
+    //     onCellEditingStarted: (params) => {
+    //         if (!params.node.isSelected()) {
+    //             // Cancel editing if row isn't selected
+    //             params.api.stopEditing(true);
+    //         }
+    //     }
+    // };
     
     // gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
+    // originalData = data;
+
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+
+    
+
+    
+    gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
     const saveButton = document.getElementById("save");
     saveButton.addEventListener('click', saveChanges);
 })
@@ -388,7 +388,9 @@ const columnDefs = [
         field: "password",
         headerName: "Пароль",
         cellClass: params => (params.data.__isNew) ? '' : 'non-editable-cell2',
-        editable: params => params.node.isSelected() && params.data.__isNew
+        editable: params => {
+            params.node.isSelected() && params.data.__isNew
+        }
     },
     {
         field: "acsess",
@@ -444,82 +446,82 @@ const columnDefs = [
 ];
 
 // НАстройки таблицы убрать закоментить когда будет сервер
-// const gridOptions = {
-//     columnDefs: columnDefs,
-//     rowData: loadData(),
-//     defaultColDef: {
-//         flex: 1,
-//         minWidth: 100,
-//         filter: true,
-//         sortable: true,
-//         resizable: true,
-//         editable: params => params.node.isSelected()
-//     },
+const gridOptions = {
+    columnDefs: columnDefs,
+    rowData: loadData(),
+    defaultColDef: {
+        flex: 1,
+        minWidth: 100,
+        filter: true,
+        sortable: true,
+        resizable: true,
+        editable: params => params.node.isSelected()
+    },
    
-//     rowSelection: 'multiple',
-//     rowDragManaged: true,
-//     animateRows: true,
-//     suppressRowClickSelection: true,
-//     enableCellTextSelection: false,
-//     undoRedoCellEditing: true,
-//     undoRedoCellEditingLimit: 20,
+    rowSelection: 'multiple',
+    rowDragManaged: true,
+    animateRows: true,
+    suppressRowClickSelection: true,
+    enableCellTextSelection: false,
+    undoRedoCellEditing: true,
+    undoRedoCellEditingLimit: 20,
 
     
-//     // Можно редактировать только выделенные строки
-//     onCellEditingStarted: (params) => {
-//         if (!params.node.isSelected()) {
-//             params.api.stopEditing(true);
-//         }
-//     },
+    // Можно редактировать только выделенные строки
+    onCellEditingStarted: (params) => {
+        if (!params.node.isSelected()) {
+            params.api.stopEditing(true);
+        }
+    },
 
-//     onCellKeyDown: (params) => {
-//         if (params.event.ctrlKey && (params.event.key === 'c' || params.event.key === 'с')) {
-//             const selectedNodes = gridApi.getSelectedNodes();
-//             if (selectedNodes.length > 0) {
-//                 const copiedData = selectedNodes.map(node => ({...node.data}));
-//                 localStorage.setItem('agGridCopiedRows', JSON.stringify({
-//                     data: copiedData,
-//                     count: copiedData.length
-//                 }));
-//                 params.event.preventDefault();
-//             }
-//         }
-//         else if (params.event.ctrlKey && (params.event.key === 'v' || params.event.key === 'м')) {
-//             const copiedData = localStorage.getItem('agGridCopiedRows');
-//             if (copiedData) {
-//                 const { data: parsedData, count: copiedCount } = JSON.parse(copiedData);
-//                 const selectedNodes = gridApi.getSelectedNodes();
+    onCellKeyDown: (params) => {
+        if (params.event.ctrlKey && (params.event.key === 'c' || params.event.key === 'с')) {
+            const selectedNodes = gridApi.getSelectedNodes();
+            if (selectedNodes.length > 0) {
+                const copiedData = selectedNodes.map(node => ({...node.data}));
+                localStorage.setItem('agGridCopiedRows', JSON.stringify({
+                    data: copiedData,
+                    count: copiedData.length
+                }));
+                params.event.preventDefault();
+            }
+        }
+        else if (params.event.ctrlKey && (params.event.key === 'v' || params.event.key === 'м')) {
+            const copiedData = localStorage.getItem('agGridCopiedRows');
+            if (copiedData) {
+                const { data: parsedData, count: copiedCount } = JSON.parse(copiedData);
+                const selectedNodes = gridApi.getSelectedNodes();
                
-//                 if (selectedNodes.length === 0) {
-//                     // showNotification('Нет выбранных строк для вставки', 'error');
-//                     return;
-//                 }32
+                if (selectedNodes.length === 0) {
+                    // showNotification('Нет выбранных строк для вставки', 'error');
+                    return;
+                }32
                
-//                 const rowsToPaste = Math.min(copiedCount, selectedNodes.length);
-//                 const dataToPaste = parsedData.slice(0, rowsToPaste);
+                const rowsToPaste = Math.min(copiedCount, selectedNodes.length);
+                const dataToPaste = parsedData.slice(0, rowsToPaste);
                
-//                 selectedNodes.slice(0, rowsToPaste).forEach((node, index) => {
-//                     const newData = {
-//                         ...dataToPaste[index],
-//                         isChosen: true
-//                     };
+                selectedNodes.slice(0, rowsToPaste).forEach((node, index) => {
+                    const newData = {
+                        ...dataToPaste[index],
+                        isChosen: true
+                    };
 
-//                     try{
-//                         newData.startDate = new Date(newData.startDate);
-//                     } catch {}
-//                     try{
-//                         newData.endDate = new Date(newData.endDate);
-//                     } catch {}
+                    try{
+                        newData.startDate = new Date(newData.startDate);
+                    } catch {}
+                    try{
+                        newData.endDate = new Date(newData.endDate);
+                    } catch {}
 
 
-//                     node.setData(newData);
-//                 });
+                    node.setData(newData);
+                });
                
-//                 params.event.preventDefault();
-//             }
-//         }
-//     }
-// };
+                params.event.preventDefault();
+            }
+        }
+    }
+};
   
   document.getElementById("back").addEventListener("click", (e) => {
   
