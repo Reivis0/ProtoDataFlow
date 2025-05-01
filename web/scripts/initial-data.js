@@ -153,6 +153,7 @@ function setupActionButtons(inputs) {
        // saveDataLocally(inputs);
     });
     
+    
     // Кнопка "Выйти"
     document.getElementById('exitBtn').addEventListener('click', () => {
         if (confirm('Удалить все сохранённые данные?')) {
@@ -160,6 +161,7 @@ function setupActionButtons(inputs) {
             document.getElementById('data-input').reset();
             showToast('Данные удалены!', 'info');
         }
+        navigateWithCheck("log-in.html");
     });
 }
 
