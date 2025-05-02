@@ -27,6 +27,7 @@ body {
   margin: 0 auto;
   align-items: center;
   width: 60vw;
+  min-width: 750px;
 }
 .for-lists {
   width: 100vw;

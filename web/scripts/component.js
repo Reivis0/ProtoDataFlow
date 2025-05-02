@@ -541,6 +541,7 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
             if(parseInt(counter1) === numOfObj - 1) {
                 showNotification("Дальше идут матрицы");
                 sessionStorage.setItem("counter1", -1);
+                window.location.href = "compliance-matrix.html";
             }
             else{
                 window.location.href = "all-objects.html";

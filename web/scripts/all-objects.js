@@ -99,7 +99,7 @@ function loadViews(){
         {
             "number": 1,
             "header": "Представление_1",
-            "code": "SDFS-3",
+            "code": "SDFS-1",
             "components": [
                 {
                     "number": 1,
@@ -123,23 +123,18 @@ function loadViews(){
         {
             "number": 2,
             "header": "Представление_2",
-            "code": "SDFS-3",
+            "code": "SDFS-2",
             "components": [
                 {
-                    "number": 1,
-                    "name": "Компонент_1",
-                    "code": "fafa-53_"
+                    "number": 4,
+                    "name": "Компонент_4",
+                    "code": "fafa-56_"
                 },
                 {
-                    "number": 2,
-                    "name": "Компонент_2",
-                    "code": "fafa-54"
+                    "number": 5,
+                    "name": "Компонент_5",
+                    "code": "fafa-57"
                 },
-                {
-                    "number": 3,
-                    "name": "Компонент_3",
-                    "code": "fafa-55"
-                }
             ]
     
     
@@ -147,23 +142,18 @@ function loadViews(){
         {
             "number": 5,
             "header": "Представление_5",
-            "code": "SDFS-3",
+            "code": "SDFS-5",
             "components": [
                 {
                     "number": 1,
-                    "name": "Компонент_1",
-                    "code": "fafa-53_"
+                    "name": "Компонент_6",
+                    "code": "fafa-58_"
                 },
                 {
                     "number": 2,
-                    "name": "Компонент_2",
-                    "code": "fafa-54"
+                    "name": "Компонент_7",
+                    "code": "fafa-59"
                 },
-                {
-                    "number": 3,
-                    "name": "Компонент_3",
-                    "code": "fafa-55"
-                }
             ]
     
     
