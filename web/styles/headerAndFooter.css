@@ -97,6 +97,16 @@ footer{
     background: #eae2ff;
     border: 2px solid #bcb0e2;
 }
+.footer-btn:disabled{
+  background-color: #dddcdc;
+  border: 2px solid #cfcece;
+  cursor: default;
+}
+
+.footer-btn:disabled:hover {
+  background-color: #dddcdc;
+  border: 2px solid #cfcece;
+}
 
 /* main {
     flex: 1; Раскомментриуй если footer будет не в самом низу

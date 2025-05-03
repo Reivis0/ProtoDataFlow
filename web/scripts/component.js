@@ -180,9 +180,9 @@ function returnGridOptions(information, data){ //получить настрой
 
 let gridApi;
 
-let localSaveData; //для локального сохранения
+let localSaveData = []; //для локального сохранения
 
-function localSave() {
+function localSave(flag=true) {
     const allData = [];
     gridApi.forEachNode(node => allData.push(node.data));
     localSaveData = JSON.parse(JSON.stringify(allData));
@@ -202,7 +202,7 @@ function localSave() {
     sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     console.log('Saving all:', allData);
-    showNotification(`Сохранено ${tempArray.length} строк (вся таблица)`);
+    if(flag){showNotification(`Сохранено ${tempArray.length} строк (вся таблица)`);}
     
 }
 
@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
 
     let serverData = loadData();
-
+    
     curView = JSON.parse(sessionStorage.getItem("currentView"));
 
     document.getElementById("ViewCode").textContent = curView.code;
@@ -412,16 +412,19 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     console.log(curComp);
     document.getElementById("CompCode").textContent = curComp.code;
     document.getElementById("CompName").textContent = curComp.name;
-
-
+    
+    
     currentObjAndType = JSON.parse(sessionStorage.getItem("currentObjAndType"));
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
     let GrdOptions;
-
-    if(!localSaveData) {
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    
+    localSaveData = forMatricies[currentObjAndType.Object]["views"][`${curView.header}`][`${curComp.name}`]
+    
+    if(!localSaveData.length) {
         GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        localSaveData = JSON.parse(JSON.stringify(serverData.data));
+        //localSaveData = JSON.parse(JSON.stringify(serverData.data));
     }
     else{
         console.log(localSaveData);
@@ -431,6 +434,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
+    localSave(false);
+
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -529,25 +536,30 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
 
     counter3 = sessionStorage.getItem("counter3");
     if(parseInt(counter3) === curView.components.length -1){
-        sessionStorage.setItem("counter3", -1);
+        //sessionStorage.setItem("counter3", -1);
         let counter2 = sessionStorage.getItem("counter2");
         
         let numOfViews = JSON.parse(sessionStorage.getItem("Views")).length;
         if(parseInt(counter2) === numOfViews - 1){
-            sessionStorage.setItem("counter2", 0);
+            //sessionStorage.setItem("counter2", 0);
             let counter1 = sessionStorage.getItem("counter1");
             let numOfObj = JSON.parse(sessionStorage.getItem("all-objects")).length;
             
             if(parseInt(counter1) === numOfObj - 1) {
-                showNotification("Дальше идут матрицы");
-                sessionStorage.setItem("counter1", -1);
+                // sessionStorage.setItem("counter3", -1);
+                // sessionStorage.setItem("counter1", -1);
+                // sessionStorage.setItem("counter2", 0);
+                sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
                 window.location.href = "compliance-matrix.html";
             }
             else{
+                sessionStorage.setItem("counter3", -1);
+                sessionStorage.setItem("counter2", 0);
                 window.location.href = "all-objects.html";
             }
         }
         else{
+            sessionStorage.setItem("counter3", -1);
             ++counter2;
             sessionStorage.setItem("counter2", counter2);
             window.location.href = "View.html";
@@ -601,4 +613,45 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
 
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
+}

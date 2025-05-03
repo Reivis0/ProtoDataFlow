@@ -1,4 +1,3 @@
-// const { jsx } = require("react/jsx-runtime");
 
 function loadData(){
     let answer = {
@@ -185,8 +184,9 @@ let localSaveData = []; //для локального сохранения
 let dataForFilter = []; //для локального сохранения
 
 let deletedNodes = [];
+let forMatricies;
 
-function localSave() {
+function localSave(flag=true) {
     let newData = JSON.parse(JSON.stringify(dataForFilter));
     let filteredData = [];
     gridApi.forEachNode(node => filteredData.push(node.data));
@@ -227,7 +227,7 @@ function localSave() {
     forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
     sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${tempArray.length}`);
+    if(flag){showNotification(`Сохранено строк: ${tempArray.length}`);}
     
 }
 
@@ -491,25 +491,31 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
     let GrdOptions;
+    let initialData;
 
-    if(!localSaveData) {
-        GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        let id = 0;
-        for(let i = 0; i < localSaveData.length; ++i) {
-            localSaveData[i].id = id
-            ++id;
-        }
+    forMatricies = sessionStorage.getItem("for-matricies");
+    if(forMatricies){
+        forMatricies = JSON.parse(forMatricies);
+        initialData = forMatricies[currentObjAndType.Object]["specific-requrements"];
+    }
 
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+    if(!initialData) {
+        // GrdOptions = returnGridOptions(serverData.information, serverData.data);
+        // localSaveData = JSON.parse(JSON.stringify(serverData.data));
+        // let id = 0;
+        // for(let i = 0; i < localSaveData.length; ++i) {
+        //     localSaveData[i].id = id
+        //     ++id;
+        // }
+
+        // dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        initialData = [];
     }
-    else{
-        localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
-        console.log(localSaveData)
-        localSaveData.forEach(row => row.column2 = "");
-        GrdOptions = returnGridOptions(serverData.information, localSaveData);
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
-    }
+    initialData = initialData.concat(initialRequrements.filter(row => row.column2 === currentObjAndType.Object))
+    //localSaveData = localSaveData.concat(serverData.data);
+    initialData.forEach(row => row.column2 = "");
+    GrdOptions = returnGridOptions(serverData.information, initialData);
+    dataForFilter = JSON.parse(JSON.stringify(initialData));
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
     document.getElementById("mainFormName").textContent = serverData.information.name;
@@ -522,6 +528,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     CreateSourceOptions();
     CreateCategoryOptions();
+    localSave(false);
+
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
 
 });
 
@@ -573,18 +583,6 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     let counter1 = sessionStorage.getItem("counter1");
     --counter1;
     sessionStorage.setItem("counter1", Math.max(counter1, -1));
-    // forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    // tempArray = []
-    // localSaveData.forEach(row => {
-    //     const {id, flag, ...data } = row;
-    //     if(!Array.from(Object.keys(data)).every(el => {
-    //         return (data[el] === "" || data[el] == null)
-    //     })){
-    //         tempArray.push(row);
-    //     }
-    // });
-    // forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
-    // sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     window.location.href = "all-objects.html";
 })
 
@@ -614,19 +612,6 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
 
     // console.log(sessionStorage.getItem("counter1"));
 
-    // forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    // tempArray = []
-    // localSaveData.forEach(row => {
-    //     const {id, flag, ...data } = row;
-    //     if(!Array.from(Object.keys(data)).every(el => {
-    //         return (data[el] === "" || data[el] == null)
-    //     })){
-    //         tempArray.push(row);
-    //     }
-    // });
-    // forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
-    // sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
-    // console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     window.location.href = "View.html";
 })
 
@@ -802,4 +787,47 @@ function addCategoryListener(categoryBtn){
             }
         }
     })
+}
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"specific-requrements.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"specific-requrements.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
 }

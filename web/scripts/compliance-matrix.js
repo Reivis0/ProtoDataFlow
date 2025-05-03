@@ -12,14 +12,7 @@ const config = {
   };
 
   //TODO:
-  //Сделать SessionStorage для всех матриц типа {имя1: [данные1], имя2: [данные2]}
-  //Сделать проверку названия формы, что ее нет в ключах данных всех матриц
-  //Сделать сохранение
-  //Сделать счетчик - 12 шт
-  //Сделать кнопки назад и вперед
-  //Сделать проверку для включения кнопки создания
-  //Сделать так, чтобы при нажатии на соответствующие кнопки открывались матрицы (придется переделать функцию загрузки стр)
-  //Подумать над поиском в сохраненных данных при изменении выбранных кнопок (неоптимально)
+  //сделать undo redo через два циклических стека. undo - старое во второй стек, в первом указатель - 1, redo - старое в первый стек, второй указатель + 1; Если ячейка не найдена - ничего не делать   
   
   let traceabilityData = [];
 
@@ -29,14 +22,36 @@ const config = {
     let GlobalForMatricies;
     let GlobalViews;
     let viewToCode = {};
+    let localSaveData = [];
+    let complianceMatricies;
+    let navigationData;
+    let matrixName;
+    const matrixNameInput = document.getElementById("matrixName");
 
    document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
-     // let login = sessionStorage.getItem("GlobalLogin");
-     // if(login === '' || login === null) {
-     //     e.preventDefault();
-     //     //window.location.assigsn("log-in.html");
-     //     window.location.href = "log-in.html";
-     // }
+     let login = sessionStorage.getItem("GlobalLogin");
+     if(login === '' || login === null) {
+         e.preventDefault();
+         //window.location.assigsn("log-in.html");
+         window.location.href = "log-in.html";
+     }
+
+     //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
+
+     complianceMatricies = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+     navigationData = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+
+     if(navigationData.name){
+        matrixName = navigationData.name;
+        traceabilityData = complianceMatricies[navigationData.name]["data"];
+        matrixNameInput.value = matrixName;
+        document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][0]
+        document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][1]
+        document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][2]
+        document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][3]
+        document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][4]
+        document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][5]
+     }
     
      forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
      const allObjects = Array.from(Object.keys(forMatricies));
@@ -97,6 +112,8 @@ const config = {
      }
 
      setupButtons();
+     document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+     createComplianceButtons();
 
    });
 
@@ -198,35 +215,76 @@ const config = {
         });
         struct2[object2] = element2Array;
     });
-
-    console.log(struct1, struct2);
     Array.from(Object.keys(struct1)).forEach(object1 => {
         Array.from(Object.keys(struct1[object1])).forEach(view1 => {
             Array.from(Object.keys(struct1[object1][view1])).forEach(component1 => {
-                struct1[object1][view1][component1].forEach(element1 => {
-                    Array.from(Object.keys(struct2)).forEach(object2 => {
-                        Array.from(Object.keys(struct2[object2])).forEach(view2 => {
-                            Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
-                                struct2[object2][view2][component2].forEach(element2 => {
-                                    let index = traceabilityData.findIndex(cell => {
-                                        const {value, ...data} = cell; //тут то же, что и в config.val
-                                        //console.log(data);
-                                        return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
-                                    });
-                                    if(index > -1){
-                                        newTraceabilityData.push(traceabilityData[index]);
-                                    }else{
+                if(struct1[object1][view1][component1].length){
+                    struct1[object1][view1][component1].forEach(element1 => {
+                        Array.from(Object.keys(struct2)).forEach(object2 => {
+                            Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                                Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                    if(struct2[object2][view2][component2].length){
+                                        struct2[object2][view2][component2].forEach(element2 => {
+                                            let index = traceabilityData.findIndex(cell => {
+                                                const {value, ...data} = cell; //тут то же, что и в config.val
+                                                //console.log(data);
+                                                return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
+                                                    req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
+                                            });
+                                            if(index > -1){
+                                                newTraceabilityData.push(traceabilityData[index]);
+                                            }else{
+                                                index = localSaveData.findIndex(cell => {
+                                                    const {value, ...data} = cell; //тут то же, что и в config.val
+                                                    //console.log(data);
+                                                    return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
+                                                        req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
+                                                });
+                                                if(index > -1){
+                                                    newTraceabilityData.push(localSaveData[index]);
+                                                }else{
+                                                    newTraceabilityData.push(
+                                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
+                                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: 0.0}
+                                                    
+                                                        );
+                                                }
+                                            }
+                                        });
+                                    } else{
                                         newTraceabilityData.push(
                                             {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: 0.0}
-                                        );
+                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
+                                            );
                                     }
                                 });
                             });
                         });
                     });
-                });
+                }
+                else{
+                    Array.from(Object.keys(struct2)).forEach(object2 => {
+                        Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                            Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                if(struct2[object2][view2][component2].length){
+                                    struct2[object2][view2][component2].forEach(element2 => {
+                                        newTraceabilityData.push(
+                                            {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
+                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: null}
+                                        
+                                            );
+                                    });
+                                }
+                                else{
+                                    newTraceabilityData.push(
+                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
+                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
+                                        );
+                                }
+                            });
+                        });
+                    });
+                }
             });
         });
     });
@@ -270,7 +328,7 @@ function makeTheTablePretty() {
           }
         });
       
-      }, 25);
+      }, 50);
 }
 
   function transformData(data) {
@@ -283,7 +341,7 @@ function makeTheTablePretty() {
     });
   }
   
-  // Global variable to track active input
+  // текущая клетка
   var activePivotInfo = null;
   
   $(document).on('click', function(event) {
@@ -387,9 +445,7 @@ function makeTheTablePretty() {
                   }
                   
                   var cs = 'editable_' + $(e.srcElement).attr('class').replace(' ', '_').replace(' ', '_');
-                  // Get the current displayed value (formatted with 1 decimal)
                   var currentValue = $(e.srcElement).text().trim();
-                  // If empty, use empty string, otherwise parse the number
                   var v = currentValue === '' ? '' : parseFloat(currentValue).toFixed(1);
                   
                   if (!$(e.srcElement).children().length > 0) {
@@ -401,7 +457,6 @@ function makeTheTablePretty() {
                       input.focus().select().keypress(function (event) {
                           var keycode = (event.keyCode ? event.keyCode : event.which);
                           if (keycode == '13') {
-                            console.log(keycode);
                               var newValue = parseFloat(input.val());
                               
                               // Validate input
@@ -591,45 +646,104 @@ function makeTheTablePretty() {
 
   document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    if(dataForFilter.length !== localSaveData.length){
+    if(traceabilityData.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
+            if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                showNotification("Введите название матрицы", false);
+                matrixNameInput.focus();
+                console.log("sdasd")
+                return
+            }
             localSave();
         }
     }
     else{
-        for(let i = 0; i < dataForFilter.length; ++i){
-            if(JSON.stringify(dataForFilter[i]) !== JSON.stringify(localSaveData[i])){
+        for(let i = 0; i < traceabilityData.length; ++i){
+            if(JSON.stringify(traceabilityData[i]) !== JSON.stringify(localSaveData[i])){
                 
                 if(confirm(`Сохранить данные в табице?`)){
+                    if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                        showNotification("Введите название матрицы", false);
+                        matrixNameInput.focus();
+                        console.log("sdasd")
+                        return
+                    }
                     localSave();
                 }
                 break
             }
         }
     }
-    //sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+
+    const num = document.getElementById("compliance").children.length - 1;
+    if(navigationData.flag){
+        if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+        }
+        window.location.href = navigationData.page;
+    }
+    if(num === 0) {
+        window.location.href = "component.html";
+    }
+    else{
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+        window.location.href = "compliance-matrix.html";
+    }
+
     //window.location.href = "initial-data.html";
 });
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData);
 
-    if(dataForFilter.length !== localSaveData.length){
+    if(traceabilityData.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
+            if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                showNotification("Введите название матрицы", false);
+                matrixNameInput.focus();
+                console.log("sdasd")
+                return
+            }
             localSave();
         }
     }
     else{
-        for(let i = 0; i < dataForFilter.length; ++i){
-            if(JSON.stringify(dataForFilter[i]) !== JSON.stringify(localSaveData[i])){
+        for(let i = 0; i < traceabilityData.length; ++i){
+            if(JSON.stringify(traceabilityData[i]) !== JSON.stringify(localSaveData[i])){
                 
                 if(confirm(`Сохранить данные в табице?`)){
+                    if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                        showNotification("Введите название матрицы", false);
+                        matrixNameInput.focus();
+                        console.log("sdasd")
+                        return
+                    }
                     localSave();
                 }
                 break
             }
         }
+    }
+
+    const num = document.getElementById("compliance").children.length - 1;
+    console.log(navigationData.flag);
+    console.log(navigationData);
+    if(navigationData.flag){
+        if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+        }
+       window.location.href = navigationData.page;
+    }
+    sessionStorage.setItem("previousName", matrixName);
+    console.log(sessionStorage.getItem("previousName"));
+    if(num < 13) {
+        const names = Array.from(Object.keys(complianceMatricies));
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: num >= names.length ? null : names[num+1], flag: false}));
+        window.location.href = "compliance-matrix.html";
+    }
+    else{
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: null, flag: false}));
+        window.location.href = "traceability-matrix.html";
     }
 
     //window.location.href = "all-objects.html";
@@ -644,7 +758,7 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    //let message = sessionStorage.getItem("initial-requrements-data");
+    let message = localSaveData;
     console.log(message);
     fetch('http://127.0.0.1:8080/api/auth', { 
         method: 'POST',
@@ -666,8 +780,10 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
       .catch(error => {
           console.error('Error fetching data:', error);
       });
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
 });
+
+document.getElementById("saveAllBtn").addEventListener("click", localSave);
 
 function setupButtons() {
     
@@ -699,4 +815,125 @@ function setupButtons() {
         });
     }
     
+}
+
+function localSave() {
+
+    if(!matrixName){
+        showNotification("Введите название матрицы", false);
+        matrixNameInput.focus();
+        return
+    }
+    
+    const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
+    const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
+    const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent;
+    const view2 = document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent;
+    const comp1 = document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent;
+    const comp2 = document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent;
+    localSaveData = JSON.parse(JSON.stringify(traceabilityData));
+    complianceMatricies[matrixNameInput.value]["data"] = localSaveData;
+    complianceMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
+    sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+    //console.log('Saving all:', traceabilityData);
+    showNotification(`Сохранено ячеек: ${traceabilityData.length}`);
+    createComplianceButtons()
+    
+}
+
+function showNotification(message, type = 'success') { //показать уведомление пользователю
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '75px';
+    notification.style.right = '30px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    notification.textContent = message;
+   
+    const existing = document.querySelector('.ag-grid-notification');
+    if (existing) existing.remove();
+   
+    notification.classList.add('ag-grid-notification');
+    document.body.appendChild(notification);
+   
+    setTimeout(() => { //исчезает через время
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+matrixNameInput.addEventListener("change", (e) => {
+    const buttons = document.getElementById("compliance").children;
+    const texts = [];
+    for(let i = 1; i < buttons.length; ++i){
+        texts.push(buttons[i].textContent);
+    }
+    if(texts.indexOf(e.target.value) !== -1){
+        showNotification("Матрица с таким названием уже существует!!", false);
+        e.target.value = "";
+    }else{
+        if(matrixName){
+            let temp = complianceMatricies[matrixName];
+            delete complianceMatricies[matrixName];
+            complianceMatricies[e.target.value] = temp;
+            sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+        }
+        else{
+            complianceMatricies[`${e.target.value}`] = {};
+        }
+        matrixName = e.target.value;
+        let temp = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+        temp.name = matrixName;
+        sessionStorage.setItem("matrix-navigation", JSON.stringify(temp));
+        console.log(complianceMatricies);
+    }
+})
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("compliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("previousName", matrixName);
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("previousName", matrixName);
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
 }

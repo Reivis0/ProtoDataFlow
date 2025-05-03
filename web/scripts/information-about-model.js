@@ -1,4 +1,24 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", (e) => {
+
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    if(!forMatricies){
+        forMatricies = {};
+        sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    }
+    
+
+    let complianceMatricies = sessionStorage.getItem("compliance-matricies-data");
+    if(!complianceMatricies){
+        complianceMatricies = {};
+        sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+    }
     
     // Получаем все элементы формы
     const inputs = [
@@ -385,14 +405,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 menu.style.display = isOpen ? 'none' : 'flex';
             });
             
-            menu.querySelectorAll('.dropUpBtn').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const action = this.textContent;
-                    showToast(`Выбрано: ${action}`, 'info');
-                    menu.style.display = 'none';
-                });
-            });
+            // menu.querySelectorAll('.dropUpBtn').forEach(item => {
+            //     item.addEventListener('click', function(e) {
+            //         e.stopPropagation();
+            //         const action = this.textContent;
+            //         showToast(`Выбрано: ${action}`, 'info');
+            //         menu.style.display = 'none';
+            //     });
+            // });
         });
         
         document.addEventListener('click', (e) => {
@@ -447,5 +467,50 @@ document.addEventListener("DOMContentLoaded", () => {
     addInputCounters(inputs);
     setupDropUpMenus();
     setupHeaderButtons();
+    createComplianceButtons();
     initModelLoader();
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
 });
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
+}

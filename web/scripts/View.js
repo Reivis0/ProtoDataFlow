@@ -490,15 +490,14 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     numOfView = View.number;
     settings = loadSettings(numOfView - 1);
-    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    //console.log(forMatricies);
-    forMatricies[currentObjAndType.Object]["views"][`${View.header}`] = {};
-    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     //console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     
     setTimeout(() => {
         gridApi.forEachNode(node => enableButtons(node));
     }, 0);
+
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
     
 });
 
@@ -560,3 +559,46 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 //     console.log(message);
 //     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 // })
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"View.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"View.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
+}

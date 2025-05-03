@@ -94,74 +94,74 @@ function loadData(){
     return data;
 }
 
-function loadViews(){
-    let views = [
-        {
-            "number": 1,
-            "header": "Представление_1",
-            "code": "SDFS-1",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "Компонент_1",
-                    "code": "fafa-53_"
-                },
-                {
-                    "number": 2,
-                    "name": "Компонент_2",
-                    "code": "fafa-54"
-                },
-                {
-                    "number": 3,
-                    "name": "Компонент_3",
-                    "code": "fafa-55"
-                }
-            ]
+// function loadViews(){
+//     let views = [
+//         {
+//             "number": 1,
+//             "header": "Представление_1",
+//             "code": "SDFS-1",
+//             "components": [
+//                 {
+//                     "number": 1,
+//                     "name": "Компонент_1",
+//                     "code": "fafa-53_"
+//                 },
+//                 {
+//                     "number": 2,
+//                     "name": "Компонент_2",
+//                     "code": "fafa-54"
+//                 },
+//                 {
+//                     "number": 3,
+//                     "name": "Компонент_3",
+//                     "code": "fafa-55"
+//                 }
+//             ]
     
     
-        },
-        {
-            "number": 2,
-            "header": "Представление_2",
-            "code": "SDFS-2",
-            "components": [
-                {
-                    "number": 4,
-                    "name": "Компонент_4",
-                    "code": "fafa-56_"
-                },
-                {
-                    "number": 5,
-                    "name": "Компонент_5",
-                    "code": "fafa-57"
-                },
-            ]
+//         },
+//         {
+//             "number": 2,
+//             "header": "Представление_2",
+//             "code": "SDFS-2",
+//             "components": [
+//                 {
+//                     "number": 4,
+//                     "name": "Компонент_4",
+//                     "code": "fafa-56_"
+//                 },
+//                 {
+//                     "number": 5,
+//                     "name": "Компонент_5",
+//                     "code": "fafa-57"
+//                 },
+//             ]
     
     
-        },
-        {
-            "number": 5,
-            "header": "Представление_5",
-            "code": "SDFS-5",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "Компонент_6",
-                    "code": "fafa-58_"
-                },
-                {
-                    "number": 2,
-                    "name": "Компонент_7",
-                    "code": "fafa-59"
-                },
-            ]
+//         },
+//         {
+//             "number": 5,
+//             "header": "Представление_5",
+//             "code": "SDFS-5",
+//             "components": [
+//                 {
+//                     "number": 1,
+//                     "name": "Компонент_6",
+//                     "code": "fafa-58_"
+//                 },
+//                 {
+//                     "number": 2,
+//                     "name": "Компонент_7",
+//                     "code": "fafa-59"
+//                 },
+//             ]
     
     
-        }
-    ]
+//         }
+//     ]
 
-    return views;
-}
+//     return views;
+// }
 
 class ActionsButtons {
     init(params) {
@@ -709,9 +709,11 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //     console.error('Error fetching data:', error);
     // });
 
-    Views = loadViews();
-    sessionStorage.setItem("Views", JSON.stringify(Views));
+    // Views = loadViews();
+    // sessionStorage.setItem("Views", JSON.stringify(Views));
     
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
 });
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
@@ -826,3 +828,46 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
       
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"all-objects.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"all-objects.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
+}

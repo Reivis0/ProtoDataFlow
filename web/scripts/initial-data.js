@@ -1,4 +1,12 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", (e) => {
+
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+
     const inputs = [
         document.getElementById("concept"),
         document.getElementById("conditions"),
@@ -19,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     addInputCounters(inputs);
     setupDropUpMenus();
     setupHeaderButtons();
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
 });
 
 // Настройка формы на основе данных
@@ -193,21 +203,21 @@ function setupDropUpMenus() {
         });
         
         // Обработчики для пунктов меню
-        menu.querySelectorAll('.dropUpBtn').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const action = this.textContent;
-                showToast(`Выбрано: ${action}`, 'info');
-                menu.style.display = 'none';
+        // menu.querySelectorAll('.dropUpBtn').forEach(item => {
+        //     item.addEventListener('click', function(e) {
+        //         e.stopPropagation();
+        //         const action = this.textContent;
+        //         showToast(`Выбрано: ${action}`, 'info');
+        //         menu.style.display = 'none';
                 
-                // Логика для разных пунктов меню
-                if (action.includes('соответствия')) {
-                    // Действия для матрицы соответствия
-                } else if (action.includes('верификации')) {
-                    // Действия для матрицы верификации
-                }
-            });
-        });
+        //         // Логика для разных пунктов меню
+        //         if (action.includes('соответствия')) {
+        //             // Действия для матрицы соответствия
+        //         } else if (action.includes('верификации')) {
+        //             // Действия для матрицы верификации
+        //         }
+        //     });
+        // });
     });
     
     // Закрытие всех меню при клике вне
@@ -255,4 +265,47 @@ function showToast(message, type) {
     document.body.appendChild(toast);
     
     setTimeout(() => toast.remove(), 3000);
+}
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-data.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-data.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
 }

@@ -88,6 +88,75 @@ function loadData(){
     return answer;
 }
 
+function loadViews(){
+    let views = [
+        {
+            "number": 1,
+            "header": "Представление_1",
+            "code": "SDFS-1",
+            "components": [
+                {
+                    "number": 1,
+                    "name": "Компонент_1",
+                    "code": "fafa-53_"
+                },
+                {
+                    "number": 2,
+                    "name": "Компонент_2",
+                    "code": "fafa-54"
+                },
+                {
+                    "number": 3,
+                    "name": "Компонент_3",
+                    "code": "fafa-55"
+                }
+            ]
+    
+    
+        },
+        {
+            "number": 2,
+            "header": "Представление_2",
+            "code": "SDFS-2",
+            "components": [
+                {
+                    "number": 4,
+                    "name": "Компонент_4",
+                    "code": "fafa-56_"
+                },
+                {
+                    "number": 5,
+                    "name": "Компонент_5",
+                    "code": "fafa-57"
+                },
+            ]
+    
+    
+        },
+        {
+            "number": 5,
+            "header": "Представление_5",
+            "code": "SDFS-5",
+            "components": [
+                {
+                    "number": 1,
+                    "name": "Компонент_6",
+                    "code": "fafa-58_"
+                },
+                {
+                    "number": 2,
+                    "name": "Компонент_7",
+                    "code": "fafa-59"
+                },
+            ]
+    
+    
+        }
+    ]
+
+    return views;
+}
+
 function returnGridOptions(information, data){ //получить настройки таблицы
 
     let coldefs = [{field: "flag", headerName: "", cellEditor: "agCheckboxCellEditor"}]; //выбрать только включенные столбики
@@ -189,7 +258,7 @@ let dataForFilter = []; //для локального сохранения
 
 let deletedNodes = [];
 
-function localSave() {
+function localSave(flag = true) {
     let newData = JSON.parse(JSON.stringify(dataForFilter));
     let filteredData = [];
     gridApi.forEachNode(node => filteredData.push(node.data));
@@ -219,7 +288,7 @@ function localSave() {
 
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
     console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${localSaveData.length}`);
+    if(flag){showNotification(`Сохранено строк: ${localSaveData.length}`);}
     
 }
 
@@ -470,23 +539,23 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         // });
         
         let serverData = loadData();
-        localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+        let initialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
         let GrdOptions;
         
-        if(!localSaveData) {
+        if(!initialData) {
             GrdOptions = returnGridOptions(serverData.information, serverData.data);
-            localSaveData = JSON.parse(JSON.stringify(serverData.data));
+            initialData = JSON.parse(JSON.stringify(serverData.data));
             let id = 0;
-            for(let i = 0; i < localSaveData.length; ++i) {
-            localSaveData[i].id = id
+            for(let i = 0; i < initialData.length; ++i) {
+            initialData[i].id = id
             ++id;
         }
 
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        dataForFilter = JSON.parse(JSON.stringify(initialData));
     }
     else{
-        GrdOptions = returnGridOptions(serverData.information, localSaveData);
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        GrdOptions = returnGridOptions(serverData.information, initialData);
+        dataForFilter = JSON.parse(JSON.stringify(initialData));
     }
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
@@ -497,10 +566,11 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("listObjectBtn").textContent = "Все";
     addSourceListener(document.getElementById("sourceOptions").children[0])
     addObjectListener(document.getElementById("objectOptions").children[0])
-
+    localSave(false);
     CreateSourceOptions();
     CreateObjectOptions();
-
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons();
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -570,23 +640,51 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
             }
         }
     }
-
-    if(!sessionStorage.getItem("for-matricies")){
-        forMatricies = {};
-        localSaveData.forEach(row =>{
-            if(row.flag)
-            {
-                //obj = row.column2
-                forMatricies[`${row.column2}`] = {"specific-requrements": null, views: {}}
-            }
-        });
-        sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies))
-    }
-    //console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    localSaveData.forEach(row =>{
+        if(row.flag)
+        {
+            if(!forMatricies[`${row.column2}`]){
+            forMatricies[`${row.column2}`] = {"specific-requrements": null, views: {}};
+        }
+        }
+    });
+    
     sessionStorage.setItem("counter1", -1);
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
-    // console.log(sessionStorage.getItem("counter1"));
+    // fetch('http://127.0.0.1:8080/api/auth')
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(Views => {
+    //     console.log(Views);
+    //     sessionStorage.setItem("Views", JSON.stringify(Views));
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
 
+
+
+    let Views = loadViews();
+    sessionStorage.setItem("Views", JSON.stringify(Views));
+    Array.from(Object.keys(forMatricies)).forEach(obj => {
+        Views.forEach(view => {
+            if(forMatricies[obj]["views"][view.header] === null || forMatricies[obj]["views"][view.header] === undefined){
+                forMatricies[obj]["views"][view.header] = {};
+            }
+            view.components.forEach(comp => {
+                if(forMatricies[obj]["views"][view.header][comp.name] === undefined || forMatricies[obj]["views"][view.header][comp.name] === null) {
+                    forMatricies[obj]["views"][view.header][comp.name] = [];
+                }
+            });
+        });
+    });
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
 
     window.location.href = "all-objects.html";
 })
@@ -761,4 +859,47 @@ function addObjectListener(objectBtn){
             }
         }
     })
+}
+
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
+        }
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
+}
+
+function createComplianceButtons(){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-requrements.html", name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-requrements.html", name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
 }
