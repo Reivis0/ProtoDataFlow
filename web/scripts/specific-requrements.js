@@ -511,9 +511,21 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         // dataForFilter = JSON.parse(JSON.stringify(localSaveData));
         initialData = [];
     }
-    initialData = initialData.concat(initialRequrements.filter(row => row.column2 === currentObjAndType.Object))
+    let additionalData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object);
+    console.log(additionalData)
+    for(let i = 0; i < additionalData.length; ++i){
+        let index = initialData.findIndex(row => row.column1 == additionalData[i].column1 && row.column3 == additionalData[i].column3)
+        if(index > -1){
+            additionalData[i].column2 = initialData[index].column2
+            initialData[index] = additionalData[i];
+        }else{
+            additionalData[i].column2 = "";
+            initialData.push(additionalData[i]);
+        }
+    }
+    //initialData = initialData.concat(initialRequrements.filter(row => row.column2 === currentObjAndType.Object))
     //localSaveData = localSaveData.concat(serverData.data);
-    initialData.forEach(row => row.column2 = "");
+    //initialData.forEach(row => row.column2 = "");
     GrdOptions = returnGridOptions(serverData.information, initialData);
     dataForFilter = JSON.parse(JSON.stringify(initialData));
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
@@ -562,8 +574,32 @@ function showNotification(message, type = 'success') { //показать уве
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData, dataForFilter);
-    console.log(typeof localSaveData, typeof dataForFilter)
+    
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+       
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+        // for(let i = 0; i < deletedNodes.length; ++i){
+        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+        //     if(index !== -1){
+        //         newData.splice(index, 1);
+        //     }
+        // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
+
+
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -589,6 +625,30 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
     console.log(localSaveData);
+
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+       
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+        // for(let i = 0; i < deletedNodes.length; ++i){
+        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+        //     if(index !== -1){
+        //         newData.splice(index, 1);
+        //     }
+        // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
 
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){

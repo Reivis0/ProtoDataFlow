@@ -2,17 +2,28 @@ const config = {
     dataFields: {
       rows: ["object", "code", "view", "component", "data"],
       cols: ["req_object", "req_code", "req_view", "req_component", "req_data"],
+      requrement_rows: ["code", "source", "object", "category", "requrement"],
+      requrement_cols: ["req_code", "req_source", "req_object", "req_category", "req_requrement"],
       val: "value"
     },
     displayNames: {
       rows: ["Объект", "Код", "Представление", "Компонент", "Элемент"],
       cols: ["Объект ", "Код ", "Представление ", "Компонент ", "Элемент "],
+      requrement_rows: ["Код", "Источник требований", "Объект", "Категория требований", "Требование"],
+      requrement_cols: ["Код ", "Источник требований ", "Объект ", "Категория требований ", "Требование "],
       val: "Значение"
     }
   };
 
   //TODO:
   //сделать undo redo через два циклических стека. undo - старое во второй стек, в первом указатель - 1, redo - старое в первый стек, второй указатель + 1; Если ячейка не найдена - ничего не делать   
+  //Сделать изменение данных (написать три функции и поменять makeMatrix)
+  //Сделать проверку для создания матрицы на других страницах
+  //Сделать кнопи вперед и назад
+  //Переделать сохранение и загрузку данных (сейчас все грузится в данные матриц соответствия) localSave
+  //Переделать transformData и код, что сохраняет изменения в traceabilityData
+  //Переделать transponse
+  //
   
   let traceabilityData = [];
 
@@ -20,6 +31,7 @@ const config = {
 
     let GlobalAllObjects;
     let GlobalForMatricies;
+    let GlobalInitialData;
     let GlobalViews;
     let viewToCode = {};
     let localSaveData = [];
@@ -29,12 +41,12 @@ const config = {
     const matrixNameInput = document.getElementById("matrixName");
 
    document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
-     let login = sessionStorage.getItem("GlobalLogin");
-     if(login === '' || login === null) {
-         e.preventDefault();
-         //window.location.assigsn("log-in.html");
-         window.location.href = "log-in.html";
-     }
+    //  let login = sessionStorage.getItem("GlobalLogin");
+    //  if(login === '' || login === null) {
+    //      e.preventDefault();
+    //      //window.location.assigsn("log-in.html");
+    //      window.location.href = "log-in.html";
+    //  }
 
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
@@ -57,6 +69,7 @@ const config = {
      const allObjects = Array.from(Object.keys(forMatricies));
      GlobalAllObjects = allObjects;
      GlobalForMatricies = forMatricies;
+     GlobalInitialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
      level1s =  Array.from(document.getElementsByClassName("level1"));
      for(let i = 0; i < level1s.length; ++i){
          allObjects.forEach(source => {
@@ -67,8 +80,10 @@ const config = {
              level1Pressed(newSource);
              level1s[i].appendChild(newSource);
          })
-         level1s[i].children[0].textContent = "Все"
-         level1Pressed(level1s[i].children[0])
+         //level1s[i].children[0].textContent = "Все объекты"
+         for(let j = 0; j < 3; ++j){
+            level1Pressed(level1s[i].children[j]);
+        }
      }
      const views = Array.from(Object.keys(forMatricies[allObjects[0]].views))
      level2s =  Array.from(document.getElementsByClassName("level2"));
@@ -85,17 +100,16 @@ const config = {
          level2s[i].children[0].textContent = "Все"
          level2Pressed(level2s[i].children[0])
      }
-
-     level3s =  Array.from(document.getElementsByClassName("level3"));
-     for(let i = 0; i < level2s.length; ++i){
-        level3Pressed(level3s[i].children[0]);
-    }
-
      console.log(forMatricies);
      GlobalViews = JSON.parse(sessionStorage.getItem("Views"));
      GlobalViews.forEach(view => {
          viewToCode[view.header] = view.code;
      })
+
+     level3s =  Array.from(document.getElementsByClassName("level3"));
+     for(let i = 0; i < level2s.length; ++i){
+        level3Pressed(level3s[i].children[0]);
+    }
     updateTable();
     makeMatrix(transposed);
  
@@ -127,56 +141,148 @@ const config = {
     button.addEventListener("click", (e) => {
         let obj = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = obj;
-        updateTable();
-    })
-   }
-
-   function level2Pressed(button){
-    button.addEventListener("click", (e) => {
-        let view = button.textContent;
-        e.target.parentElement.parentElement.children[1].textContent = view
-        classList = e.target.classList
-        let div = document.getElementsByClassName(`level3 ${classList[classList.length-1]}`)[0]
+        classList = e.target.classList;
+        let div = document.getElementsByClassName(`level2 ${classList[classList.length-1]}`)[0];
+        //console.log(div);
         div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-        if(view === "Все"){
-            //взять данные по всем представлениям
-        }else{
-            let obj = document.getElementsByClassName(`level1 ${classList[classList.length-1]}`)[0].parentElement.children[1].textContent
-            if(obj === "Все"){
-                Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]]["views"][view])).forEach( comp => {
-                    const newSource = document.createElement("button");
-                    newSource.classList.add("dropdownBtn");
-                    newSource.classList.add(classList[classList.length-1]);
-                    newSource.textContent = comp;
-                    level3Pressed(newSource);
-                    div.appendChild(newSource);
-                });
-            }
-            else{
-            Array.from(Object.keys(GlobalForMatricies[obj]["views"][view])).forEach( comp => {
+        if(obj === "Требования спецификация" || obj == "Требования исходные"){
+            GlobalAllObjects.forEach(source => {
                 const newSource = document.createElement("button");
                 newSource.classList.add("dropdownBtn");
                 newSource.classList.add(classList[classList.length-1]);
-                newSource.textContent = comp;
-                level3Pressed(newSource);
+                newSource.textContent = source;
+                level2Pressed(newSource);
+                div.appendChild(newSource);
+            });
+        }
+        else{
+            const views = Array.from(Object.keys(forMatricies[GlobalAllObjects[0]].views));
+            views.forEach(source => {
+                const newSource = document.createElement("button");
+                newSource.classList.add("dropdownBtn");
+                newSource.classList.add(classList[classList.length-1]);
+                newSource.textContent = source;
+                level2Pressed(newSource);
                 div.appendChild(newSource);
             });
             
         }
         div.children[0].textContent = "Все";
-        //level3Pressed(div.children[0])
-        }
+        //level2Pressed(div.children[0]);
         div.parentElement.children[1].textContent = "Все";
-        updateTable();
+        CreateLevel3Buttons(div.children[0]);
+        Update();
     })
+   }
+
+   function level2Pressed(button){
+    button.addEventListener("click", (e) => {
+        e.target.parentElement.parentElement.children[1].textContent = button.textContent;
+        CreateLevel3Buttons(button);
+        Update();
+    })
+   }
+
+   function CreateLevel3Buttons(button){
+        classList = button.classList;
+        let obj = document.getElementsByClassName(`level1 ${classList[classList.length-1]}`)[0].parentElement.children[1].textContent;
+        let div = document.getElementsByClassName(`level3 ${classList[classList.length-1]}`)[0]
+        //console.log(obj);
+        div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+        if(obj != "Требования спецификация" && obj != "Требования исходные"){
+            let view = button.textContent;
+            if(view === "Все"){
+                //взять данные по всем представлениям
+            }else{
+                //let obj = document.getElementsByClassName(`level1 ${classList[classList.length-1]}`)[0].parentElement.children[1].textContent
+                if(obj === "Все объекты"){
+                    Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]]["views"][view])).forEach( comp => {
+                        const newSource = document.createElement("button");
+                        newSource.classList.add("dropdownBtn");
+                        newSource.classList.add(classList[classList.length-1]);
+                        newSource.textContent = comp;
+                        level3Pressed(newSource);
+                        div.appendChild(newSource);
+                    });
+                }
+                else{
+                    Array.from(Object.keys(GlobalForMatricies[obj]["views"][view])).forEach( comp => {
+                        const newSource = document.createElement("button");
+                        newSource.classList.add("dropdownBtn");
+                        newSource.classList.add(classList[classList.length-1]);
+                        newSource.textContent = comp;
+                        level3Pressed(newSource);
+                        div.appendChild(newSource);
+                    });
+                }
+            }
+        } 
+        else {
+            let source = button.textContent;
+            let requrements = [];
+            if(obj == "Требования спецификация"){
+                if(source === "Все"){
+                    GlobalAllObjects.forEach(object => {
+                        const specificRequrements = GlobalForMatricies[object]["specific-requrements"].filter(req => req.flag).map(req => req.column1);
+                        requrements = requrements.concat(specificRequrements);
+                    });
+                }
+                else{
+                    requrements = GlobalForMatricies[source]["specific-requrements"].filter(req => req.flag).map(req => req.column1);
+                }
+            }
+            else{
+                if(source === "Все"){
+                    requrements = GlobalInitialData.filter(req => req.flag).map(req => req.column1);
+                }
+                else{
+                    requrements = GlobalInitialData.filter(req => req.flag && req.column2 == source).map(req => req.column1);
+                }
+            }
+
+            requrements.forEach(req => {
+                const newSource = document.createElement("button");
+                    newSource.classList.add("dropdownBtn");
+                    newSource.classList.add(classList[classList.length-1]);
+                    newSource.textContent = req;
+                    level3Pressed(newSource);
+                    div.appendChild(newSource);
+            });
+
+        }
+        div.children[0].textContent = "Все"
+        //level3Pressed(div.children[0]);
+        div.parentElement.children[1].textContent = "Все";
    }
 
    function level3Pressed(button){
     button.addEventListener("click", (e) => {
         let obj = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = obj;
-        updateTable();
+        Update();
     })
+   }
+
+   function Update(){
+    let obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
+    let obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
+    if(obj1 === "Требования спецификация" || obj1 == "Требования исходные"){
+        if(obj2 === "Требования спецификация" || obj2 == "Требования исходные"){
+            updateTableBoth();
+        }
+        else{
+            updateTableOne(true);
+        }
+    }
+    else{
+        if(obj2 === "Требования спецификация" || obj2 == "Требования исходные"){
+            updateTableOne(false);
+        }
+        else{
+            updateTable();
+        }
+    }
+
    }
 
    function updateTable() {
@@ -187,8 +293,8 @@ const config = {
     const comp1 = document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent;
     const comp2 = document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent;
     let newTraceabilityData = []
-    const obj1Array = obj1 === "Все" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === obj1);
-    const obj2Array = obj2 === "Все" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === obj2);
+    const obj1Array = obj1 === "Все объекты" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === obj1);
+    const obj2Array = obj2 === "Все объекты" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === obj2);
     const view1Array = view1 === "Все" ? Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)) : Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)).filter(el => el === view1); 
     const view2Array = view2 === "Все" ? Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)) : Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)).filter(el => el === view2); 
 
@@ -552,7 +658,7 @@ function makeTheTablePretty() {
     $lastTd.attr("data-value");
     $lastTd.html(sum.toFixed(1));
   
-    if (sum === 0) {
+    if (sum < 1) {
       $lastTd.addClass('zero-total');
     } else {
       $lastTd.removeClass('zero-total');
@@ -573,7 +679,7 @@ function makeTheTablePretty() {
         $totalCell.attr("data-value", total);
         $totalCell.html(total.toFixed(1));
   
-        if (total === 0) {
+        if (total < 1) {
           $totalCell.addClass('zero-total');
         } else {
           $totalCell.removeClass('zero-total');
@@ -590,7 +696,7 @@ function makeTheTablePretty() {
     $grandTotalCell.attr("data-value", grandTotal);
     $grandTotalCell.html(grandTotal.toFixed(1));
   
-    if (grandTotal === 0) {
+    if (grandTotal < 1) {
       $grandTotalCell.addClass('zero-total');
     } else {
       $grandTotalCell.removeClass('zero-total');
@@ -619,7 +725,7 @@ function makeTheTablePretty() {
         if(view === "Все"){
 
         }else{
-            if(obj === "Все"){
+            if(obj === "Все объекты"){
                 Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]]["views"][view])).forEach( comp => {
                     const newSource = document.createElement("button");
                     newSource.classList.add("dropdownBtn");
