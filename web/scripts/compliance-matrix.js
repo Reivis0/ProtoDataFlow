@@ -179,7 +179,7 @@ const config = {
     })
    }
 
-   function updateTable() {
+   function updateTable(transponded = false) {
     const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
     const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
     const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent;
@@ -202,7 +202,7 @@ const config = {
                      element1Array[v1][el] = GlobalForMatricies[object1]["views"][v1][el];
                  });
              }else{
-                 element1Array[v1][el] = GlobalForMatricies[object1]["views"][v1][comp1];
+                 element1Array[v1][comp1] = GlobalForMatricies[object1]["views"][v1][comp1];
              }
         });
         struct1[object1] = element1Array;
@@ -222,47 +222,84 @@ const config = {
         });
         struct2[object2] = element2Array;
     });
+    const tempobj = new Object();
+    const forSearch = new Object();
     Array.from(Object.keys(struct1)).forEach(object1 => {
+        tempobj[config.dataFields.rows[0]] = object1;
+        if(transponded){forSearch[config.dataFields.cols[0]] = object1;}
         Array.from(Object.keys(struct1[object1])).forEach(view1 => {
+            tempobj[config.dataFields.rows[1]] = viewToCode[view1];
+            tempobj[config.dataFields.rows[2]] = view1;
+            if(transponded){
+                forSearch[config.dataFields.cols[1]] = viewToCode[view1];
+                forSearch[config.dataFields.cols[2]] = view1;
+            }
             Array.from(Object.keys(struct1[object1][view1])).forEach(component1 => {
+                tempobj[config.dataFields.rows[3]] = component1;
+                if(transponded){forSearch[config.dataFields.cols[3]] = component1;}
+
                 if(struct1[object1][view1][component1].length){
                     struct1[object1][view1][component1].forEach(element1 => {
+
+                        tempobj[config.dataFields.rows[4]] = element1.column3;
+                        if(transponded){forSearch[config.dataFields.cols[4]] = element1.column3;}
+                        
                         Array.from(Object.keys(struct2)).forEach(object2 => {
+                            tempobj[config.dataFields.cols[0]] = object2;
+                            if(transponded){forSearch[config.dataFields.rows[0]] = object2;}
+
                             Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                                tempobj[config.dataFields.cols[1]] = viewToCode[view2];
+                                tempobj[config.dataFields.cols[2]] = view2;
+                                if(transponded){
+                                    forSearch[config.dataFields.rows[1]] = viewToCode[view2];
+                                    forSearch[config.dataFields.rows[2]] = view2;
+                                }
+                                
                                 Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                    tempobj[config.dataFields.cols[3]] = component2;
+                                    if(transponded){forSearch[config.dataFields.rows[3]] = component2;}
+
                                     if(struct2[object2][view2][component2].length){
                                         struct2[object2][view2][component2].forEach(element2 => {
+
+                                            tempobj[config.dataFields.cols[4]] = element2.column3;
+                                            if(transponded){forSearch[config.dataFields.rows[4]] = element2.column3;}
+
+                                            let forComparison = (transponded ? forSearch : tempobj);
                                             let index = traceabilityData.findIndex(cell => {
                                                 const {value, ...data} = cell; //тут то же, что и в config.val
+                                                let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                                if(returnValue){
+                                                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                                }
+                                                return returnValue;
                                                 //console.log(data);
-                                                return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                    req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
                                             });
                                             if(index > -1){
-                                                newTraceabilityData.push(traceabilityData[index]);
+                                                tempobj[config.dataFields.val] =  traceabilityData[index][config.dataFields.val];
                                             }else{
                                                 index = localSaveData.findIndex(cell => {
                                                     const {value, ...data} = cell; //тут то же, что и в config.val
-                                                    //console.log(data);
-                                                    return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                        req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
+                                                    let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                                    if(returnValue){
+                                                        returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                                    }
+                                                    return returnValue;
                                                 });
                                                 if(index > -1){
-                                                    newTraceabilityData.push(localSaveData[index]);
+                                                    tempobj[config.dataFields.val] =  localSaveData[index][config.dataFields.val];
                                                 }else{
-                                                    newTraceabilityData.push(
-                                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: 0.0}
-                                                    
-                                                        );
+                                                    //console.log(tempobj);
+                                                    tempobj[config.dataFields.val] = 0.0;
                                                 }
                                             }
+                                            newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                         });
                                     } else{
-                                        newTraceabilityData.push(
-                                            {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
-                                            );
+                                        tempobj[config.dataFields.cols[4]] = " ";
+                                        tempobj[config.dataFields.val] = undefined;
+                                        newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                     }
                                 });
                             });
@@ -270,23 +307,28 @@ const config = {
                     });
                 }
                 else{
+                    tempobj[config.dataFields.rows[4]] = " ";
+                    tempobj[config.dataFields.val] = undefined;
                     Array.from(Object.keys(struct2)).forEach(object2 => {
+                        tempobj[config.dataFields.cols[0]] = object2;
+
                         Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                            tempobj[config.dataFields.cols[1]] = viewToCode[view2];
+                            tempobj[config.dataFields.cols[2]] = view2;
+                            
                             Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                tempobj[config.dataFields.cols[3]] = component2;
+
                                 if(struct2[object2][view2][component2].length){
                                     struct2[object2][view2][component2].forEach(element2 => {
-                                        newTraceabilityData.push(
-                                            {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
-                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: null}
-                                        
-                                            );
+                                        tempobj[config.dataFields.cols[4]] = element2.column3;
+
+                                        newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                     });
                                 }
                                 else{
-                                    newTraceabilityData.push(
-                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
-                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
-                                        );
+                                    tempobj[config.dataFields.cols[4]] = element2.column3;
+                                    newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                 }
                             });
                         });
@@ -300,10 +342,7 @@ const config = {
     // console.log(traceabilityData)
     $("#pivotContainer").empty();
     makeMatrix(transposed);
-    makeTheTablePretty();
-
-
-    
+    makeTheTablePretty();  
 }
 
 function makeTheTablePretty() {
@@ -646,7 +685,7 @@ function makeTheTablePretty() {
     comp1.textContent = comp2.textContent;
     comp2.textContent = temp;
     $("#pivotContainer").empty();
-    updateTable();
+    updateTable(true);
     makeTheTablePretty();
     
   });
