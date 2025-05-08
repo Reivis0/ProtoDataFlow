@@ -14,33 +14,31 @@ const config = {
       val: "Значение"
     }
   };
-
-  //TODO:
-  //сделать undo redo через два циклических стека. undo - старое во второй стек, в первом указатель - 1, redo - старое в первый стек, второй указатель + 1; Если ячейка не найдена - ничего не делать   
+  //Переделать transformData и код, что сохраняет изменения в traceabilityData
+  //Переделать transponse
   //Сделать изменение данных (написать три функции и поменять makeMatrix)
   //Сделать проверку для создания матрицы на других страницах
   //Сделать кнопи вперед и назад
   //Переделать сохранение и загрузку данных (сейчас все грузится в данные матриц соответствия) localSave
-  //Переделать transformData и код, что сохраняет изменения в traceabilityData
-  //Переделать transponse
+
+  //TODO:
   //
+  //сделать undo redo через два циклических стека. undo - старое во второй стек, в первом указатель - 1, redo - старое в первый стек, второй указатель + 1; Если ячейка не найдена - ничего не делать   
   
-  let traceabilityData = [];
+let traceabilityData = [];
 
-    let transposed = false;
+let GlobalAllObjects;
+let GlobalForMatricies;
+let GlobalInitialData;
+let GlobalViews;
+let viewToCode = {};
+let localSaveData = [];
+let traceabilityMatricies;
+let navigationData;
+let matrixName;
+const matrixNameInput = document.getElementById("matrixName");
 
-    let GlobalAllObjects;
-    let GlobalForMatricies;
-    let GlobalInitialData;
-    let GlobalViews;
-    let viewToCode = {};
-    let localSaveData = [];
-    let complianceMatricies;
-    let navigationData;
-    let matrixName;
-    const matrixNameInput = document.getElementById("matrixName");
-
-   document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
+document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     //  let login = sessionStorage.getItem("GlobalLogin");
     //  if(login === '' || login === null) {
     //      e.preventDefault();
@@ -50,19 +48,19 @@ const config = {
 
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
-     complianceMatricies = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+     traceabilityMatricies = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
      navigationData = JSON.parse(sessionStorage.getItem("matrix-navigation"));
 
      if(navigationData.name){
         matrixName = navigationData.name;
-        traceabilityData = complianceMatricies[navigationData.name]["data"];
+        traceabilityData = traceabilityMatricies[navigationData.name]["data"];
         matrixNameInput.value = matrixName;
-        document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][0]
-        document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][1]
-        document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][2]
-        document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][3]
-        document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][4]
-        document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][5]
+        document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][0]
+        document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][1]
+        document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][2]
+        document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][3]
+        document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][4]
+        document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][5]
      }
     
      forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
@@ -70,6 +68,7 @@ const config = {
      GlobalAllObjects = allObjects;
      GlobalForMatricies = forMatricies;
      GlobalInitialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+     console.log(GlobalInitialData);
      level1s =  Array.from(document.getElementsByClassName("level1"));
      for(let i = 0; i < level1s.length; ++i){
          allObjects.forEach(source => {
@@ -111,7 +110,7 @@ const config = {
         level3Pressed(level3s[i].children[0]);
     }
     updateTable();
-    makeMatrix(transposed);
+    makeMatrix(false, false);
  
     makeTheTablePretty();
        
@@ -133,15 +132,23 @@ const config = {
 
      setupButtons();
      document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-     createComplianceButtons();
+     createComplianceButtons("traceability-matrix.html");
+     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+     createTraceabilityButtons("traceability-matrix.html");
 
-   });
+});
 
-   function level1Pressed(button){
+function level1Pressed(button){
     button.addEventListener("click", (e) => {
+        e.target.parentElement.parentElement.children[1].textContent = button.textContent;
+        CreateLevel2Buttons(button);
+        Update();
+    })
+}
+
+function CreateLevel2Buttons(button){
         let obj = button.textContent;
-        e.target.parentElement.parentElement.children[1].textContent = obj;
-        classList = e.target.classList;
+        classList = button.classList;
         let div = document.getElementsByClassName(`level2 ${classList[classList.length-1]}`)[0];
         //console.log(div);
         div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
@@ -171,19 +178,17 @@ const config = {
         //level2Pressed(div.children[0]);
         div.parentElement.children[1].textContent = "Все";
         CreateLevel3Buttons(div.children[0]);
-        Update();
-    })
-   }
+}
 
-   function level2Pressed(button){
+function level2Pressed(button){
     button.addEventListener("click", (e) => {
         e.target.parentElement.parentElement.children[1].textContent = button.textContent;
         CreateLevel3Buttons(button);
         Update();
     })
-   }
+}
 
-   function CreateLevel3Buttons(button){
+function CreateLevel3Buttons(button){
         classList = button.classList;
         let obj = document.getElementsByClassName(`level1 ${classList[classList.length-1]}`)[0].parentElement.children[1].textContent;
         let div = document.getElementsByClassName(`level3 ${classList[classList.length-1]}`)[0]
@@ -253,39 +258,39 @@ const config = {
         div.children[0].textContent = "Все"
         //level3Pressed(div.children[0]);
         div.parentElement.children[1].textContent = "Все";
-   }
+}
 
-   function level3Pressed(button){
+function level3Pressed(button){
     button.addEventListener("click", (e) => {
         let obj = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = obj;
         Update();
     })
-   }
+}
 
-   function Update(){
+function Update(transposed = false){
     let obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
     let obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
     if(obj1 === "Требования спецификация" || obj1 == "Требования исходные"){
         if(obj2 === "Требования спецификация" || obj2 == "Требования исходные"){
-            updateTableBoth();
+            updateTableBoth(transposed);
         }
         else{
-            updateTableOne(true);
+            updateTableOne(true, transposed);
         }
     }
     else{
         if(obj2 === "Требования спецификация" || obj2 == "Требования исходные"){
-            updateTableOne(false);
+            updateTableOne(false, transposed);
         }
         else{
-            updateTable();
+            updateTable(transposed);
         }
     }
 
-   }
+}
 
-   function updateTable() {
+function updateTable(transponded = false) {
     const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
     const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
     const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent;
@@ -308,7 +313,7 @@ const config = {
                      element1Array[v1][el] = GlobalForMatricies[object1]["views"][v1][el];
                  });
              }else{
-                 element1Array[v1][el] = GlobalForMatricies[object1]["views"][v1][comp1];
+                 element1Array[v1][comp1] = GlobalForMatricies[object1]["views"][v1][comp1];
              }
         });
         struct1[object1] = element1Array;
@@ -328,47 +333,84 @@ const config = {
         });
         struct2[object2] = element2Array;
     });
+    const tempobj = new Object();
+    const forSearch = new Object();
     Array.from(Object.keys(struct1)).forEach(object1 => {
+        tempobj[config.dataFields.rows[0]] = object1;
+        if(transponded){forSearch[config.dataFields.cols[0]] = object1;}
         Array.from(Object.keys(struct1[object1])).forEach(view1 => {
+            tempobj[config.dataFields.rows[1]] = viewToCode[view1];
+            tempobj[config.dataFields.rows[2]] = view1;
+            if(transponded){
+                forSearch[config.dataFields.cols[1]] = viewToCode[view1];
+                forSearch[config.dataFields.cols[2]] = view1;
+            }
             Array.from(Object.keys(struct1[object1][view1])).forEach(component1 => {
+                tempobj[config.dataFields.rows[3]] = component1;
+                if(transponded){forSearch[config.dataFields.cols[3]] = component1;}
+
                 if(struct1[object1][view1][component1].length){
                     struct1[object1][view1][component1].forEach(element1 => {
+
+                        tempobj[config.dataFields.rows[4]] = element1.column3;
+                        if(transponded){forSearch[config.dataFields.cols[4]] = element1.column3;}
+                        
                         Array.from(Object.keys(struct2)).forEach(object2 => {
+                            tempobj[config.dataFields.cols[0]] = object2;
+                            if(transponded){forSearch[config.dataFields.rows[0]] = object2;}
+
                             Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                                tempobj[config.dataFields.cols[1]] = viewToCode[view2];
+                                tempobj[config.dataFields.cols[2]] = view2;
+                                if(transponded){
+                                    forSearch[config.dataFields.rows[1]] = viewToCode[view2];
+                                    forSearch[config.dataFields.rows[2]] = view2;
+                                }
+                                
                                 Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                    tempobj[config.dataFields.cols[3]] = component2;
+                                    if(transponded){forSearch[config.dataFields.rows[3]] = component2;}
+
                                     if(struct2[object2][view2][component2].length){
                                         struct2[object2][view2][component2].forEach(element2 => {
+
+                                            tempobj[config.dataFields.cols[4]] = element2.column3;
+                                            if(transponded){forSearch[config.dataFields.rows[4]] = element2.column3;}
+
+                                            let forComparison = (transponded ? forSearch : tempobj);
                                             let index = traceabilityData.findIndex(cell => {
                                                 const {value, ...data} = cell; //тут то же, что и в config.val
+                                                let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                                if(returnValue){
+                                                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                                }
+                                                return returnValue;
                                                 //console.log(data);
-                                                return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                    req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
                                             });
                                             if(index > -1){
-                                                newTraceabilityData.push(traceabilityData[index]);
+                                                tempobj[config.dataFields.val] =  traceabilityData[index][config.dataFields.val];
                                             }else{
                                                 index = localSaveData.findIndex(cell => {
                                                     const {value, ...data} = cell; //тут то же, что и в config.val
-                                                    //console.log(data);
-                                                    return JSON.stringify(data) === JSON.stringify({object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                        req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3});
+                                                    let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                                    if(returnValue){
+                                                        returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                                    }
+                                                    return returnValue;
                                                 });
                                                 if(index > -1){
-                                                    newTraceabilityData.push(localSaveData[index]);
+                                                    tempobj[config.dataFields.val] =  localSaveData[index][config.dataFields.val];
                                                 }else{
-                                                    newTraceabilityData.push(
-                                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: 0.0}
-                                                    
-                                                        );
+                                                    //console.log(tempobj);
+                                                    tempobj[config.dataFields.val] = 0.0;
                                                 }
                                             }
+                                            newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                         });
                                     } else{
-                                        newTraceabilityData.push(
-                                            {object: object1, code: viewToCode[view1], view: view1, component: component1, data: element1.column3, 
-                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
-                                            );
+                                        tempobj[config.dataFields.cols[4]] = " ";
+                                        tempobj[config.dataFields.val] = undefined;
+                                        newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                     }
                                 });
                             });
@@ -376,23 +418,28 @@ const config = {
                     });
                 }
                 else{
+                    tempobj[config.dataFields.rows[4]] = " ";
+                    tempobj[config.dataFields.val] = undefined;
                     Array.from(Object.keys(struct2)).forEach(object2 => {
+                        tempobj[config.dataFields.cols[0]] = object2;
+
                         Array.from(Object.keys(struct2[object2])).forEach(view2 => {
+                            tempobj[config.dataFields.cols[1]] = viewToCode[view2];
+                            tempobj[config.dataFields.cols[2]] = view2;
+                            
                             Array.from(Object.keys(struct2[object2][view2])).forEach(component2 => {
+                                tempobj[config.dataFields.cols[3]] = component2;
+
                                 if(struct2[object2][view2][component2].length){
                                     struct2[object2][view2][component2].forEach(element2 => {
-                                        newTraceabilityData.push(
-                                            {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
-                                                req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: element2.column3, value: null}
-                                        
-                                            );
+                                        tempobj[config.dataFields.cols[4]] = element2.column3;
+
+                                        newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                     });
                                 }
                                 else{
-                                    newTraceabilityData.push(
-                                        {object: object1, code: viewToCode[view1], view: view1, component: component1, data: " ", 
-                                            req_object: object2, req_code: viewToCode[view2], req_view: view2, req_component: component2, req_data: " ", value: undefined}
-                                        );
+                                    tempobj[config.dataFields.cols[4]] = " ";
+                                    newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                 }
                             });
                         });
@@ -405,11 +452,331 @@ const config = {
     traceabilityData = JSON.parse(JSON.stringify(newTraceabilityData));
     // console.log(traceabilityData)
     $("#pivotContainer").empty();
-    makeMatrix(transposed);
+    makeMatrix(false, false);
+    makeTheTablePretty();  
+}
+
+function updateTableOne(flag, transponded = false){
+
+    let newTraceabilityData = [];
+    
+    const obj = document.getElementsByClassName(`level1 ${flag ? "right" : "left"}`)[0].parentElement.children[1].textContent;
+    const view = document.getElementsByClassName(`level2 ${flag ? "right" : "left"}`)[0].parentElement.children[1].textContent;
+    const comp = document.getElementsByClassName(`level3 ${flag ? "right" : "left"}`)[0].parentElement.children[1].textContent;
+    const req = document.getElementsByClassName(`level1 ${flag ? "left" : "right"}`)[0].parentElement.children[1].textContent;
+    const reqObj = document.getElementsByClassName(`level2 ${flag ? "left" : "right"}`)[0].parentElement.children[1].textContent;
+    const source = document.getElementsByClassName(`level3 ${flag ? "left" : "right"}`)[0].parentElement.children[1].textContent;
+    
+    const objArray = (obj === "Все объекты" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === obj));
+    const viewArray = view === "Все" ? Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)) : Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]].views)).filter(el => el === view); 
+    const reqObjArray = (reqObj === "Все" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === reqObj));
+    let typeOfReq = (req === "Требования спецификация");
+    
+    let structObj = {};
+    objArray.forEach(object1 => {
+        let element1Struct = {};
+         viewArray.forEach(v1 => {
+             element1Struct[v1] = {};
+             if(comp === "Все") {
+                 Array.from(Object.keys(GlobalForMatricies[object1]["views"][v1])).forEach(el => {
+                     element1Struct[v1][el] = GlobalForMatricies[object1]["views"][v1][el];
+                 });
+             }else{
+                 element1Struct[v1][comp1] = GlobalForMatricies[object1]["views"][v1][comp1];
+             }
+        });
+        structObj[object1] = element1Struct;
+    });
+    let ArrReq = [];
+    //console.log(req);
+    if(typeOfReq){
+        reqObjArray.forEach(object => {
+            if(source !== "Все") {
+                GlobalForMatricies[object]["specific-requrements"].filter(row => row.column1 === source).forEach(data => {
+                    data["object"] = object;
+                    ArrReq.push(data)
+                });
+            }
+            else{
+                //console.log(GlobalAllObjects);
+                GlobalForMatricies[object]["specific-requrements"].forEach(data => {
+                    data["object"] = object;
+                    ArrReq.push(data)
+                });
+            }
+        });
+    }
+    else{
+        reqObjArray.forEach(object => {
+            if(source !== "Все") {
+                GlobalInitialData.filter(row => row.column1 === source && row.column2 === object)
+                .forEach(data => ArrReq.push(data));
+            }
+            else{
+                GlobalInitialData.filter(row => row.column2 === object)
+                .forEach(data => ArrReq.push(data));
+            }
+        });
+    }
+
+    const tempobj = new Object();
+    const forSearch = new Object();
+    Array.from(Object.keys(structObj)).forEach(object1 => {
+        tempobj[flag ? config.dataFields.cols[0] : config.dataFields.rows[0]] = object1;
+        if(transponded){forSearch[!flag ? config.dataFields.cols[0] : config.dataFields.rows[0]] = object1;}
+
+        Array.from(Object.keys(structObj[object1])).forEach(view1 => {
+            tempobj[flag ? config.dataFields.cols[1] : config.dataFields.rows[1]] = viewToCode[view1];
+            tempobj[flag ? config.dataFields.cols[2] : config.dataFields.rows[2]] = view1;
+            if(transponded){
+                forSearch[!flag ? config.dataFields.cols[1] : config.dataFields.rows[1]] = viewToCode[view1];
+                forSearch[!flag ? config.dataFields.cols[2] : config.dataFields.rows[2]] = view1;
+            }
+
+            Array.from(Object.keys(structObj[object1][view1])).forEach(component1 => {
+                tempobj[flag ? config.dataFields.cols[3] : config.dataFields.rows[3]] = component1;
+                if(transponded){forSearch[!flag ? config.dataFields.cols[3] : config.dataFields.rows[3]] = component1;}
+
+                if(structObj[object1][view1][component1].length){
+                    structObj[object1][view1][component1].forEach(element1 => {
+
+                        tempobj[flag ? config.dataFields.cols[4] : config.dataFields.rows[4]] = element1.column3;
+                        if(transponded){forSearch[!flag ? config.dataFields.cols[4] : config.dataFields.rows[4]] = element1.column3;}
+                        ArrReq.forEach(req => {
+                            if(flag){
+                                tempobj[config.dataFields.requrement_rows[0]] = req.column7;
+                                tempobj[config.dataFields.requrement_rows[1]] = req.column1;
+                                tempobj[config.dataFields.requrement_rows[2]] = (typeOfReq ? req["object"] : req.column2);
+                                if(typeOfReq){tempobj[config.dataFields.requrement_rows[3]] =  req.column2;}
+                                tempobj[config.dataFields.requrement_rows[4]] = req.column3;
+                                if(transponded){
+                                    forSearch[config.dataFields.requrement_cols[0]] = req.column7;
+                                    forSearch[config.dataFields.requrement_cols[1]] = req.column1;
+                                    forSearch[config.dataFields.requrement_cols[2]] = (typeOfReq ? req["object"] : req.column2);
+                                    if(typeOfReq){forSearch[config.dataFields.requrement_cols[3]] =  req.column2;}
+                                    forSearch[config.dataFields.requrement_cols[4]] = req.column3;
+                                }
+                            }else{
+                                tempobj[config.dataFields.requrement_cols[0]] = req.column7;
+                                tempobj[config.dataFields.requrement_cols[1]] = req.column1;
+                                tempobj[config.dataFields.requrement_cols[2]] = (typeOfReq ? req["object"] : req.column2);
+                                if(typeOfReq){tempobj[config.dataFields.requrement_cols[3]] =  req.column2;}
+                                tempobj[config.dataFields.requrement_cols[4]] = req.column3;
+                                if(transponded){
+                                    forSearch[config.dataFields.requrement_rows[0]] = req.column7;
+                                    forSearch[config.dataFields.requrement_rows[1]] = req.column1;
+                                    forSearch[config.dataFields.requrement_rows[2]] = (typeOfReq ? req["object"] : req.column2);
+                                    if(typeOfReq){forSearch[config.dataFields.requrement_rows[3]] =  req.column2;}
+                                    forSearch[config.dataFields.requrement_rows[4]] = req.column3;
+                                }
+                            }
+                            let forComparison = (transponded ? forSearch : tempobj);
+                            let index = traceabilityData.findIndex(cell => {
+                                const {value, ...data} = cell; //тут то же, что и в config.val
+                                let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                if(returnValue){
+                                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                }
+                                return returnValue;
+                            });
+                            if(index > -1) {
+                                tempobj[config.dataFields.val] = traceabilityData[index][config.dataFields.val];
+                            }
+                            else{
+                                index = localSaveData.findIndex(cell => {
+                                    const {value, ...data} = cell; //тут то же, что и в config.val
+                                    let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                                if(returnValue){
+                                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                                }
+                                return returnValue;
+                                });
+                                if(index > -1){
+                                    tempobj[config.dataFields.val] = localSaveData[index][config.dataFields.val];
+                                }else{
+                                    //console.log(tempobj);
+                                    tempobj[config.dataFields.val] = 0.0;
+                                }
+                            }
+                            newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
+                        });
+                    });
+                }
+                else{
+                    tempobj[flag ? config.dataFields.cols[4] : config.dataFields.rows[4]] = " ";
+                    tempobj[config.dataFields.val] = undefined;
+                    ArrReq.forEach(req => {
+                        if(flag){
+                            tempobj[config.dataFields.requrement_rows[0]] = req.column7;
+                            tempobj[config.dataFields.requrement_rows[1]] = req.column1;
+                            tempobj[config.dataFields.requrement_rows[2]] = (typeOfReq ? req["object"] : req.column2);
+                            tempobj[config.dataFields.requrement_rows[3]] = (typeOfReq ? req.column2 : " ");
+                            tempobj[config.dataFields.requrement_rows[4]] = req.column3;
+                        }else{
+                            tempobj[config.dataFields.requrement_cols[0]] = req.column7;
+                            tempobj[config.dataFields.requrement_cols[1]] = req.column1;
+                            tempobj[config.dataFields.requrement_cols[2]] = (typeOfReq ? req["object"] : req.column2);
+                            tempobj[config.dataFields.requrement_cols[3]] = (typeOfReq ? req.column2 : " ");
+                            tempobj[config.dataFields.requrement_cols[4]] = req.column3;
+                        }
+                        newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
+                    });
+                }
+            });
+        });
+    });
+    
+    traceabilityData = JSON.parse(JSON.stringify(newTraceabilityData));
+    // console.log(traceabilityData)
+    $("#pivotContainer").empty();
+    makeMatrix(flag, !flag, !typeOfReq, !typeOfReq);
+    makeTheTablePretty();
+}
+
+function updateTableBoth(transponded = false) {
+    const req1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
+    const reqObj1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent;
+    const source1 = document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent;
+    const req2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
+    const reqObj2 = document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent;
+    const source2 = document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent;
+    
+    const reqObjArray1 = (reqObj1 === "Все" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === reqObj1));
+    const typeOfReqLeft = (req1 === "Требования спецификация");
+    const reqObjArray2 = (reqObj2 === "Все" ? GlobalAllObjects : GlobalAllObjects.filter(el => el === reqObj2));
+    const typeOfReqRight = (req1 === "Требования спецификация");
+
+    const ArrReq1 = [];
+    if(typeOfReqLeft){
+        reqObjArray1.forEach(object => {
+            if(source1 !== "Все") {
+                GlobalForMatricies[object]["specific-requrements"].filter(row => row.column1 === source1).forEach(data => {
+                    data["object"] = object;
+                    ArrReq1.push(data)
+                });
+            }
+            else{
+                //console.log(GlobalAllObjects);
+                GlobalForMatricies[object]["specific-requrements"].forEach(data => {
+                    data["object"] = object;
+                    ArrReq1.push(data)
+                });
+            }
+        });
+    }
+    else{
+        reqObjArray1.forEach(object => {
+            if(source1 !== "Все") {
+                GlobalInitialData.filter(row => row.column1 === source1 && row.column2 === object)
+                .forEach(data => ArrReq1.push(data));
+            }
+            else{
+                GlobalInitialData.filter(row => row.column2 === object)
+                .forEach(data => ArrReq1.push(data));
+            }
+        });
+    }
+
+    const ArrReq2 = [];
+    if(typeOfReqLeft){
+        reqObjArray2.forEach(object => {
+            if(source2 !== "Все") {
+                GlobalForMatricies[object]["specific-requrements"].filter(row => row.column1 === source2).forEach(data => {
+                    data["object"] = object;
+                    ArrReq2.push(data)
+                });
+            }
+            else{
+                //console.log(GlobalAllObjects);
+                GlobalForMatricies[object]["specific-requrements"].forEach(data => {
+                    data["object"] = object;
+                    ArrReq2.push(data)
+                });
+            }
+        });
+    }
+    else{
+        reqObjArray2.forEach(object => {
+            if(source2 !== "Все") {
+                GlobalInitialData.filter(row => row.column1 === source2 && row.column2 === object)
+                .forEach(data => ArrReq2.push(data));
+            }
+            else{
+                GlobalInitialData.filter(row => row.column2 === object)
+                .forEach(data => ArrReq2.push(data));
+            }
+        });
+    }
+    const newTraceabilityData = [];
+    const tempobj = new Object();
+    const forSearch = new Object();
+    ArrReq1.forEach(requrement1 => {
+        tempobj[config.dataFields.requrement_rows[0]] = requrement1.column7;
+        tempobj[config.dataFields.requrement_rows[1]] = requrement1.column1;
+        tempobj[config.dataFields.requrement_rows[2]] = (typeOfReqLeft ? requrement1["object"] : requrement1.column2);
+        if(typeOfReqLeft){tempobj[config.dataFields.requrement_rows[3]] =  requrement1.column2;}
+        tempobj[config.dataFields.requrement_rows[4]] = requrement1.column3;
+
+        if(transponded){
+            forSearch[config.dataFields.requrement_cols[0]] = requrement1.column7;
+            forSearch[config.dataFields.requrement_cols[1]] = requrement1.column1;
+            forSearch[config.dataFields.requrement_cols[2]] = (typeOfReqLeft ? requrement1["object"] : requrement1.column2);
+            if(typeOfReqLeft){forSearch[config.dataFields.requrement_cols[3]] =  requrement1.column2;}
+            forSearch[config.dataFields.requrement_cols[4]] = requrement1.column3;
+        }
+        ArrReq2.forEach(requrement2 => {
+            tempobj[config.dataFields.requrement_cols[0]] = requrement2.column7;
+            tempobj[config.dataFields.requrement_cols[1]] = requrement2.column1;
+            tempobj[config.dataFields.requrement_cols[2]] = (typeOfReqRight ? requrement2["object"] : requrement2.column2);
+            if(typeOfReqRight){tempobj[config.dataFields.requrement_cols[3]] =  requrement2.column2;}
+            tempobj[config.dataFields.requrement_cols[4]] = requrement2.column3;
+
+            if(transponded){
+                forSearch[config.dataFields.requrement_rows[0]] = requrement2.column7;
+                forSearch[config.dataFields.requrement_rows[1]] = requrement2.column1;
+                forSearch[config.dataFields.requrement_rows[2]] = (typeOfReqRight ? requrement2["object"] : requrement2.column2);
+                if(typeOfReqRight){forSearch[config.dataFields.requrement_rows[3]] =  requrement2.column2;}
+                forSearch[config.dataFields.requrement_rows[4]] = requrement2.column3;
+            }
+
+            let forComparison = (transponded ? forSearch : tempobj);
+            let index = traceabilityData.findIndex(cell => {
+                const {value, ...data} = cell; //тут то же, что и в config.val
+                let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                if(returnValue){
+                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                }
+                return returnValue;
+            });
+            if(index > -1) {
+                tempobj[config.dataFields.val] = traceabilityData[index][config.dataFields.val];
+            }
+            else{
+                index = localSaveData.findIndex(cell => {
+                    const {value, ...data} = cell; //тут то же, что и в config.val
+                    let returnValue = config.dataFields.rows.every(el => data[el] === forComparison[el]);
+                if(returnValue){
+                    returnValue = config.dataFields.cols.every(el => data[el] === forComparison[el]);
+                }
+                return returnValue;
+                });
+                if(index > -1){
+                    tempobj[config.dataFields.val] = localSaveData[index][config.dataFields.val];
+                }else{
+                    //console.log(tempobj);
+                    tempobj[config.dataFields.val] = 0.0;
+                }
+            }
+            newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
+        });
+    });
+
+    traceabilityData = JSON.parse(JSON.stringify(newTraceabilityData));
+    // console.log(traceabilityData)
+    $("#pivotContainer").empty();
+    makeMatrix(true, true, !typeOfReqLeft, !typeOfReqRight);
     makeTheTablePretty();
 
-
-    
 }
 
 function makeTheTablePretty() {
@@ -444,46 +811,77 @@ function makeTheTablePretty() {
       }, 50);
 }
 
-  function transformData(data) {
+function transformData(data) {
   return data.map(item => {
       const newItem = {};
-      config.dataFields.rows.forEach((field, i) => newItem[config.displayNames.rows[i]] = item[field]);
-      config.dataFields.cols.forEach((field, i) => newItem[config.displayNames.cols[i]] = item[field]);
+      if( item[config.dataFields.rows[0]]){
+        config.dataFields.rows.forEach((field, i) => newItem[config.displayNames.rows[i]] = item[field]);
+      }
+      if( item[config.dataFields.cols[0]]){
+        config.dataFields.cols.forEach((field, i) => newItem[config.displayNames.cols[i]] = item[field]);
+      }
+      if( item[config.dataFields.requrement_rows[0]]){
+        config.dataFields.requrement_rows.forEach((field, i) => newItem[config.displayNames.requrement_rows[i]] = item[field]);
+      }
+      if( item[config.dataFields.requrement_cols[0]]){
+        config.dataFields.requrement_cols.forEach((field, i) => newItem[config.displayNames.requrement_cols[i]] = item[field]);
+      }
+    //   config.dataFields.rows.forEach((field, i) => newItem[config.displayNames.rows[i]] = item[field]);
+    //   config.dataFields.cols.forEach((field, i) => newItem[config.displayNames.cols[i]] = item[field]);
       newItem[config.displayNames.val] = item[config.dataFields.val];
       return newItem;
     });
-  }
+}
   
   // текущая клетка
-  var activePivotInfo = null;
+var activePivotInfo = null;
   
-  $(document).on('click', function(event) {
+$(document).on('click', function(event) {
       if (activePivotInfo && !$(event.target).closest('.pvtVal').length) {
           let td = activePivotInfo.input.parentElement;
           saveAndRemoveInput(activePivotInfo.input);
         
-  
+
           let index = traceabilityData.findIndex(row => {
             let flag = true;
-            for(let i = 0; i < config.dataFields.rows.length; ++i) {
-              flag = row[config.dataFields.rows[i]] === activePivotInfo.filters[config.displayNames.rows[i]];
-              if(!flag){
-                break;
-              }
-            }
-  
-            if(flag){
-              for(let i = 0; i < config.dataFields.cols.length; ++i) {
-                flag = row[config.dataFields.cols[i]] === activePivotInfo.filters[config.displayNames.cols[i]];
-                if(!flag){
-                  break;
+
+            if( activePivotInfo.filters[config.displayNames.rows[0]]){
+                for(let i = 0; i < config.dataFields.rows.length; ++i) {
+                    flag = row[config.dataFields.rows[i]] === activePivotInfo.filters[config.displayNames.rows[i]];
+                    if(!flag){
+                      return flag;
+                    }
                 }
               }
-            }
-  
+              if( activePivotInfo.filters[config.displayNames.cols[0]] && flag){
+                for(let i = 0; i < config.dataFields.cols.length; ++i) {
+                    flag = row[config.dataFields.cols[i]] === activePivotInfo.filters[config.displayNames.cols[i]];
+                    if(!flag){
+                        return flag;
+                    }
+                }
+              }
+              if( activePivotInfo.filters[config.displayNames.requrement_rows[1]] && flag){
+                for(let i = 0; i < config.dataFields.requrement_rows.length; ++i) {
+                    flag = row[config.dataFields.requrement_rows[i]] === activePivotInfo.filters[config.displayNames.requrement_rows[i]];
+                    if(!flag){
+                        return flag;
+                    }
+                }
+              }
+              if( activePivotInfo.filters[config.displayNames.requrement_cols[1]] && flag){
+                for(let i = 0; i < config.dataFields.requrement_cols.length; ++i) {
+                    flag = row[config.dataFields.requrement_cols[i]] === activePivotInfo.filters[config.displayNames.requrement_cols[i]];
+                    if(!flag){
+                        return flag;
+                    }
+                }
+              }
+
             return flag;
-  
+
           });
+        
   
           let newValue = parseFloat($(activePivotInfo.input).val());
   
@@ -503,16 +901,16 @@ function makeTheTablePretty() {
           
           activePivotInfo = null;
       }
-  });
+});
   
-  $(document).on('keyup', function(e) {
+$(document).on('keyup', function(e) {
       if (e.key === "Escape" && activePivotInfo) {
           $(activePivotInfo.input).remove();
           activePivotInfo = null;
       }
-  });
+});
   
-  function saveAndRemoveInput(inputElement) {
+function saveAndRemoveInput(inputElement) {
       var cell = $(inputElement).parent();
       var value = $(inputElement).val();
       
@@ -532,16 +930,36 @@ function makeTheTablePretty() {
           cell.html(roundedValue.toFixed(1));
       }
       $(inputElement).remove();
-  }
+}
   
-  function makeMatrix(transposed) {
+function makeMatrix(leftIsRequrement, rightIsRequrement, typeOfLeft = false, typeOfRight = false) {
     $("#pivotContainer")
           .empty()
           .removeData()
           //.off();
       let data = transformData(traceabilityData);
-      let newCols = transposed ? config.displayNames.rows : config.displayNames.cols;
-      let newRows = transposed ? config.displayNames.cols : config.displayNames.rows;
+      
+      //let newCols = rightIsRequrement ? config.displayNames.requrement_cols : config.displayNames.cols;
+      //let newRows = leftIsRequrement ? config.displayNames.requrement_rows : config.displayNames.rows;
+
+      let newCols;
+      if(rightIsRequrement){
+          newCols = JSON.parse(JSON.stringify(config.displayNames.requrement_cols));
+        if(typeOfRight){
+            newCols.splice(3, 1);
+        }
+      }else{
+        newCols = config.displayNames.cols;
+      }
+      let newRows;
+      if(leftIsRequrement){
+        newRows = JSON.parse(JSON.stringify(config.displayNames.requrement_rows));
+        if(typeOfLeft){
+            newRows.splice(3, 1);
+        }
+      }else{
+        newRows = config.displayNames.rows;
+      }
       $("#pivotContainer").pivotUI(data, {
           rows: newRows,
           cols: newCols,
@@ -589,21 +1007,39 @@ function makeTheTablePretty() {
   
                               let index = traceabilityData.findIndex(row => {
                                 let flag = true;
-                                for(let i = 0; i < config.dataFields.rows.length; ++i) {
-                                  flag = row[config.dataFields.rows[i]] === filters[config.displayNames.rows[i]];
-                                  if(!flag){
-                                    break;
-                                  }
-                                }
-  
-                                if(flag){
-                                  for(let i = 0; i < config.dataFields.cols.length; ++i) {
-                                    flag = row[config.dataFields.cols[i]] === filters[config.displayNames.cols[i]];
-                                    if(!flag){
-                                      break;
+
+                                if( filters[config.dataFields.rows[0]]){
+                                    for(let i = 0; i < config.displayNames.rows.length; ++i) {
+                                        flag = row[config.dataFields.rows[i]] === filters[config.displayNames.rows[i]];
+                                        if(!flag){
+                                          return flag;
+                                        }
                                     }
                                   }
-                                }
+                                  if( filters[config.displayNames.cols[0]] && flag){
+                                    for(let i = 0; i < config.dataFields.cols.length; ++i) {
+                                        flag = row[config.dataFields.cols[i]] === filters[config.displayNames.cols[i]];
+                                        if(!flag){
+                                            return flag;
+                                        }
+                                    }
+                                  }
+                                  if( filters[config.displayNames.requrement_rows[1]] && flag){
+                                    for(let i = 0; i < config.dataFields.requrement_rows.length; ++i) {
+                                        flag = row[config.dataFields.requrement_rows[i]] === filters[config.displayNames.requrement_rows[i]];
+                                        if(!flag){
+                                            return flag;
+                                        }
+                                    }
+                                  }
+                                  if( filters[config.displayNames.requrement_cols[1]] && flag){
+                                    for(let i = 0; i < config.dataFields.requrement_cols.length; ++i) {
+                                        flag = row[config.dataFields.requrement_cols[i]] === filters[config.displayNames.requrement_cols[i]];
+                                        if(!flag){
+                                            return flag;
+                                        }
+                                    }
+                                  }
   
                                 return flag;
   
@@ -630,11 +1066,11 @@ function makeTheTablePretty() {
           }
       });
       
-  };
+};
   
 
   
-  $(document).keydown(function (e) {
+$(document).keydown(function (e) {
     if (e.key === "Escape") { // escape key maps to keycode `27`
         $(".pvtTable tr td").each(function (i, v) {
             if ($(v).children().length > 0) {
@@ -645,9 +1081,9 @@ function makeTheTablePretty() {
             }
         });
     }
-  });
+});
   
-  function calculateRow(td) {
+function calculateRow(td) {
     $tr = $(td).parent();
     $lastTd = $tr.find("td:last");
     var sum = 0;
@@ -664,9 +1100,9 @@ function makeTheTablePretty() {
       $lastTd.removeClass('zero-total');
     }
   
-  }
+}
   
-  function calculateColumn() {
+function calculateColumn() {
   
     $(".pvtTable tbody tr:first td").each(function (index, val) {
         var total = 0;
@@ -701,70 +1137,50 @@ function makeTheTablePretty() {
     } else {
       $grandTotalCell.removeClass('zero-total');
     }
-  }
+}
   
-  document.getElementById("transposeBtn").addEventListener("click", (e) => {
+document.getElementById("transposeBtn").addEventListener("click", (e) => {
     const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1];
     const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1];
     const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1];
     const view2 = document.getElementsByClassName(`level2 right`)[0].parentElement.children[1];
     const comp1 = document.getElementsByClassName(`level3 left`)[0].parentElement.children[1];
     const comp2 = document.getElementsByClassName(`level3 right`)[0].parentElement.children[1];
-    let temp = obj1.textContent;
-    obj1.textContent = obj2.textContent;
-    obj2.textContent = temp;
-    temp = view1.textContent;
-    view1.textContent = view2.textContent;
-    view2.textContent = temp;
 
-    for(let i = 0; i < 2; ++i){
-        let div = document.getElementsByClassName(`level3 ${i === 0 ? "left" : "right"}`)[0];
-        div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-        let obj = (i === 0 ? obj1.textContent : obj2.textContent);
-        let view = (i === 0 ? view1.textContent : view2.textContent);
-        if(view === "Все"){
+    const obj1_text = obj1.textContent;
+    const obj2_text = obj2.textContent;
+    const view1_text = view1.textContent;
+    const view2_text = view2.textContent;
+    const comp1_text = comp1.textContent;
+    const comp2_text =  comp2.textContent;
+    obj1.textContent = obj2_text;
+    obj2.textContent = obj1_text;
 
-        }else{
-            if(obj === "Все объекты"){
-                Array.from(Object.keys(GlobalForMatricies[GlobalAllObjects[0]]["views"][view])).forEach( comp => {
-                    const newSource = document.createElement("button");
-                    newSource.classList.add("dropdownBtn");
-                    newSource.classList.add(i === 0 ? "left" : "right");
-                    newSource.textContent = comp;
-                    level3Pressed(newSource);
-                    div.appendChild(newSource);
-                });
-            }
-            else{
-            Array.from(Object.keys(GlobalForMatricies[obj]["views"][view])).forEach( comp => {
-                const newSource = document.createElement("button");
-                newSource.classList.add("dropdownBtn");
-                newSource.classList.add(i === 0 ? "left" : "right");
-                newSource.textContent = comp;
-                level3Pressed(newSource);
-                div.appendChild(newSource);
-            });
-            }
-        }
-    }
+    CreateLevel2Buttons(obj1);
+    CreateLevel2Buttons(obj2);
+    view1.textContent = view2_text;
+    view2.textContent = view1_text;
 
+    CreateLevel3Buttons(view1);
+    CreateLevel3Buttons(view2);
     temp = comp1.textContent;
-    comp1.textContent = comp2.textContent;
-    comp2.textContent = temp;
+    comp1.textContent = comp2_text;
+    comp2.textContent = comp1_text;
+    
     $("#pivotContainer").empty();
-    updateTable();
+    Update(true);
     makeTheTablePretty();
     
-  });
+});
 
-  document.getElementById("backBtn").addEventListener("click", (e) => {
+document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
     if(traceabilityData.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
                 showNotification("Введите название матрицы", false);
                 matrixNameInput.focus();
-                console.log("sdasd")
+                //console.log("sdasd")
                 return
             }
             localSave();
@@ -788,19 +1204,22 @@ function makeTheTablePretty() {
         }
     }
 
-    const num = document.getElementById("compliance").children.length - 1;
+    const num = document.getElementById("matrixVerification").children.length - 1;
     if(navigationData.flag){
         if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"traceability-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
         }
         window.location.href = navigationData.page;
     }
-    if(num === 0) {
-        window.location.href = "component.html";
-    }
     else{
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
-        window.location.href = "compliance-matrix.html";
+        if(num === 0) {
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"traceability-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            window.location.href = "compliance-matrix.html"; 
+        }
+        else{
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"traceability-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            window.location.href = "traceability-matrix.html";
+        }   
     }
 
     //window.location.href = "initial-data.html";
@@ -838,26 +1257,22 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    const num = document.getElementById("compliance").children.length - 1;
+    const num = document.getElementById("matrixVerification").children.length - 1;
     console.log(navigationData.flag);
     console.log(navigationData);
     if(navigationData.flag){
         if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
         }
        window.location.href = navigationData.page;
     }
-    sessionStorage.setItem("previousName", matrixName);
-    console.log(sessionStorage.getItem("previousName"));
-    if(num < 13) {
-        const names = Array.from(Object.keys(complianceMatricies));
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: num >= names.length ? null : names[num+1], flag: false}));
-        window.location.href = "compliance-matrix.html";
-    }
     else{
+        sessionStorage.setItem("previousName", matrixName);
+        //console.log(sessionStorage.getItem("previousName"));
         sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: null, flag: false}));
-        window.location.href = "traceability-matrix.html";
+        showNotification("Дальше последняя страница");
     }
+    //window.location.href = "last-page.html";
 
     //window.location.href = "all-objects.html";
 });
@@ -945,12 +1360,12 @@ function localSave() {
     const comp1 = document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent;
     const comp2 = document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent;
     localSaveData = JSON.parse(JSON.stringify(traceabilityData));
-    complianceMatricies[matrixNameInput.value]["data"] = localSaveData;
-    complianceMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
-    sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+    traceabilityMatricies[matrixNameInput.value]["data"] = localSaveData;
+    traceabilityMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
+    sessionStorage.setItem("traceability-matricies-data", JSON.stringify(traceabilityMatricies));
     //console.log('Saving all:', traceabilityData);
     showNotification(`Сохранено ячеек: ${traceabilityData.length}`);
-    createComplianceButtons()
+    createTraceabilityButtons();
     
 }
 
@@ -980,7 +1395,7 @@ function showNotification(message, type = 'success') { //показать уве
 }
 
 matrixNameInput.addEventListener("change", (e) => {
-    const buttons = document.getElementById("compliance").children;
+    const buttons = document.getElementById("matrixVerification").children;
     const texts = [];
     for(let i = 1; i < buttons.length; ++i){
         texts.push(buttons[i].textContent);
@@ -990,63 +1405,18 @@ matrixNameInput.addEventListener("change", (e) => {
         e.target.value = "";
     }else{
         if(matrixName){
-            let temp = complianceMatricies[matrixName];
-            delete complianceMatricies[matrixName];
-            complianceMatricies[e.target.value] = temp;
-            sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+            let temp = traceabilityMatricies[matrixName];
+            delete traceabilityMatricies[matrixName];
+            traceabilityMatricies[e.target.value] = temp;
+            sessionStorage.setItem("traceability-matricies-data", JSON.stringify(traceabilityMatricies));
         }
         else{
-            complianceMatricies[`${e.target.value}`] = {};
+            traceabilityMatricies[`${e.target.value}`] = {};
         }
         matrixName = e.target.value;
         let temp = JSON.parse(sessionStorage.getItem("matrix-navigation"));
         temp.name = matrixName;
         sessionStorage.setItem("matrix-navigation", JSON.stringify(temp));
-        console.log(complianceMatricies);
+        console.log(traceabilityMatricies);
     }
 })
-
-function IsComplianceEnabled(){
-    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    let goodViews = 0;
-    let objs = Array.from(Object.keys(forMatricies));
-    for(let i = 0; i < objs.length; ++i){
-        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
-        for(let j = 0; j < views.length; ++j){
-            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
-            //let goodComps = 0;
-            for(let k = 0; k < comps.length; ++k){
-                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
-                    ++goodViews;
-                    break
-                }
-            }
-            if(goodViews > 1){break;}
-        }
-        if(goodViews > 1){break;}
-    }
-    return (goodViews > 1);
-}
-
-function createComplianceButtons(){
-    let div = document.getElementById("compliance");
-    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
-    let names = Array.from(Object.keys(complianceData));
-    names.forEach(name => {
-        const button = document.createElement("button");
-        button.className = "dropUpBtn";
-        button.textContent = name;
-        button.addEventListener("click", (e) => {
-            sessionStorage.setItem("previousName", matrixName);
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: name, flag: true}));
-            window.location.href = "compliance-matrix.html";
-        });
-        div.appendChild(button);
-    });
-    div.children[0].addEventListener("click", (e) => {
-        sessionStorage.setItem("previousName", matrixName);
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: null, flag: true}));
-        window.location.href = "compliance-matrix.html";
-    });
-}

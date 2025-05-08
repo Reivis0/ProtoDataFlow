@@ -287,9 +287,19 @@ function localSave(flag = true) {
 
 
     localSaveData = JSON.parse(JSON.stringify(newData));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
 
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     console.log('Saving all:', localSaveData);
+    console.log(JSON.parse(sessionStorage.getItem("initial-requrements-data")));
     if(flag){showNotification(`Сохранено строк: ${localSaveData.length}`);}
     
 }
@@ -572,7 +582,9 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     CreateSourceOptions();
     CreateObjectOptions();
     document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-    createComplianceButtons();
+    createComplianceButtons("initial-requrements.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("initial-requrements.html");
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -643,13 +655,23 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
             }
         }
     }
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     window.location.href = "initial-data.html";
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData);
+    //console.log(localSaveData);
 
     const filteredData = [];
     gridApi.forEachNode(node => filteredData.push(node.data));
@@ -696,13 +718,24 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         if(row.flag)
         {
             if(!forMatricies[`${row.column2}`]){
-            forMatricies[`${row.column2}`] = {"specific-requrements": null, views: {}};
+            forMatricies[`${row.column2}`] = {"specific-requrements": [], views: {}};
         }
         }
     });
     
     sessionStorage.setItem("counter1", -1);
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     // fetch('http://127.0.0.1:8080/api/auth')
     // .then(response => {
     //     if (!response.ok) {
@@ -910,47 +943,4 @@ function addObjectListener(objectBtn){
             }
         }
     })
-}
-
-function IsComplianceEnabled(){
-    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    let goodViews = 0;
-    let objs = Array.from(Object.keys(forMatricies));
-    for(let i = 0; i < objs.length; ++i){
-        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
-        for(let j = 0; j < views.length; ++j){
-            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
-            //let goodComps = 0;
-            for(let k = 0; k < comps.length; ++k){
-                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
-                    ++goodViews;
-                    break
-                }
-            }
-            if(goodViews > 1){break;}
-        }
-        if(goodViews > 1){break;}
-    }
-    return (goodViews > 1);
-}
-
-function createComplianceButtons(){
-    let div = document.getElementById("matrixCompliance");
-    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
-    let names = Array.from(Object.keys(complianceData));
-    names.forEach(name => {
-        const button = document.createElement("button");
-        button.className = "dropUpBtn";
-        button.textContent = name;
-        button.addEventListener("click", (e) => {
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-requrements.html", name: name, flag: true}));
-            window.location.href = "compliance-matrix.html";
-        });
-        div.appendChild(button);
-    });
-    div.children[0].addEventListener("click", (e) => {
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"initial-requrements.html", name: null, flag: true}));
-        window.location.href = "compliance-matrix.html";
-    });
 }

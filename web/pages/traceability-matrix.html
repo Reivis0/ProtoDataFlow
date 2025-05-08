@@ -52,7 +52,7 @@
                       <button class="dropdownBtn sourceBtn specialBtn left">Требования спецификация</button>
                       <button class="dropdownBtn sourceBtn specialBtn left">Все объекты</button>
                   </div>
-                  <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">Все объекты</button>
+                  <button class="listSourceBtn left" id="listSourceBtn" title="Отображать данные для выбранного источника">Все объекты</button>
                 </div>
 
                 <label>Уровень 1</label>
@@ -63,7 +63,7 @@
                     <button class="dropdownBtn sourceBtn specialBtn right">Требования спецификация</button>
                     <button class="dropdownBtn objectBtn specialBtn right">Все объекты</button>
                     </div>
-                    <button class="listObjectBtn" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все объекты</button>
+                    <button class="listObjectBtn right" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все объекты</button>
                 </div>
                 
             </div>
@@ -73,7 +73,7 @@
                   <div class="dropdown-content level2 left" id="sourceOptions">
                       <button class="dropdownBtn sourceBtn specialBtn left">Все</button>
                   </div>
-                  <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">Все</button>
+                  <button class="listSourceBtn left" id="listSourceBtn" title="Отображать данные для выбранного источника">Все</button>
                 </div>
 
                 <label>Уровень 2</label>
@@ -82,7 +82,7 @@
                     <div class="dropdown-content level2 right" id="objectOptions">
                         <button class="dropdownBtn objectBtn specialBtn right">Все</button>
                     </div>
-                    <button class="listObjectBtn" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все</button>
+                    <button class="listObjectBtn right" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все</button>
                 </div>
             </div>
             <div class="for-lists">
@@ -91,7 +91,7 @@
                   <div class="dropdown-content level3 left" id="sourceOptions">
                       <button class="dropdownBtn sourceBtn specialBtn left">Все</button>
                   </div>
-                  <button class="listSourceBtn" id="listSourceBtn" title="Отображать данные для выбранного источника">Все</button>
+                  <button class="listSourceBtn left" id="listSourceBtn" title="Отображать данные для выбранного источника">Все</button>
                 </div>
 
                 <label>Уровень 3</label>
@@ -100,7 +100,7 @@
                     <div class="dropdown-content level3 right" id="objectOptions">
                         <button class="dropdownBtn objectBtn specialBtn right">Все</button>
                     </div>
-                    <button class="listObjectBtn" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все</button>
+                    <button class="listObjectBtn right" id="listObjectBtn" title="Отображать данные для выбранного объекта">Все</button>
                 </div>
             </div>
             <div style=" min-width: 800px;">
@@ -143,7 +143,7 @@
           <div style="flex-grow: 0.7"></div>
           
           <div class="dropUp">
-            <div class="dropUp-content" id="compliance">
+            <div class="dropUp-content" id="matrixCompliance">
                 <button class="dropUpBtn specialBtn">Новая матрица соответствия</button>
                 <!-- <button class="dropUpBtn">Ссылка 2</button>
                 <button class="dropUpBtn">Ссылка 3</button>
@@ -160,7 +160,7 @@
         </div>
   
         <div class="dropUp">
-          <div class="dropUp-content" id="traceability">
+          <div class="dropUp-content" id="matrixVerification">
               <button class="dropUpBtn specialBtn">Новая матрица верификации</button>
               <!-- <button class="dropUpBtn">Ссылка 2</button>
               <button class="dropUpBtn">Ссылка 3</button>
@@ -191,6 +191,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.23.0/pivot.min.js"></script>
+    <script src="../scripts/main.js"></script>
     <script src="../scripts/traceability-matrix.js"></script>
 </body>
 </html>

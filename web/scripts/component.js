@@ -437,7 +437,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     localSave(false);
 
     document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-    createComplianceButtons();
+    createComplianceButtons("component.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("component.html");
+    
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -611,47 +614,4 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
           console.error('Error fetching data:', error);
       });
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
-})
-
-function IsComplianceEnabled(){
-    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    let goodViews = 0;
-    let objs = Array.from(Object.keys(forMatricies));
-    for(let i = 0; i < objs.length; ++i){
-        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
-        for(let j = 0; j < views.length; ++j){
-            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
-            //let goodComps = 0;
-            for(let k = 0; k < comps.length; ++k){
-                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
-                    ++goodViews;
-                    break
-                }
-            }
-            if(goodViews > 1){break;}
-        }
-        if(goodViews > 1){break;}
-    }
-    return (goodViews > 1);
-}
-
-function createComplianceButtons(){
-    let div = document.getElementById("matrixCompliance");
-    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
-    let names = Array.from(Object.keys(complianceData));
-    names.forEach(name => {
-        const button = document.createElement("button");
-        button.className = "dropUpBtn";
-        button.textContent = name;
-        button.addEventListener("click", (e) => {
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: name, flag: true}));
-            window.location.href = "compliance-matrix.html";
-        });
-        div.appendChild(button);
-    });
-    div.children[0].addEventListener("click", (e) => {
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: true}));
-        window.location.href = "compliance-matrix.html";
-    });
-}
+});

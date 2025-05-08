@@ -119,8 +119,10 @@ const config = {
 
      setupButtons();
      document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-     createComplianceButtons();
-
+     createComplianceButtons("compliance-matrix.html");
+     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+     createTraceabilityButtons("compliance-matrix.html");
+     console.log(navigationData);
    });
 
    function level1Pressed(button){
@@ -327,7 +329,7 @@ const config = {
                                     });
                                 }
                                 else{
-                                    tempobj[config.dataFields.cols[4]] = element2.column3;
+                                    tempobj[config.dataFields.cols[4]] = " ";
                                     newTraceabilityData.push(JSON.parse(JSON.stringify(tempobj)));
                                 }
                             });
@@ -721,19 +723,21 @@ function makeTheTablePretty() {
         }
     }
 
-    const num = document.getElementById("compliance").children.length - 1;
+    const num = document.getElementById("matrixCompliance").children.length - 1;
     if(navigationData.flag){
         if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
             sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
         }
         window.location.href = navigationData.page;
     }
-    if(num === 0) {
-        window.location.href = "component.html";
-    }
     else{
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
-        window.location.href = "compliance-matrix.html";
+        if(num === 0) {
+            window.location.href = "component.html";
+        }
+        else{
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            window.location.href = "compliance-matrix.html";
+        }
     }
 
     //window.location.href = "initial-data.html";
@@ -771,25 +775,27 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    const num = document.getElementById("compliance").children.length - 1;
+    const num = document.getElementById("matrixCompliance").children.length - 1;
     console.log(navigationData.flag);
     console.log(navigationData);
     if(navigationData.flag){
         if(navigationData.page === "compliance-matrix.html" || navigationData.page === "traceability-matrix.html"){
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
         }
        window.location.href = navigationData.page;
     }
-    sessionStorage.setItem("previousName", matrixName);
-    console.log(sessionStorage.getItem("previousName"));
-    if(num < 13) {
-        const names = Array.from(Object.keys(complianceMatricies));
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: num >= names.length ? null : names[num+1], flag: false}));
-        window.location.href = "compliance-matrix.html";
-    }
     else{
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: null, flag: false}));
-        window.location.href = "traceability-matrix.html";
+        sessionStorage.setItem("previousName", matrixName);
+        console.log(sessionStorage.getItem("previousName"));
+        if(num < 13) {
+            const names = Array.from(Object.keys(complianceMatricies));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: num >= names.length ? null : names[num+1], flag: false}));
+            window.location.href = "compliance-matrix.html";
+        }
+        else{
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: null, flag: false}));
+            window.location.href = "traceability-matrix.html";
+        }
     }
 
     //window.location.href = "all-objects.html";
@@ -913,7 +919,7 @@ function showNotification(message, type = 'success') { //показать уве
 }
 
 matrixNameInput.addEventListener("change", (e) => {
-    const buttons = document.getElementById("compliance").children;
+    const buttons = document.getElementById("matrixCompliance").children;
     const texts = [];
     for(let i = 1; i < buttons.length; ++i){
         texts.push(buttons[i].textContent);
@@ -937,49 +943,4 @@ matrixNameInput.addEventListener("change", (e) => {
         sessionStorage.setItem("matrix-navigation", JSON.stringify(temp));
         console.log(complianceMatricies);
     }
-})
-
-function IsComplianceEnabled(){
-    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
-    let goodViews = 0;
-    let objs = Array.from(Object.keys(forMatricies));
-    for(let i = 0; i < objs.length; ++i){
-        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
-        for(let j = 0; j < views.length; ++j){
-            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
-            //let goodComps = 0;
-            for(let k = 0; k < comps.length; ++k){
-                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
-                    ++goodViews;
-                    break
-                }
-            }
-            if(goodViews > 1){break;}
-        }
-        if(goodViews > 1){break;}
-    }
-    return (goodViews > 1);
-}
-
-function createComplianceButtons(){
-    let div = document.getElementById("compliance");
-    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
-    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
-    let names = Array.from(Object.keys(complianceData));
-    names.forEach(name => {
-        const button = document.createElement("button");
-        button.className = "dropUpBtn";
-        button.textContent = name;
-        button.addEventListener("click", (e) => {
-            sessionStorage.setItem("previousName", matrixName);
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: name, flag: true}));
-            window.location.href = "compliance-matrix.html";
-        });
-        div.appendChild(button);
-    });
-    div.children[0].addEventListener("click", (e) => {
-        sessionStorage.setItem("previousName", matrixName);
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"information-about-model.html", name: null, flag: true}));
-        window.location.href = "compliance-matrix.html";
-    });
-}
+});

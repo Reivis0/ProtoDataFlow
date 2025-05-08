@@ -90,7 +90,7 @@ footer{
 }
 .footer-btn .material-icons svg{
     font-size: 24px;
-    fill: #555;
+    /* fill: #555; */
     }
 
 .footer-btn:hover {
