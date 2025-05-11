@@ -1,5 +1,5 @@
 
-
+let GlobalLogin;
 document.addEventListener("DOMContentLoaded", (e) => {
     let login = sessionStorage.getItem("GlobalLogin");
     if(login === '' || login === null) {
@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
 })
 
 const checkbox1 = document.getElementById("agreement-in");
@@ -44,27 +45,27 @@ form.addEventListener('submit', (e) => {
     obj.patronymic = document.getElementById("patronymic-in").value;
     tempPlaceFlag(JSON.stringify(obj)); 
 
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(obj),
-      }
+    // fetch('http://127.0.0.1:8080/api/auth', { 
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(obj),
+    //   }
     
-    )
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(data => {
+    //     console.log(data);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
     
     //window.location.assigsn("log-in.html");
     window.location.assign("information-about-model.html");
@@ -89,6 +90,14 @@ buttonBack.addEventListener("click", (e) => {
      window.location.href = "log-in.html";
 })
 
-function tempPlaceFlag(message){
-    alert(message);
+function tempPlaceFlag(){
+    const AllUsers = JSON.parse(localStorage.getItem("all-users"));
+     for(let i = 0; i < AllUsers.length; ++i){
+        if(AllUsers[i].login === GlobalLogin){
+            AllUsers[i].agreement = true;
+        }
+        break;
+     }
+     localStorage.setItem("all-users", JSON.stringify(AllUsers));
+     console.log(JSON.parse(localStorage.getItem("all-users")));
 }
