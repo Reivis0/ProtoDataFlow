@@ -1,9 +1,13 @@
-// settingsManager.js
 window.SettingsManager = {
     async init() {
         this.data = await DataManager.load();
         this.renderTables();
         this.setupEventListeners();
+        
+        // Инициализация всех таблиц
+        initializeObjectTypeTables();
+        initializeRepresentationTables();
+        initializeComponentTables();
     },
 
     renderTables() {
