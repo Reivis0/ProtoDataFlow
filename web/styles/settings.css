@@ -28,4 +28,41 @@
     display: none;
   }
 
-  
+  .upload-em-btn {
+    background-color: #d6dde2 !important;
+}
+
+.upload-em-btn:hover {
+    background-color: #c9d1d7 !important;
+}
+
+.view-row {
+    font-weight: bold;
+    background-color: #f5f5f5 !important;
+}
+
+.component-row {
+    padding-left: 20px !important;
+}
+
+/* Стили для таблиц представлений */
+.representation-grid .ag-cell {
+  padding: 10px 5px;
+}
+
+.component-row {
+  background-color: #f9f9f9;
+  color: #555;
+}
+
+/* Стили для чекбоксов */
+.ag-cell .disabled-checkbox {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Стили для строк, где флаг недоступен */
+.disabled-flag-row {
+  color: #999;
+  background-color: #eee;
+}
