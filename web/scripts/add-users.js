@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         window.location.href = "log-in.html";
     }
 
+    originalData = JSON.parse(localStorage.getItem("all-users"));
+
     
     // fetch("http://127.0.0.1:8080")
     // .then(response => {
@@ -22,7 +24,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // .then(data => {
     //     const gridOptions = {
     //     columnDefs: columnDefs,
-    //     rowData: loadData(),
+    //     rowData: data,
     //     defaultColDef: {
     //         flex: 1,
     //         minWidth: 100,
@@ -80,27 +82,26 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // });
 
     
-
     
-    gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
+   createGrid(JSON.parse(JSON.stringify(originalData)));
+    //gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
     const saveButton = document.getElementById("save");
     saveButton.addEventListener('click', saveChanges);
 })
 
-
-function loadData() {
-    // Эмуляция запроса к серверу
-    const mockData = [
-        { id: 1, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 2, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 3, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 4, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 5, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-        { id: 6, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
-    ];
-    originalData = JSON.parse(JSON.stringify(mockData));
-    return mockData;
-}
+// function loadData() {
+//     // Эмуляция запроса к серверу
+//     const mockData = [
+//         { id: 1, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+//         { id: 2, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+//         { id: 3, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+//         { id: 4, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+//         { id: 5, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
+//         { id: 6, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
+//     ];
+//     originalData = JSON.parse(JSON.stringify(mockData));
+//     return mockData;
+// }
 
 // Кнопки с действиями
 class ActionsButtons {
@@ -175,6 +176,7 @@ class ActionsButtons {
                   email: "",
                   phone: null,
                   comment: "",
+                  agreement: false,
                   __isNew: true  // Помечаем новой строкой
               }));
               inserts.push({ index: rowIndex + 1, rows: newRows });
@@ -260,8 +262,17 @@ function saveChanges() {
     );
 
     if (invalidNewRows.length > 0) {
-        alert("Ошибка: Логин и пароль обязательны для новых строк!");
+        showNotification("Ошибка: Логин и пароль обязательны для новых строк!", false);
         return; 
+    }
+
+    for(let i = 0; i < allData.length; ++i){
+        for(let j = i+1; j < allData.length; ++j) {
+            if(allData[i].login === allData[j].login && allData[i].id !== allData[j].id){
+                showNotification(`Ошибка: В строках ${i+1} и ${j+1} одинаковые логины`, false);
+                return;
+            }
+        }
     }
 
     const noLevel = allData.filter(
@@ -269,16 +280,17 @@ function saveChanges() {
     );
 
     if ( noLevel.length > 0) {
-        alert("Ошибка: Группа пользователей должна быть задана для новых строк!");
+        showNotification("Ошибка: Группа пользователей должна быть задана для новых строк!", false);
         return; 
     }
-    
     // Находим измененные строки
     const changedRows = allData.filter(row => {
         if (row.__isNew) return false;
         
         const originalRow = originalData.find(r => r.id === row.id);
-        if (!originalRow) return false; //по идее не должно срабатывать
+        if (!originalRow) {
+            return false; //по идее не должно срабатывать
+        } 
         return JSON.stringify(row) !== JSON.stringify(originalRow);
     });
     
@@ -292,30 +304,37 @@ function saveChanges() {
     };
     
     if (changedRows.length === 0 && deletedRows.length === 0 && newRows.length === 0) {
-        alert('Нет изменений для сохранения');
+        showNotification('Нет изменений для сохранения', false);
         return;
     }
     
-    alert('Changes to save:' + JSON.stringify(changes));
-    alert(`Сохранено: 
-    ${changedRows.length} измененных, 
-    ${deletedRows.length} удаленных,
-    ${newRows.length} новых строк`);
-      
-      // отправка на сервер
-      // fetch('/api/save-data', {
-      //     method: 'POST',
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify(changed)
-      // })
-      // .then(response => response.json())
-      // .then(data => {
-      //     originalData = allData.map(row => ({...row}));
-      //     alert('Изменения успешно сохранены');
-      // });
+    console.log('Changes to save:', changes);
+    showNotification(`Сохранено: 
+    измененных - ${changedRows.length}, 
+    удаленных - ${deletedRows.length},
+    новых строк - ${newRows.length}`);
+    // fetch(ServerAdress + `updateUsers`, { 
+    //     method: 'POST',
+    //     headers: {
+    //     'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(changes),
+    // }
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(answer => {
+    //     console.log(answer);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });  
       
 
-      //это в fetch
       //Удалить удаленные строки
       originalData = originalData.filter(row => 
         !deletedRows.some(deleted => deleted.id === row.id)
@@ -334,6 +353,15 @@ function saveChanges() {
           return cleanRow;
       })];
 
+
+      //удалить когда будет сервер
+      localStorage.setItem("all-users", JSON.stringify(originalData));
+      console.log(JSON.parse(localStorage.getItem("all-users")));
+      newRows.forEach(row => {
+        localStorage.setItem(`data-${row.login}`, JSON.stringify({specialFieldForModels_ddqasdawd: null, data_awdfasda: null})); //такое название поля чтобы точно не совпало с названиями модели
+        console.log(JSON.parse(localStorage.getItem(`data-${row.login}`))); 
+      });
+
       gridApi.forEachNode(node => {
           if (node.data.__isNew) {
               const { __isNew, ...cleanData } = node.data;
@@ -343,178 +371,208 @@ function saveChanges() {
 }
 
 PREDETERMINED_LIST = [
-    "User",
-    "Admin",
-    "SuperAdmin"
+    "user",
+    "admin",
+    "superAdmin"
 ]
 
 // Объявление столбцов
 const columnDefs = [
-    { 
-        field: "id",
-        headerName: "",
-        checkboxSelection: true,
-        headerCheckboxSelection: true,
-        width: 50,
-        rowDrag: true,
-        cellRenderer: params => '',
-        editable: false
-    },
-    {
-        field: "level",
-        headerName: "Группа пользователей",
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: PREDETERMINED_LIST },
-    },
-    { field: "surname", headerName: "Фамилия", editable: true },
-    { field: "name", headerName: "Имя", editable: true },
-    { field: "patronymic", headerName: "Oтчество", editable: true },
-    { 
-        field: "login",
-        headerName: "Логин",
-        cellClass: params => params.data.__isNew ? '' : 'non-editable-cell1',
-        editable: params => params.node.isSelected() && params.data.__isNew
-    },
-    { 
-        field: "password",
-        headerName: "Пароль",
-        cellClass: params => (params.data.__isNew) ? '' : 'non-editable-cell2',
-        editable: params => params.node.isSelected() && params.data.__isNew
-    },
-    {
-        field: "acsess",
-        headerName: "Доступ",
-        cellEditor: "agCheckboxCellEditor"
-    },
-    { 
-        field: "startDate", 
-        headerName: "Дата начала",
-        cellEditor: 'agDateCellEditor',
-        //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+        { 
+            field: "id",
+            headerName: "",
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
+            width: 50,
+            rowDrag: true,
+            cellRenderer: params => '',
+            editable: false
+        },
+        {
+            field: "level",
+            headerName: "Группа пользователей",
+            cellEditor: 'agSelectCellEditor',
+            cellEditorParams: { values: PREDETERMINED_LIST },
+        },
+        { field: "surname", headerName: "Фамилия", editable: true },
+        { field: "name", headerName: "Имя", editable: true },
+        { field: "patronymic", headerName: "Oтчество", editable: true },
+        { 
+            field: "login",
+            headerName: "Логин",
+            cellClass: params => params.data.__isNew ? '' : 'non-editable-cell1',
+            editable: params => params.node.isSelected() && params.data.__isNew
+        },
+        { 
+            field: "password",
+            headerName: "Пароль",
+            cellClass: params => (params.data.__isNew) ? '' : 'non-editable-cell2',
+            editable: params => params.node.isSelected() && params.data.__isNew
+        },
+        {
+            field: "acsess",
+            headerName: "Доступ",
+            cellEditor: "agCheckboxCellEditor"
+        },
+        { 
+            field: "startDate", 
+            headerName: "Дата начала",
+            cellEditor: 'agDateCellEditor',
+            //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+            cellEditorParams: {
+                min: '2000-01-01',
+                max: '2100-12-31'
+            }
+        },
+        { 
+            field: "endDate", 
+            headerName: "Дата окончания",
+            cellEditor: 'agDateCellEditor',
+            //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
+            cellEditorParams: {
+                min: '2000-01-01',
+                max: '2100-12-31'
+            }
+        },
+        { 
+            field: "email", 
+            headerName: "Email",
+            cellEditor: 'agTextCellEditor',
+        },
+        { 
+            field: "phone", 
+            headerName: "Телефон",
+            cellEditor: 'agNumberCellEditor',
+        },
+        { field: "comment",
+        headerName: "Комментарий",
+        cellEditor: "agLargeTextCellEditor",
         cellEditorParams: {
-            min: '2000-01-01',
-            max: '2100-12-31'
+            maxLength: 1000
+        },
+        },
+        {
+            field: "actions",
+            headerName: "Действия",
+            cellRenderer: ActionsButtons,
+            editable: false,
+            sortable: false,
+            filter: false,
+            flex: 2,
         }
-    },
-    { 
-        field: "endDate", 
-        headerName: "Дата окончания",
-        cellEditor: 'agDateCellEditor',
-        //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
-        cellEditorParams: {
-            min: '2000-01-01',
-            max: '2100-12-31'
-        }
-    },
-    { 
-        field: "email", 
-        headerName: "Email",
-        cellEditor: 'agTextCellEditor',
-    },
-    { 
-        field: "phone", 
-        headerName: "Телефон",
-        cellEditor: 'agNumberCellEditor',
-    },
-    { field: "comment",
-      headerName: "Комментарий",
-      cellEditor: "agLargeTextCellEditor",
-      cellEditorParams: {
-        maxLength: 1000
-      },
-     },
-    {
-        field: "actions",
-        headerName: "Действия",
-        cellRenderer: ActionsButtons,
-        editable: false,
-        sortable: false,
-        filter: false,
-        flex: 2,
-    }
 ];
 
-// НАстройки таблицы убрать закоментить когда будет сервер
-const gridOptions = {
-    columnDefs: columnDefs,
-    rowData: loadData(),
-    defaultColDef: {
-        flex: 1,
-        minWidth: 100,
-        filter: true,
-        sortable: true,
-        resizable: true,
-        editable: params => params.node.isSelected()
-    },
-   
-    rowSelection: 'multiple',
-    rowDragManaged: true,
-    animateRows: true,
-    suppressRowClickSelection: true,
-    enableCellTextSelection: false,
-    undoRedoCellEditing: true,
-    undoRedoCellEditingLimit: 20,
-
+function createGrid(data) {
+        // НАстройки таблицы убрать закоментить когда будет сервер
+    const gridOptions = {
+        columnDefs: columnDefs,
+        rowData: data,
+        defaultColDef: {
+            flex: 1,
+            minWidth: 100,
+            filter: true,
+            sortable: true,
+            resizable: true,
+            editable: params => params.node.isSelected()
+        },
     
-    // Можно редактировать только выделенные строки
-    onCellEditingStarted: (params) => {
-        if (!params.node.isSelected()) {
-            params.api.stopEditing(true);
-        }
-    },
+        rowSelection: 'multiple',
+        rowDragManaged: true,
+        animateRows: true,
+        suppressRowClickSelection: true,
+        enableCellTextSelection: false,
+        undoRedoCellEditing: true,
+        undoRedoCellEditingLimit: 20,
 
-    onCellKeyDown: (params) => {
-        if (params.event.ctrlKey && (params.event.key === 'c' || params.event.key === 'с')) {
-            const selectedNodes = gridApi.getSelectedNodes();
-            if (selectedNodes.length > 0) {
-                const copiedData = selectedNodes.map(node => ({...node.data}));
-                localStorage.setItem('agGridCopiedRows', JSON.stringify({
-                    data: copiedData,
-                    count: copiedData.length
-                }));
-                params.event.preventDefault();
+        
+        // Можно редактировать только выделенные строки
+        onCellEditingStarted: (params) => {
+            if (!params.node.isSelected()) {
+                params.api.stopEditing(true);
             }
-        }
-        else if (params.event.ctrlKey && (params.event.key === 'v' || params.event.key === 'м')) {
-            const copiedData = localStorage.getItem('agGridCopiedRows');
-            if (copiedData) {
-                const { data: parsedData, count: copiedCount } = JSON.parse(copiedData);
+        },
+
+        onCellKeyDown: (params) => {
+            if (params.event.ctrlKey && (params.event.key === 'c' || params.event.key === 'с')) {
                 const selectedNodes = gridApi.getSelectedNodes();
-               
-                if (selectedNodes.length === 0) {
-                    // showNotification('Нет выбранных строк для вставки', 'error');
-                    return;
-                }32
-               
-                const rowsToPaste = Math.min(copiedCount, selectedNodes.length);
-                const dataToPaste = parsedData.slice(0, rowsToPaste);
-               
-                selectedNodes.slice(0, rowsToPaste).forEach((node, index) => {
-                    const newData = {
-                        ...dataToPaste[index],
-                        isChosen: true
-                    };
+                if (selectedNodes.length > 0) {
+                    const copiedData = selectedNodes.map(node => ({...node.data}));
+                    localStorage.setItem('agGridCopiedRows', JSON.stringify({
+                        data: copiedData,
+                        count: copiedData.length
+                    }));
+                    params.event.preventDefault();
+                }
+            }
+            else if (params.event.ctrlKey && (params.event.key === 'v' || params.event.key === 'м')) {
+                const copiedData = localStorage.getItem('agGridCopiedRows');
+                if (copiedData) {
+                    const { data: parsedData, count: copiedCount } = JSON.parse(copiedData);
+                    const selectedNodes = gridApi.getSelectedNodes();
+                
+                    if (selectedNodes.length === 0) {
+                        // showNotification('Нет выбранных строк для вставки', 'error');
+                        return;
+                    }32
+                
+                    const rowsToPaste = Math.min(copiedCount, selectedNodes.length);
+                    const dataToPaste = parsedData.slice(0, rowsToPaste);
+                
+                    selectedNodes.slice(0, rowsToPaste).forEach((node, index) => {
+                        const newData = {
+                            ...dataToPaste[index],
+                            isChosen: true
+                        };
 
-                    try{
-                        newData.startDate = new Date(newData.startDate);
-                    } catch {}
-                    try{
-                        newData.endDate = new Date(newData.endDate);
-                    } catch {}
+                        try{
+                            newData.startDate = new Date(newData.startDate);
+                        } catch {}
+                        try{
+                            newData.endDate = new Date(newData.endDate);
+                        } catch {}
 
 
-                    node.setData(newData);
-                });
-               
-                params.event.preventDefault();
+                        node.setData(newData);
+                    });
+                
+                    params.event.preventDefault();
+                }
             }
         }
-    }
-};
+    };
+    gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
+    //originalData = JSON.parse(JSON.stringify(data));
+
+}
   
-  document.getElementById("back").addEventListener("click", (e) => {
+document.getElementById("back").addEventListener("click", (e) => {
   
     sessionStorage.clear();
     e.preventDefault();
     window.location.href = "log-in.html";
-  })
+})
+
+function showNotification(message, type = 'success') { //показать уведомление пользователю
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '75px';
+    notification.style.right = '30px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    notification.textContent = message;
+   
+    const existing = document.querySelector('.ag-grid-notification');
+    if (existing) existing.remove();
+   
+    notification.classList.add('ag-grid-notification');
+    document.body.appendChild(notification);
+   
+    setTimeout(() => { //исчезает через время
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}

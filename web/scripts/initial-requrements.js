@@ -1,5 +1,3 @@
-// const { jsx } = require("react/jsx-runtime");
-
 function loadData(){
     let answer = {
         information: {
@@ -43,7 +41,7 @@ function loadData(){
                     type: "num",
                     maxSmth: 10000,
                     name: "column5",
-                    enabled: false
+                    enabled: true
 
                 },
                 {
@@ -67,24 +65,26 @@ function loadData(){
 
         },
         data: [
-            {"column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
+            {"flag": true, "column1": "11111", "column2": "Объект 1", "column3": "Требование 1", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "код-1" },
+            {"flag": true, "column1": "22222", "column2": "Объект 2", "column3": "Требование 2", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "код-1" },
+            {"flag": true, "column1": "33333", "column2": "Объект 1", "column3": "Требование 3", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "код-2" },
+            {"flag": true, "column1": "44444", "column2": "Объект 2", "column3": "Требование 4", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "код-2" },
+            // {"flag": true, "column1": "33333", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "Объект 4", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "Объект 5", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "Объект 6", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "11111", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "22222", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "33333", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            // {"flag": true, "column1": "44444", "column2": "Объект 4", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            // {"flag": true, "column1": "55555", "column2": "Объект 5", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            // {"flag": true, "column1": "66666", "column2": "Объект 6", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            // {"flag": true, "column1": "77777", "column2": "Объект 1", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            // {"flag": true, "column1": "88888", "column2": "Объект 2", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            // {"flag": true, "column1": "99999", "column2": "Объект 3", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
         ]
     };
     return answer;
@@ -92,7 +92,7 @@ function loadData(){
 
 function returnGridOptions(information, data){ //получить настройки таблицы
 
-    let coldefs = []; //выбрать только включенные столбики
+    let coldefs = [{field: "flag", headerName: "", cellEditor: "agCheckboxCellEditor"}]; //выбрать только включенные столбики
     information.headers.forEach(element => {
         if(element.enabled){
             let column = {field: element.name, headerName: element.header};
@@ -105,6 +105,8 @@ function returnGridOptions(information, data){ //получить настрой
                 column.cellEditor = 'agNumberCellEditor';
                 column.cellEditorParams = {min: 0, max: element.maxSmth, precision: 1};
                 column.filter = 'agNumberColumnFilter';
+                column.type = "rightAligned";
+                column.flex = '1';
             }
             coldefs.push(column);
         }
@@ -116,26 +118,46 @@ function returnGridOptions(information, data){ //получить настрой
         coldefs[i].flex = 0.8;
     }
 
+    coldefs.forEach(col => {
+        if(col.field === "column4") {
+            col.flex = "1";
+        }
+    })
+
     let id = 0
 
     for(let i = 0; i < data.length; ++i) {
-        if(!(data[i].id === undefined || data[i].id === null)){
-            break
-        }
+        // if(!(data[i].id === undefined || data[i].id === null)){
+        //     break
+        // }
         data[i].id = id;
         ++id;
+    }
+
+    while(data.length < 15){
+        data.push({
+                   "id" : ++id,
+                   "flag": false,
+                   "column1" : "",
+                   "column2" : "",
+                   "column3" : "",
+                   "column4" : "",
+                   "column5" : null,
+                   "column6" : null,
+                   "column7" : "",
+        });
     }
 
     let gridOptions = {
         rowData: data,
         columnDefs: coldefs,
         defaultColDef: {
-            flex: 1,
+            flex: 2,
             editable: true,
             sortable: true,
             filter: true,
             enableCellChangeFlash: true,
-            lockPosition: true
+            lockPosition: true,
         },
         enableRangeSelection: true,
         cellSelection: true,
@@ -166,10 +188,11 @@ let gridApi;
 
 let localSaveData = []; //для локального сохранения
 let dataForFilter = []; //для локального сохранения
-
+let GlobalLogin;
+let userData;
 let deletedNodes = [];
 
-function localSave() {
+function localSave(flag = true) {
     let newData = JSON.parse(JSON.stringify(dataForFilter));
     let filteredData = [];
     gridApi.forEachNode(node => filteredData.push(node.data));
@@ -196,10 +219,22 @@ function localSave() {
 
 
     localSaveData = JSON.parse(JSON.stringify(newData));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
 
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${localSaveData.length}`);
+    console.log(JSON.parse(sessionStorage.getItem("initial-requrements-data")));
+    if(flag){
+        showToast(`Сохранено строк: ${tempArray.length}`, 'success');
+    }
     
 }
 
@@ -217,7 +252,10 @@ function setupButtons() {
       });
 
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
 
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -262,6 +300,7 @@ function setupButtons() {
                          index: rowIndex + 1,
                          rows: Array(count).fill().map((_, i) => ({
                             "id" : nextId+i,
+                            "flag": false,
                             "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                             "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
                             "column3" : "",
@@ -279,6 +318,7 @@ function setupButtons() {
                  index: allData.length,
                  rows: Array(count).fill().map((_, i) => ({
                         "id" : nextId+i,
+                        "flag": false,
                         "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                         "column2" : listObjectBtn.textContent === "Все" ? "" : listObjectBtn.textContent,
                         "column3" : "",
@@ -393,40 +433,96 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
     
-    let serverData = loadData();
-
-    localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
-    let GrdOptions;
-
-    if(!localSaveData) {
-        GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        let id = 0;
-        for(let i = 0; i < localSaveData.length; ++i) {
-            localSaveData[i].id = id
+    
+    // let messageForIdentification = {login: login, model: "model", variant: "var"};
+    // fetch('http://127.0.0.1:8080/api/auth', { 
+        //     method: 'POST',
+        //     headers: {
+            //       'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(messageForIdentification),
+            //   }
+            
+            // )
+            // .then(response => {
+                //     if (!response.ok) {
+                    //         throw new Error(`HTTP error! status: ${response.status}`);
+                    //     }
+                    //     return response.json(); 
+                    // })
+                    // .then(serverData => {
+                        //     localSaveData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+                        //     let GrdOptions;
+                        
+                        //     if(!localSaveData) {
+                            //         GrdOptions = returnGridOptions(serverData.information, serverData.data);
+                            //         localSaveData = JSON.parse(JSON.stringify(serverData.data));
+                            //         let id = 0;
+                            //         for(let i = 0; i < localSaveData.length; ++i) {
+                                //             localSaveData[i].id = id
+                                //             ++id;
+                                //         }
+                                
+                                //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+                                //     }
+                                //     else{
+                                    //         GrdOptions = returnGridOptions(serverData.information, localSaveData);
+                                    //         dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+                                    //     }
+    //     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
+    //     setupButtons();
+    //     document.getElementById("mainFormName").textContent = serverData.information.name;
+    //     document.getElementById("code").textContent = serverData.information.code;
+    
+    //     document.getElementById("listSourceBtn").textContent = "Все";
+    //     document.getElementById("listObjectBtn").textContent = "Все";
+    //     addSourceListener(document.getElementById("sourceOptions").children[0])
+    //     addObjectListener(document.getElementById("objectOptions").children[0])
+    
+    //     CreateSourceOptions();
+    //     CreateObjectOptions();
+    // })
+    // .catch(error => {
+        //     console.error('Error fetching data:', error);
+        // });
+        userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+        let serverData = loadData();
+        let initialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+        let GrdOptions;
+        
+        if(!initialData) {
+            GrdOptions = returnGridOptions(serverData.information, userData["data_awdfasda"]['initial-requrements']);
+            initialData = JSON.parse(JSON.stringify(userData["data_awdfasda"]['initial-requrements']));
+            let id = 0;
+            for(let i = 0; i < initialData.length; ++i) {
+            initialData[i].id = id
             ++id;
         }
 
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        //dataForFilter = JSON.parse(JSON.stringify(initialData));
     }
     else{
-        GrdOptions = returnGridOptions(serverData.information, localSaveData);
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        GrdOptions = returnGridOptions(serverData.information, initialData);
+        //dataForFilter = JSON.parse(JSON.stringify(initialData));
     }
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
     document.getElementById("mainFormName").textContent = serverData.information.name;
     document.getElementById("code").textContent = serverData.information.code;
-
+    gridApi.forEachNode(node => dataForFilter.push(node.data));
     document.getElementById("listSourceBtn").textContent = "Все";
     document.getElementById("listObjectBtn").textContent = "Все";
     addSourceListener(document.getElementById("sourceOptions").children[0])
     addObjectListener(document.getElementById("objectOptions").children[0])
-
+    localSave(false);
     CreateSourceOptions();
     CreateObjectOptions();
-
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("initial-requrements.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("initial-requrements.html");
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю
@@ -456,6 +552,31 @@ function showNotification(message, type = 'success') { //показать уве
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
+
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+   
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+    // for(let i = 0; i < deletedNodes.length; ++i){
+    //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+    //     if(index !== -1){
+    //         newData.splice(index, 1);
+    //     }
+    // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
+
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -472,13 +593,47 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
             }
         }
     }
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     window.location.href = "initial-data.html";
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData);
+    //console.log(localSaveData);
+
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+   
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+    // for(let i = 0; i < deletedNodes.length; ++i){
+    //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+    //     if(index !== -1){
+    //         newData.splice(index, 1);
+    //     }
+    // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
 
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
@@ -496,11 +651,62 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
             }
         }
     }
-
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    localSaveData.forEach(row =>{
+        if(row.flag)
+        {
+            if(!forMatricies[`${row.column2}`]){
+            forMatricies[`${row.column2}`] = {"specific-requrements": [], views: {}};
+        }
+        }
+    });
+    
     sessionStorage.setItem("counter1", -1);
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
-    // console.log(sessionStorage.getItem("counter1"));
 
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+
+    sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
+    // fetch('http://127.0.0.1:8080/api/auth')
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(Views => {
+    //     console.log(Views);
+    //     sessionStorage.setItem("Views", JSON.stringify(Views));
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+
+
+
+    let Views = loadViews();
+    sessionStorage.setItem("Views", JSON.stringify(Views));
+    Array.from(Object.keys(forMatricies)).forEach(obj => {
+        Views.forEach(view => {
+            if(forMatricies[obj]["views"][view.header] === null || forMatricies[obj]["views"][view.header] === undefined){
+                forMatricies[obj]["views"][view.header] = {};
+            }
+            view.components.forEach(comp => {
+                if(forMatricies[obj]["views"][view.header][comp.name] === undefined || forMatricies[obj]["views"][view.header][comp.name] === null) {
+                    forMatricies[obj]["views"][view.header][comp.name] = [];
+                }
+            });
+        });
+    });
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
+    console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
 
     window.location.href = "all-objects.html";
 })
@@ -514,8 +720,12 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    console.log(sessionStorage.getItem("initial-requrements-data"));
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    userData["data_awdfasda"]['initial-requrements'] = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+    //toServerSave();
+    showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['initial-requrements'].length}`);
+
 })
 
 function CreateSourceOptions(){
@@ -654,4 +864,14 @@ function addObjectListener(objectBtn){
             }
         }
     })
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }

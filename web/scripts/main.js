@@ -1,61 +1,115 @@
-document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
-    const temp = document.getElementById('start');
-
-    if(temp === null){
-        let login = sessionStorage.getItem("GlobalLogin");
-        if(login === '' || login === null) {
-            e.preventDefault();
-            window.location.href = "log-in.html";
-     }
-     else{
-        sessionStorage.setItem('GlobalUrl', "http://127.0.0.1:8080");
-        
-     }
-    }
-})
-
-
-
-async function PostFunction(message) {
-    //alert(message);
-    //console.log("ddddd"); //это вывод в консоль браузера, не стреды разработки
-
-    url = sessionStorage.getItem("GlobalUrl");
-
-
-    fetch(url,  
-        {
-            method: 'POST',
-            body: message,
-            headers: {
-                'Content-Type': 'application/json',
-              }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            return data;
+function IsComplianceEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let goodViews = 0;
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+        for(let j = 0; j < views.length; ++j){
+            let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+            //let goodComps = 0;
+            for(let k = 0; k < comps.length; ++k){
+                if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                    ++goodViews;
+                    break
+                }
+            }
+            if(goodViews > 1){break;}
         }
-    )
-        .catch(error => console.log(error))
+        if(goodViews > 1){break;}
+    }
+    return (goodViews > 1);
 }
 
-async function GetFunction() {
-    url = sessionStorage.getItem("GlobalUrl");
-    const answ = fetch(url)
+function IsTraceabilityEnabled(){
+    let forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    let objs = Array.from(Object.keys(forMatricies));
+    for(let i = 0; i < objs.length; ++i){
+        if(forMatricies[objs[i]]["specific-requrements"].length){
+            let views = Array.from(Object.keys(forMatricies[objs[i]]["views"]));
+            for(let j = 0; j < views.length; ++j){
+                let comps = Array.from(Object.keys(forMatricies[objs[i]]["views"][views[j]]));
+                for(let k = 0; k < comps.length; ++k){
+                    if(forMatricies[objs[i]]["views"][views[j]][comps[k]].length > 0){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function createComplianceButtons(currentPage){
+    let div = document.getElementById("matrixCompliance");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let complianceData = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    let names = Array.from(Object.keys(complianceData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            //sessionStorage.setItem("previousName", name);
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
+            window.location.href = "compliance-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: null, flag: true}));
+        window.location.href = "compliance-matrix.html";
+    });
+}
+
+
+function createTraceabilityButtons(currentPage){
+    let div = document.getElementById("matrixVerification");
+    div.querySelectorAll('button:not(:first-child)').forEach(button =>  button.remove() );
+    let traceabilityData = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
+    let names = Array.from(Object.keys(traceabilityData));
+    names.forEach(name => {
+        const button = document.createElement("button");
+        button.className = "dropUpBtn";
+        button.textContent = name;
+        button.addEventListener("click", (e) => {
+            //sessionStorage.setItem("previousName", name);
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
+            window.location.href = "traceability-matrix.html";
+        });
+        div.appendChild(button);
+    });
+    div.children[0].addEventListener("click", (e) => {
+        //sessionStorage.setItem("previousName", matrixName);
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: null, flag: true}));
+        window.location.href = "traceability-matrix.html";
+    });
+}
+
+function toServerSave(){
+    let login = sessionStorage.getItem("GlobalLogin")
+    let userData = JSON.parse(localStorage.getItem(`data-${login}`));
+    fetch(ServerAdress + `save?${login}`, { 
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    }
+    )
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json(); 
     })
-    .then(data => {
-        return data;
+    .then(answer => {
+        console.log(answer);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
-    });
-
-    return answ;
-
+    });  
 }
+
+let ServerAdress = " asfasfa";
+
+

@@ -12,7 +12,7 @@
 <body>
     <header>
         <div style="flex-grow: 0.1"></div>
-          <h2 id="code" class="code">Код</h2>
+          <h2 id="code" class="code">Код1</h2>
           <div style="flex-grow: 1"></div>
           <h1 id="mainFormName" class="mainFormName">Требования исходные</h1>
           <div id="forCentring" style="flex-grow: 0.9"></div>
@@ -110,21 +110,23 @@
                 <div class="dropUp">
                     <div class="dropUp-content" id="modelList">
                         <button class="dropUpBtn specialBtn" id="createNewModelBtn">
-                            <span class="material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#1a73e8"><path d="M450-120v-330H120v-60h330v-330h60v330h330v60H510v330h-60Z"/></svg></span> Новая модель
+                            <span class="material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1a73e8"><path d="M450-120v-330H120v-60h330v-330h60v330h330v60H510v330h-60Z"/></svg></span> Новая модель
                         </button>
                         <!-- Сюда будут добавляться сохраненные модели -->
                     </div>
                     <button class="footer-btn" id="loadModelBtn" title="Загрузить модель или вариант">
-                        <span class="material-icons">cloud_download</span>
+                        <span class="material-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#1a73e8"><path d="M0 0h24v24H0z" fill="none"/><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                        </span>
                     </button>
                 </div>
                 
                 <div class="dropUp">
                     <div class="dropUp-content" id="matrixCompliance">
                         <button class="dropUpBtn specialBtn">Новая матрица соответствия</button>
-                        <button class="dropUpBtn">Матрица 1</button>
+                        <!-- <button class="dropUpBtn">Матрица 1</button>
                         <button class="dropUpBtn">Матрица 2</button>
-                        <button class="dropUpBtn">Матрица 3</button>
+                        <button class="dropUpBtn">Матрица 3</button> -->
                     </div>
                     <button class="footer-btn" id="equalsBtn" title="Установить соответствие">
                         <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" style="transform: rotate(90deg)" height="36px" viewBox="0 0 20 20" width="36px" fill="#1f1f1f"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g/><polygon points="11,7 14,7 10,3.01 6,7 9,7 9,13 6,13 10,16.99 14,13 11,13"/></g></svg>
@@ -134,9 +136,9 @@
                 <div class="dropUp">
                     <div class="dropUp-content" id="matrixVerification">
                         <button class="dropUpBtn specialBtn">Новая матрица верификации</button>
-                        <button class="dropUpBtn">Матрица A</button>
+                        <!-- <button class="dropUpBtn">Матрица A</button>
                         <button class="dropUpBtn">Матрица B</button>
-                        <button class="dropUpBtn">Матрица C</button>
+                        <button class="dropUpBtn">Матрица C</button> -->
                     </div>
                     <button class="footer-btn" id="verificationBtn" title="Перейти к верификации">
                         <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#1f1f1f"><path d="M480-80 317-243l44-44 89 89v-189h60v189l89-89 44 44L480-80ZM238-322 80-480l159-159 44 44-85 85h189v60H198l84 84-44 44Zm484 0-44-44 84-84H574v-60h188l-84-84 44-44 158 158-158 158ZM450-574v-188l-84 84-44-44 158-158 158 158-44 44-84-84v188h-60Z"/></svg>
@@ -152,6 +154,7 @@
         </footer>
     </footer>
 
+    <script src="../scripts/main.js"></script>
     <script src="../scripts/information-about-model.js"></script>
 </body>
 </html>

@@ -12,8 +12,10 @@ form.addEventListener('submit', (e) => {
     pair.password = password.value;
     let jsonstr = JSON.stringify(pair);
 
+    //localStorage.clear();
+
     
-    // e.preventDefault();
+    e.preventDefault();
     // fetch('http://127.0.0.1:8080/api/auth', { //что тут происходит я сам не знаю
     //     method: 'POST',
     //     headers: {
@@ -32,7 +34,6 @@ form.addEventListener('submit', (e) => {
     // .then(data => {
 
     //     if(data.status === 'Correct') { //если все хорошо
-    //         alert('we are in if');
     //         sessionStorage.setItem('GlobalLogin', login.value);
     //         sessionStorage.setItem('GlobalLevel', data.privilege);
     //         //sessionStorage.setItem("GlobalRedirect", true);
@@ -42,7 +43,7 @@ form.addEventListener('submit', (e) => {
     //                 window.location.assign("rules-of-usage.html");
     //             }
     //             else{
-    //                 window.location.assign("data-from-user.html");
+    //                 window.location.assign("information-about-model.html");
     //             }
     //         }
     //         else {
@@ -52,7 +53,6 @@ form.addEventListener('submit', (e) => {
     
     //     }
     //     else if (data.status === 'User not found'){
-    //         alert('we are in another if')
     //         error_div.innerText = "Неправильный логин";
     //         e.preventDefault();
     //     }
@@ -60,9 +60,6 @@ form.addEventListener('submit', (e) => {
     //         error_div.innerText = "Неправильный пароль";
     //         e.preventDefault();
     //     }
-    //     else {alert(data.status === 'User not found')};
-    //     alert(data.status === 'User not found');
-
 
     // })
     // .catch(error => {
@@ -76,12 +73,38 @@ form.addEventListener('submit', (e) => {
         sessionStorage.setItem('GlobalLogin', login.value);
         sessionStorage.setItem('GlobalLevel', answer.privilege);
         e.preventDefault();  
-        if(answer.access === 'true'){  
-            if(answer.agreement === 'false') {
+        if(answer.access){ 
+           
+            // fetch(ServerAdress + `load?${pair.login}`
+            // // fetch(ServerAdress + `load?${pair.login}`, { //что тут происходит я сам не знаю
+            // //     method: 'POST',
+            // //     headers: {
+            // //     'Content-Type': 'application/json',
+            // //     },
+            // //     body: pair.login,
+            // // }
+            
+            // )
+            // .then(response => {
+            //     if (!response.ok) {
+            //         throw new Error(`HTTP error! status: ${response.status}`);
+            //     }
+            //     return response.json(); 
+            // })
+            // .then(data => {
+            //     //получить данные о моделях и другие
+            //     //{specialFieldForModels_ddqasdawd: null, data_awdfasda: null})
+            //     localStorage.setItem(`data-${pair.login}`, JSON.stringify(data));
+            // })
+            // .catch(error => {
+            //     console.error('Error fetching data:', error);
+            // });
+            
+            if(!answer.agreement) {
                 window.location.assign("rules-of-usage.html");
             }
             else{
-                window.location.assign("information-about-model.html");
+               window.location.assign("information-about-model.html");
             }
         }
         else {
@@ -112,7 +135,103 @@ twoInputs.forEach(input => { //стереть сообщение об ошибк
 
 
 function tempCheckLoginAndPassword(jsonstr){
-    return tempFunction(jsonstr);
+    let input = JSON.parse(jsonstr);
+    let obj = new Object();
+    //console.log(localStorage.getItem("all-users"));
+    if(!localStorage.getItem("all-users")){
+        localStorage.setItem("all-users", JSON.stringify([
+        { id: 1, level: "superAdmin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "111", password: "111", acsess: true,
+          startDate: new Date("1970-02-03"), endDate: new Date("2095-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd", agreement: false}]));
+
+        localStorage.setItem("data-111", JSON.stringify({specialFieldForModels_ddqasdawd: null, data_awdfasda: null})); //такое название поля чтобы точно не совпало с названиями модели
+    }
+
+    // fetch(ServerAdress + `getUsers`)
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(data => {
+    //     const AllUsers = data;
+    //     let flag = true;
+    //     for(let i = 0; i < AllUsers.length; ++i){
+    //         if(AllUsers[i].login === input.login){
+    //             flag = false;
+    //             if(AllUsers[i].password === input.password){
+    //                 const currTime = new Date();
+    //                 if(AllUsers[i].acsess && (AllUsers[i].startDate ? new Date(AllUsers[i].startDate) <= currTime : true) && (AllUsers[i].endDate ? currTime <= new Date(AllUsers[i].endDate) : true)){
+    //                     obj.status = 'Correct';
+    //                     obj.privilege = AllUsers[i].level;
+    //                     obj.agreement = AllUsers[i].agreement;
+    //                     obj.access = true;
+    //                 }
+    //                 else{
+    //                     obj.status = 'Correct';
+    //                     obj.privilege = AllUsers[i].level;
+    //                     obj.agreement = AllUsers[i].agreement;
+    //                     obj.access = false;
+    //                 }
+    //             }
+    //             else{
+    //                 obj.status = 'Incorrect password';
+    //                 obj.privilege = 'user';
+    //                 obj.agreement = false;
+    //                 obj.access = false
+    //             }
+    //             break
+    //         }
+    //     }
+    //     if(flag){
+    //         obj.status = 'User not found';
+    //         obj.privilege = 'user';
+    //         obj.agreement = false;
+    //         obj.access = false;
+    //     }
+    //     return JSON.stringify(obj);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+    //это все с данными с сервера
+    const AllUsers = JSON.parse(localStorage.getItem("all-users"));
+    let flag = true;
+    for(let i = 0; i < AllUsers.length; ++i){
+        if(AllUsers[i].login === input.login){
+            flag = false;
+            if(AllUsers[i].password === input.password){
+                const currTime = new Date();
+                if(AllUsers[i].acsess && (AllUsers[i].startDate ? new Date(AllUsers[i].startDate) <= currTime : true) && (AllUsers[i].endDate ? currTime <= new Date(AllUsers[i].endDate) : true)){
+                    obj.status = 'Correct';
+                    obj.privilege = AllUsers[i].level;
+                    obj.agreement = AllUsers[i].agreement;
+                    obj.access = true;
+                }
+                else{
+                    obj.status = 'Correct';
+                    obj.privilege = AllUsers[i].level;
+                    obj.agreement = AllUsers[i].agreement;
+                    obj.access = false;
+                }
+            }
+            else{
+                obj.status = 'Incorrect password';
+                obj.privilege = 'user';
+                obj.agreement = false;
+                obj.access = false
+            }
+            break
+        }
+    }
+    if(flag){
+        obj.status = 'User not found';
+        obj.privilege = 'user';
+        obj.agreement = false;
+        obj.access = false;
+    }
+    return JSON.stringify(obj);
+    //return tempFunction(jsonstr);
 }
 
 function tempFunction(jsonstr) { // 123 123 - user без согласияб 321 321 - admin с согласием, 222 222 - доступ кончился по времени

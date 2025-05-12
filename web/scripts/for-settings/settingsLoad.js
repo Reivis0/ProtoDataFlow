@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
         window.location.href = "log-in.html";
     }
 
+<<<<<<< HEAD
     enabeledPagesData = convertToEnabled(tempData());
     let gridOptions1 = createGridOptions1(enabeledPagesData);
     gridApi1 = agGrid.createGrid(document.querySelector("#myGrid1"), gridOptions1);
@@ -13,6 +14,36 @@ document.addEventListener('DOMContentLoaded', (e) => {
     showSettingsOfEnabled(enabeledPagesData);
 
     const exitButton = document.createElement('button');
+=======
+    // fetch('http://127.0.0.1:8080/api/auth')
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(data => {
+    //     enabeledPagesData = convertToEnabled(data); //данные о первой таблице
+    //     let gridOptions1 = createGridOptions1(enabeledPagesData);
+    //     gridApi1 = agGrid.createGrid(document.querySelector("#myGrid1"), gridOptions1);
+    //     setupButtons1();
+    //     showSettingsOfEnabled(enabeledPagesData); //включить настройки таблиц, которые доступны пользователю
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
+
+    enabeledPagesData = convertToEnabled(tempData()); //данные о первой таблице
+    let gridOptions1 = createGridOptions1(enabeledPagesData);
+    gridApi1 = agGrid.createGrid(document.querySelector("#myGrid1"), gridOptions1);
+    showSettingsOfEnabled(enabeledPagesData);
+    TableData2 = loadData();//данные о второй таблице
+    let gridOptions2 = createGridOptions2(TableData2);
+    gridApi2 = agGrid.createGrid(document.querySelector("#myGrid2"), gridOptions2);
+    setupButtons2();
+    
+    const exitButton = document.createElement('button'); //кнопка выйти
+>>>>>>> f931849d101303a8c3cd5d11131132c8ebb04e91
     exitButton.textContent = "Выйти";
     exitButton.classList.add('leave-btn');
     exitButton.addEventListener("click", (e) => {
