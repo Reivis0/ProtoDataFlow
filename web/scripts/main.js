@@ -49,6 +49,7 @@ function createComplianceButtons(currentPage){
         button.className = "dropUpBtn";
         button.textContent = name;
         button.addEventListener("click", (e) => {
+            //sessionStorage.setItem("previousName", name);
             sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
             window.location.href = "compliance-matrix.html";
         });
@@ -71,7 +72,7 @@ function createTraceabilityButtons(currentPage){
         button.className = "dropUpBtn";
         button.textContent = name;
         button.addEventListener("click", (e) => {
-            sessionStorage.setItem("previousName", matrixName);
+            //sessionStorage.setItem("previousName", name);
             sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
             window.location.href = "traceability-matrix.html";
         });
@@ -83,3 +84,32 @@ function createTraceabilityButtons(currentPage){
         window.location.href = "traceability-matrix.html";
     });
 }
+
+function toServerSave(){
+    let login = sessionStorage.getItem("GlobalLogin")
+    let userData = JSON.parse(localStorage.getItem(`data-${login}`));
+    fetch(ServerAdress + `save?${login}`, { 
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    }
+    )
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); 
+    })
+    .then(answer => {
+        console.log(answer);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });  
+}
+
+let ServerAdress = " asfasfa";
+
+

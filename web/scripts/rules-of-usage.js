@@ -43,7 +43,7 @@ form.addEventListener('submit', (e) => {
     obj.name = document.getElementById("name-in").value;
     obj.surname = document.getElementById("surname-in").value;
     obj.patronymic = document.getElementById("patronymic-in").value;
-    tempPlaceFlag(JSON.stringify(obj)); 
+    tempPlaceFlag(obj); 
 
     // fetch('http://127.0.0.1:8080/api/auth', { 
     //     method: 'POST',
@@ -68,6 +68,7 @@ form.addEventListener('submit', (e) => {
     // });
     
     //window.location.assigsn("log-in.html");
+
     window.location.assign("information-about-model.html");
 
 })
@@ -90,13 +91,35 @@ buttonBack.addEventListener("click", (e) => {
      window.location.href = "log-in.html";
 })
 
-function tempPlaceFlag(){
+function tempPlaceFlag(obj){
+
+    // fetch(ServerAdress + `placeFlag`, { 
+    //     method: 'POST',
+    //     headers: {
+    //     'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(obj),
+    // }
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(answer => {
+    //     console.log(answer);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });  
+    //убрать когда будет сервер
     const AllUsers = JSON.parse(localStorage.getItem("all-users"));
      for(let i = 0; i < AllUsers.length; ++i){
         if(AllUsers[i].login === GlobalLogin){
             AllUsers[i].agreement = true;
+            break;
         }
-        break;
      }
      localStorage.setItem("all-users", JSON.stringify(AllUsers));
      console.log(JSON.parse(localStorage.getItem("all-users")));

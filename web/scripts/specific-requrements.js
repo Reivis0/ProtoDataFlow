@@ -182,7 +182,8 @@ let gridApi;
 
 let localSaveData = []; //для локального сохранения
 let dataForFilter = []; //для локального сохранения
-
+let GlobalLogin;
+let userData;
 let deletedNodes = [];
 let forMatricies;
 
@@ -227,7 +228,7 @@ function localSave(flag=true) {
     forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
     sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log('Saving all:', localSaveData);
-    if(flag){showNotification(`Сохранено строк: ${tempArray.length}`);}
+    if(flag){showToast(`Сохранено строк: ${tempArray.length}`, 'success');}
     
 }
 
@@ -245,7 +246,10 @@ function setupButtons() {
       });
 
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
 
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -425,7 +429,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
-
+    GlobalLogin = login;
     // let messageForIdentification = {login: login, model: "model", variant: "var"};
     // fetch('http://127.0.0.1:8080/api/auth', { 
     //     method: 'POST',
@@ -483,7 +487,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //     console.error('Error fetching data:', error);
     // });
 
-
+    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
     let serverData = loadData();
 
     initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
@@ -493,11 +497,11 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     let GrdOptions;
     let initialData;
 
-    forMatricies = sessionStorage.getItem("for-matricies");
-    if(forMatricies){
-        forMatricies = JSON.parse(forMatricies);
-        initialData = forMatricies[currentObjAndType.Object]["specific-requrements"];
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    if(!Array.from(Object.keys(forMatricies)).length){
+        forMatricies = userData["data_awdfasda"]['forMatricies'];
     }
+    initialData = forMatricies[currentObjAndType.Object]["specific-requrements"];
 
     if(!initialData) {
         // GrdOptions = returnGridOptions(serverData.information, serverData.data);
@@ -686,31 +690,11 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    const message = {
-        object: currentObjAndType.Object,
-        data: localSaveData
-    };
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    userData["data_awdfasda"]['forMatricies'] = JSON.parse(sessionStorage.getItem("for-matricies"));
+    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+    //toServerSave();
+    showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['forMatricies'][currentObjAndType.Object]["specific-requrements"].length}`);
 })
 
 function CreateSourceOptions(){
@@ -849,4 +833,14 @@ function addCategoryListener(categoryBtn){
             }
         }
     })
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }

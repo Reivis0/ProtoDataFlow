@@ -1,3 +1,5 @@
+let userData;
+let GlobalLogin;
 document.addEventListener("DOMContentLoaded", (e) => {
 
     let login = sessionStorage.getItem("GlobalLogin");
@@ -6,6 +8,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
+
+    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    console.log(userData);
 
     const inputs = [
         document.getElementById("concept"),
@@ -43,6 +49,18 @@ function configureForm(labels, inputs, serverData) {
         inputs[i].maxLength = maxLen > 0 ? maxLen : 100;
         inputs[i].setAttribute('maxlength', inputs[i].maxLength);
     });
+    const formData = {
+        concept: inputs[0].value.trim(),
+        conditions: inputs[1].value.trim(),
+        assumptions: inputs[2].value.trim(),
+        otherInfo: inputs[3].value.trim(),
+        lastSaved: new Date().toISOString()
+    };
+    const temp = sessionStorage.getItem('initial-data');
+    if(!temp){
+        sessionStorage.setItem('initial-data', JSON.stringify(userData["data_awdfasda"]['initial-data']));
+    }
+    //sessionStorage.setItem('initial-data', JSON.stringify(formData));
 }
 
 // Мок-данные
@@ -66,7 +84,7 @@ function saveDataLocally(inputs, callback) {
     };
     
     try {
-        sessionStorage.setItem('formData', JSON.stringify(formData));
+        sessionStorage.setItem('initial-data', JSON.stringify(formData));
         showToast('Данные сохранены!', 'success');
         if (callback) callback();
     } catch (e) {
@@ -91,7 +109,7 @@ function validateRequiredFields(inputs) {
 }
 // Загрузка сохранённых данных
 function loadSavedData(inputs) {
-    const savedData = sessionStorage.getItem('formData');
+    const savedData = sessionStorage.getItem('initial-data');
     if (!savedData) return;
 
     try {
@@ -109,14 +127,17 @@ function loadSavedData(inputs) {
 function setupFormSubmit(inputs) {
     document.getElementById('data-input').addEventListener('submit', (e) => {
         e.preventDefault();
-        saveDataLocally(inputs);
+         if (validateRequiredFields(inputs)) {
+            saveDataLocally(inputs);
+            showNotification("Не забудьте добавить данные в модель!");
+        }
     });
 }
 
 // Настройка обработчиков кнопок footer
 function setupActionButtons(inputs) {
     const navigateWithCheck = (url) => {
-        const savedData = sessionStorage.getItem('formData');
+        const savedData = sessionStorage.getItem('initial-data');
         const currentData = {
             concept: inputs[0].value.trim(),
             conditions: inputs[1].value.trim(),
@@ -144,11 +165,15 @@ function setupActionButtons(inputs) {
     document.getElementById("backBtn").addEventListener("click", (e) => {
         e.preventDefault();
         if (!validateRequiredFields(inputs)) {
-            document.getElementById('data-input').dispatchEvent(new Event('submit'));
-            return;
+            //document.getElementById('data-input').dispatchEvent(new Event('submit'));
+            if(confirm(`Не все обязательные поля заполелны. Уйти без сохранения?`)){
+                window.location.href = "information-about-model.html";
+            }
         }
-        navigateWithCheck("information-about-model.html");
-    });
+        else{
+            navigateWithCheck("information-about-model.html");
+        }
+        });
     
     // Кнопка "Вперед"
     document.getElementById("nextBtn").addEventListener("click", (e) => {
@@ -162,18 +187,23 @@ function setupActionButtons(inputs) {
     
     // Кнопка "Добавить"
     document.getElementById('toServerBtn').addEventListener('click', () => {
-       // saveDataLocally(inputs);
+        saveDataLocally(inputs);
+        saveToModel();
+        //toServerSave(); //к серверу
+        showToast('Данные добавлены в модель!', 'success');
     });
     
     
     // Кнопка "Выйти"
     document.getElementById('exitBtn').addEventListener('click', () => {
-        if (confirm('Удалить все сохранённые данные?')) {
-            sessionStorage.removeItem('formData');
-            document.getElementById('data-input').reset();
-            showToast('Данные удалены!', 'info');
-        }
-        navigateWithCheck("log-in.html");
+        // if (confirm('Удалить все сохранённые данные?')) {
+        //     sessionStorage.removeItem('initial-data');
+        //     document.getElementById('data-input').reset();
+        //     showToast('Данные удалены!', 'info');
+        // }
+        // navigateWithCheck("log-in.html");
+        sessionStorage.clear();
+        window.location.href = "log-in.html";
     });
 }
 
@@ -267,4 +297,35 @@ function showToast(message, type) {
     document.body.appendChild(toast);
     
     setTimeout(() => toast.remove(), 3000);
+}
+
+function saveToModel(){
+    userData["data_awdfasda"]['initial-data'] = JSON.parse(sessionStorage.getItem('initial-data'));
+    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+     console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+}
+
+function showNotification(message, type = 'success') { //показать уведомление пользователю
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '75px';
+    notification.style.right = '30px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    notification.textContent = message;
+   
+    const existing = document.querySelector('.ag-grid-notification');
+    if (existing) existing.remove();
+   
+    notification.classList.add('ag-grid-notification');
+    document.body.appendChild(notification);
+   
+    setTimeout(() => { //исчезает через время
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
 }

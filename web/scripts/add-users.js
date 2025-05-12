@@ -313,30 +313,28 @@ function saveChanges() {
     измененных - ${changedRows.length}, 
     удаленных - ${deletedRows.length},
     новых строк - ${newRows.length}`);
-      
-    // fetch('http://127.0.0.1:8080/api/auth', { 
+    // fetch(ServerAdress + `updateUsers`, { 
     //     method: 'POST',
     //     headers: {
-    //       'Content-Type': 'application/json',
+    //     'Content-Type': 'application/json',
     //     },
     //     body: JSON.stringify(changes),
-    //   }
-    //   )
-    //   .then(response => {
-    //       if (!response.ok) {
-    //           throw new Error(`HTTP error! status: ${response.status}`);
-    //       }
-    //       return response.json(); 
-    //   })
-    //   .then(answer => {
-    //       console.log(answer);
-    //   })
-    //   .catch(error => {
-    //       console.error('Error fetching data:', error);
-    //   });  
+    // }
+    // )
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(answer => {
+    //     console.log(answer);
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });  
       
 
-      //это в fetch
       //Удалить удаленные строки
       originalData = originalData.filter(row => 
         !deletedRows.some(deleted => deleted.id === row.id)
@@ -355,10 +353,12 @@ function saveChanges() {
           return cleanRow;
       })];
 
+
+      //удалить когда будет сервер
       localStorage.setItem("all-users", JSON.stringify(originalData));
       console.log(JSON.parse(localStorage.getItem("all-users")));
       newRows.forEach(row => {
-        localStorage.setItem(`data-${row.login}`, JSON.stringify({}));
+        localStorage.setItem(`data-${row.login}`, JSON.stringify({specialFieldForModels_ddqasdawd: null, data_awdfasda: null})); //такое название поля чтобы точно не совпало с названиями модели
         console.log(JSON.parse(localStorage.getItem(`data-${row.login}`))); 
       });
 

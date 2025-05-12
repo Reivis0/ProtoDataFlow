@@ -169,6 +169,9 @@
     text-align: center;
   }
 
+  .dropUp-content{
+    flex-direction: column-reverse;
+  }
 
   .dropUpBtn svg{
 align-self: center;
@@ -204,6 +207,7 @@ align-self: center;
     
     .dropUp-content {
       min-width: 180px;
+      flex-direction: column-reverse;
     }
   }
   
@@ -237,6 +241,7 @@ align-self: center;
     .dropUp-content {
       min-width: 160px;
       font-size: 13px;
+      flex-direction: column-reverse;
     }
   }
   /* Стили для кнопки в футере */
@@ -251,6 +256,7 @@ align-self: center;
     padding: 8px 16px;
     text-align: left;
     width: 100%;
+    
   }
   
   .model-info {

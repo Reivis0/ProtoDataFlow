@@ -202,7 +202,7 @@ function localSave(flag=true) {
     sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log(JSON.parse(sessionStorage.getItem("for-matricies")));
     console.log('Saving all:', allData);
-    if(flag){showNotification(`Сохранено ${tempArray.length} строк (вся таблица)`);}
+    if(flag){showToast(`Сохранено ${tempArray.length} строк (вся таблица)`, 'success');}
     
 }
 
@@ -218,7 +218,10 @@ function setupButtons() {
       });
 
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
 
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -342,6 +345,8 @@ let initialRequrements = [];
 let currentObjAndType;
 let curView;
 let curComp;
+let GlobalLogin;
+let userData;
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     let login = sessionStorage.getItem("GlobalLogin");
@@ -350,6 +355,8 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+
+    GlobalLogin = login;
 
     // let messageForIdentification = {login: login, model: "model", variant: "var"};
     // fetch('http://127.0.0.1:8080/api/auth', { 
@@ -401,7 +408,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // });
 
 
-
+    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
     let serverData = loadData();
     
     curView = JSON.parse(sessionStorage.getItem("currentView"));
@@ -418,18 +425,16 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
     let GrdOptions;
+
     forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    if(!Array.from(Object.keys(forMatricies)).length){
+        forMatricies = userData["data_awdfasda"]['forMatricies'];
+    }
     
     localSaveData = forMatricies[currentObjAndType.Object]["views"][`${curView.header}`][`${curComp.name}`]
     
-    if(!localSaveData.length) {
-        GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        //localSaveData = JSON.parse(JSON.stringify(serverData.data));
-    }
-    else{
         console.log(localSaveData);
         GrdOptions = returnGridOptions(serverData.information, localSaveData);
-    }
 
 
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
@@ -588,30 +593,19 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    const message = {
-        object: currentObjAndType.Object,
-        data: localSaveData
-    };
-    console.log(message);
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    userData["data_awdfasda"]['forMatricies'] = JSON.parse(sessionStorage.getItem("for-matricies"));
+    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+    //toServerSave();
+    showNotification(`Сохранено строк в модели: ${forMatricies[currentObjAndType.Object]["views"][`${curView.header}`][`${curComp.name}`].length}`);
 });
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}

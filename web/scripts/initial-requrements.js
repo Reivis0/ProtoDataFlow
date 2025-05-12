@@ -90,75 +90,6 @@ function loadData(){
     return answer;
 }
 
-function loadViews(){
-    let views = [
-        {
-            "number": 1,
-            "header": "Представление_1",
-            "code": "SDFS-1",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "Компонент_1",
-                    "code": "fafa-53_"
-                },
-                {
-                    "number": 2,
-                    "name": "Компонент_2",
-                    "code": "fafa-54"
-                },
-                {
-                    "number": 3,
-                    "name": "Компонент_3",
-                    "code": "fafa-55"
-                }
-            ]
-    
-    
-        },
-        {
-            "number": 2,
-            "header": "Представление_2",
-            "code": "SDFS-2",
-            "components": [
-                {
-                    "number": 4,
-                    "name": "Компонент_4",
-                    "code": "fafa-56_"
-                },
-                {
-                    "number": 5,
-                    "name": "Компонент_5",
-                    "code": "fafa-57"
-                },
-            ]
-    
-    
-        },
-        {
-            "number": 5,
-            "header": "Представление_5",
-            "code": "SDFS-5",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "Компонент_6",
-                    "code": "fafa-58_"
-                },
-                {
-                    "number": 2,
-                    "name": "Компонент_7",
-                    "code": "fafa-59"
-                },
-            ]
-    
-    
-        }
-    ]
-
-    return views;
-}
-
 function returnGridOptions(information, data){ //получить настройки таблицы
 
     let coldefs = [{field: "flag", headerName: "", cellEditor: "agCheckboxCellEditor"}]; //выбрать только включенные столбики
@@ -257,7 +188,8 @@ let gridApi;
 
 let localSaveData = []; //для локального сохранения
 let dataForFilter = []; //для локального сохранения
-
+let GlobalLogin;
+let userData;
 let deletedNodes = [];
 
 function localSave(flag = true) {
@@ -300,7 +232,9 @@ function localSave(flag = true) {
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     console.log('Saving all:', localSaveData);
     console.log(JSON.parse(sessionStorage.getItem("initial-requrements-data")));
-    if(flag){showNotification(`Сохранено строк: ${localSaveData.length}`);}
+    if(flag){
+        showToast(`Сохранено строк: ${tempArray.length}`, 'success');
+    }
     
 }
 
@@ -318,7 +252,10 @@ function setupButtons() {
       });
 
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
 
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -496,6 +433,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
     
     
     // let messageForIdentification = {login: login, model: "model", variant: "var"};
@@ -549,14 +487,14 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // .catch(error => {
         //     console.error('Error fetching data:', error);
         // });
-        
+        userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
         let serverData = loadData();
         let initialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
         let GrdOptions;
         
         if(!initialData) {
-            GrdOptions = returnGridOptions(serverData.information, serverData.data);
-            initialData = JSON.parse(JSON.stringify(serverData.data));
+            GrdOptions = returnGridOptions(serverData.information, userData["data_awdfasda"]['initial-requrements']);
+            initialData = JSON.parse(JSON.stringify(userData["data_awdfasda"]['initial-requrements']));
             let id = 0;
             for(let i = 0; i < initialData.length; ++i) {
             initialData[i].id = id
@@ -782,29 +720,12 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    let message = sessionStorage.getItem("initial-requrements-data");
-    console.log(message);
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    userData["data_awdfasda"]['initial-requrements'] = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+    //toServerSave();
+    showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['initial-requrements'].length}`);
+
 })
 
 function CreateSourceOptions(){
@@ -943,4 +864,14 @@ function addObjectListener(objectBtn){
             }
         }
     })
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }

@@ -18,6 +18,7 @@ const config = {
 
     let transposed = false;
 
+    let GlobalLogin;
     let GlobalAllObjects;
     let GlobalForMatricies;
     let GlobalViews;
@@ -26,19 +27,27 @@ const config = {
     let complianceMatricies;
     let navigationData;
     let matrixName;
+    let userData;
     const matrixNameInput = document.getElementById("matrixName");
 
    document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
-     let login = sessionStorage.getItem("GlobalLogin");
-     if(login === '' || login === null) {
-         e.preventDefault();
-         //window.location.assigsn("log-in.html");
-         window.location.href = "log-in.html";
-     }
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+    
+    GlobalLogin = login;
+    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
 
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
-     complianceMatricies = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    complianceMatricies = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+    if(!Array.from(Object.keys(complianceMatricies)).length){
+        complianceMatricies = userData["data_awdfasda"]['compliance-matricies-data'];
+        //console.log(complianceMatricies);
+    }
      navigationData = JSON.parse(sessionStorage.getItem("matrix-navigation"));
 
      if(navigationData.name){
@@ -54,6 +63,9 @@ const config = {
      }
     
      forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+     if(!Array.from(Object.keys(forMatricies)).length){
+        forMatricies = userData["data_awdfasda"]['forMatricies'];
+    }
      const allObjects = Array.from(Object.keys(forMatricies));
      GlobalAllObjects = allObjects;
      GlobalForMatricies = forMatricies;
@@ -808,31 +820,17 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
      window.location.href = "log-in.html";
 })
 
+let tempFlag = false;
+
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    let message = localSaveData;
-    console.log(message);
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+    if(tempFlag){
+        userData["data_awdfasda"]['compliance-matricies-data'] = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+        localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+        console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+        //toServerSave();
+        showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+    }
 });
 
 document.getElementById("saveAllBtn").addEventListener("click", localSave);
@@ -874,6 +872,7 @@ function localSave() {
     if(!matrixName){
         showNotification("Введите название матрицы", false);
         matrixNameInput.focus();
+        tempFlag = false;
         return
     }
     
@@ -888,8 +887,10 @@ function localSave() {
     complianceMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
     sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
     //console.log('Saving all:', traceabilityData);
-    showNotification(`Сохранено ячеек: ${traceabilityData.length}`);
-    createComplianceButtons()
+    showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
+    showNotification("Не забудьте добавить данные в модель!");
+    createComplianceButtons();
+    tempFlag = true;
     
 }
 
@@ -944,3 +945,13 @@ matrixNameInput.addEventListener("change", (e) => {
         console.log(complianceMatricies);
     }
 });
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}

@@ -31,24 +31,33 @@ let GlobalAllObjects;
 let GlobalForMatricies;
 let GlobalInitialData;
 let GlobalViews;
+let GlobalLogin;
 let viewToCode = {};
 let localSaveData = [];
 let traceabilityMatricies;
 let navigationData;
 let matrixName;
+let userData;
 const matrixNameInput = document.getElementById("matrixName");
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
-    //  let login = sessionStorage.getItem("GlobalLogin");
-    //  if(login === '' || login === null) {
-    //      e.preventDefault();
-    //      //window.location.assigsn("log-in.html");
-    //      window.location.href = "log-in.html";
-    //  }
+     let login = sessionStorage.getItem("GlobalLogin");
+     if(login === '' || login === null) {
+         e.preventDefault();
+         //window.location.assigsn("log-in.html");
+         window.location.href = "log-in.html";
+     }
 
+    GlobalLogin = login;
+    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    console.log(userData);
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
-     traceabilityMatricies = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
+    traceabilityMatricies = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
+    if(!Array.from(Object.keys(traceabilityMatricies)).length){
+        traceabilityMatricies = userData["data_awdfasda"]['traceability-matricies-data'];
+        //console.log(traceabilityMatricies);
+    }
      navigationData = JSON.parse(sessionStorage.getItem("matrix-navigation"));
 
      if(navigationData.name){
@@ -63,7 +72,10 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][5]
      }
     
-     forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+     if(!Array.from(Object.keys(forMatricies)).length){
+        forMatricies = userData["data_awdfasda"]['forMatricies'];
+    }
      const allObjects = Array.from(Object.keys(forMatricies));
      GlobalAllObjects = allObjects;
      GlobalForMatricies = forMatricies;
@@ -1194,7 +1206,7 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
                     if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
                         showNotification("Введите название матрицы", false);
                         matrixNameInput.focus();
-                        console.log("sdasd")
+                        //console.log("sdasd")
                         return
                     }
                     localSave();
@@ -1269,10 +1281,16 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
     else{
         sessionStorage.setItem("previousName", matrixName);
         //console.log(sessionStorage.getItem("previousName"));
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"compliance-matrix.html", name: null, flag: false}));
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: null, flag: false}));
         showNotification("Дальше последняя страница");
+        //window.location.href = "last-page.html";
     }
-    //window.location.href = "last-page.html";
+
+    // sessionStorage.setItem("previousName", matrixName);
+    // //console.log(sessionStorage.getItem("previousName"));
+    // sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: null, flag: false}));
+    // showNotification("Дальше последняя страница");
+    // window.location.href = "last-page.html";
 
     //window.location.href = "all-objects.html";
 });
@@ -1284,31 +1302,17 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
      window.location.href = "log-in.html";
 })
 
+let tempFlag = false;
+
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    let message = localSaveData;
-    console.log(message);
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+    if(tempFlag){
+        userData["data_awdfasda"]['traceability-matricies-data'] = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
+        localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
+        console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+        //toServerSave();
+        showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+    }
 });
 
 document.getElementById("saveAllBtn").addEventListener("click", localSave);
@@ -1364,8 +1368,10 @@ function localSave() {
     traceabilityMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
     sessionStorage.setItem("traceability-matricies-data", JSON.stringify(traceabilityMatricies));
     //console.log('Saving all:', traceabilityData);
-    showNotification(`Сохранено ячеек: ${traceabilityData.length}`);
+    showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
+    showNotification("Не забудьте добавить данные в модель!");
     createTraceabilityButtons();
+    tempFlag = true;
     
 }
 
@@ -1420,3 +1426,13 @@ matrixNameInput.addEventListener("change", (e) => {
         console.log(traceabilityMatricies);
     }
 })
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}
