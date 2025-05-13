@@ -91,7 +91,9 @@ function initializeComponentTables() {
                         <span class="material-icons">save</span>
                     </button>
                 </div>
-                <div id="componentGridInner_${repId}_${compId}" class="ag-theme-alpine"></div>
+                <div id="componentGridInner_${repId}_${compId}" 
+                    class="ag-theme-alpine" 
+                    style="height: 400px; width: 100%;"></div>
             `;
 
             document.getElementById('generalContainer').appendChild(container);

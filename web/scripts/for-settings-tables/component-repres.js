@@ -1,14 +1,21 @@
 window.SettingsManager = {
     async init() {
+    try {
         this.data = await DataManager.load();
+        if (!this.data) {
+            throw new Error('Данные не загружены');
+        }
         this.renderTables();
         this.setupEventListeners();
         
-        // Инициализация всех таблиц
-        initializeObjectTypeTables();
-        initializeRepresentationTables();
-        initializeComponentTables();
-    },
+        // Инициализация таблиц с задержкой для AG-Grid
+        setTimeout(() => {
+            initializeComponentTables();
+        }, 100);
+    } catch (e) {
+        console.error('Ошибка инициализации SettingsManager:', e);
+    }
+},
 
     renderTables() {
         // Очищаем контейнер

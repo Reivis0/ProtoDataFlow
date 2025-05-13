@@ -17,15 +17,26 @@ window.DataManager = {
     },
 
     // Загрузка данных
+    // async load() {
+    //     try {
+    //         const response = await fetch('/api/settings/views');
+    //         return response.ok ? await response.json() : this.defaultStructure;
+    //     } catch {
+    //         console.warn("Используются дефолтные данные");
+    //         return this.defaultStructure;
+    //     }
+    // },
     async load() {
-        try {
-            const response = await fetch('/api/settings/views');
-            return response.ok ? await response.json() : this.defaultStructure;
-        } catch {
-            console.warn("Используются дефолтные данные");
-            return this.defaultStructure;
-        }
-    },
+    try {
+        // Если API недоступен, используем mock-данные
+        const mockData = this.defaultStructure;
+        console.log('Загружены mock-данные для компонентов:', mockData);
+        return mockData;
+    } catch (e) {
+        console.error('Ошибка загрузки данных:', e);
+        return this.defaultStructure;
+    }
+},
 
     // Сохранение данных
     async save(data) {
