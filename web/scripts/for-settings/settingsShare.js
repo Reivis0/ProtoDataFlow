@@ -1,4 +1,5 @@
-function showNotification(message, type = 'success') { //показать уведомление пользователю
+// settingsShare.js
+function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.style.position = 'fixed';
     notification.style.top = '40px';
@@ -17,14 +18,13 @@ function showNotification(message, type = 'success') { //показать уве
     notification.classList.add('ag-grid-notification');
     document.body.appendChild(notification);
    
-    setTimeout(() => { //исчезает через время
+    setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 300);
     }, 2000);
 }
 
 function loadData() {
-    // Эмуляция запроса к серверу
     const mockData = [
         { isChosen: false, name: "Товар 1", quantity: 10, price: 100 },
         { isChosen: false, name: "Товар 2", quantity: 5, price: 200 },
@@ -35,137 +35,138 @@ function loadData() {
     return mockData;
 }
 
-// class ActionsButtons {
-//     init(params) {
-//         this.params = params;
-//         this.eGui = document.createElement("div");
-//         this.eGui.style.display = "flex";
-//         this.eGui.style.gap = "5px";
-//         this.eGui.style.justifyContent = "center";
-       
-//         this.insertButton = document.createElement("button");
-//         this.insertButton.textContent = 'Вставить строки';
-//         this.insertButton.classList.add('ag-grid-insert-button');
-//         this.insertButton.addEventListener('click', (e) => this.onInsert(e));
-       
-//         this.deleteButton = document.createElement("button");
-//         this.deleteButton.textContent = 'Удалить';
-//         this.deleteButton.classList.add('ag-grid-delete-button');
-//         this.deleteButton.addEventListener('click', (e) => this.onDelete(e));
-       
-//         this.eGui.appendChild(this.insertButton);
-//         this.eGui.appendChild(this.deleteButton);
-//     }
+// Унифицированная функция сохранения всех данных
+async function saveAllData() {
+    try {
+        // 1. Собираем данные из всех таблиц
+        const allData = {
+            enabledPages: getEnabledPagesData(),
+            objectTypes: getObjectTypesData(),
+            representations: getRepresentationsData(),
+            components: getComponentsData()
+        };
 
+        // 2. Форматируем данные для сервера
+        const formattedData = formatDataForServer(allData);
 
+        // 3. Отправляем на сервер
+        const response = await fetch('http://127.0.0.1:8080/api/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formattedData),
+        });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-//     onInsert(event) {
-//         event.stopPropagation();
-//         const api = this.params.api;
-//         const clickedNode = this.params.node;
-//         const selectedNodes = api.getSelectedNodes();
-       
-//         // Определяем, куда вставлять
-//         const isBulkInsert = selectedNodes.length > 0 &&
-//                            selectedNodes.some(node => node.id === clickedNode.id);
-//         const nodesForInsert = isBulkInsert ? selectedNodes : [clickedNode];
-       
-//         const defaultCount = 1;
-//         const question = isBulkInsert
-//             ? "Сколько пустых строк вставить под каждую выбранную?"
-//             : "Сколько пустых строк вставить?";
-       
-//         const input = prompt(question, defaultCount);
-//         const count = parseInt(input) || defaultCount;
-//         if (count <= 0) return;
-       
-//         // Получаем все данные
-//         const allData = [];
-//         api.forEachNode(node => allData.push(node.data));
-       
-//         // Подготавливаем вставку
-//         const inserts = [];
-//         if (nodesForInsert.length > 0) {
-//             // Вставка под выбранные строки
-//             nodesForInsert.forEach(node => {
-//                 const rowIndex = allData.findIndex(row => row === node.data);
-//                 if (rowIndex !== -1) {
-//                     inserts.push({
-//                         index: rowIndex + 1,
-//                         rows: Array(count).fill().map(() => ({
-//                             isChosen: false,
-//                             name: "",
-//                             quantity: 0,
-//                             price: 0
-//                         }))
-//                     });
-//                 }
-//             });
-//         } else {
-//             // Вставка в конец таблицы
-//             inserts.push({
-//                 index: allData.length,
-//                 rows: Array(count).fill().map(() => ({
-//                     isChosen: false,
-//                     name: "",
-//                     quantity: 0,
-//                     price: 0
-//                 }))
-//             });
-//         }
-       
-//         // Сортировка и применение
-//         inserts.sort((a, b) => b.index - a.index);
-//         inserts.forEach(insert => {
-//             allData.splice(insert.index, 0, ...insert.rows);
-//         });
-       
-//         api.setGridOption('rowData', allData);
-//         if (isBulkInsert) api.deselectAll();
-//     }
+        const result = await response.json();
+        console.log('Сервер ответил:', result);
+        showNotification('Все данные успешно сохранены', 'success');
+        return result;
 
+    } catch (error) {
+        console.error('Ошибка сохранения:', error);
+        showNotification(`Ошибка сохранения: ${error.message}`, 'error');
+        throw error;
+    }
+}
 
+// Вспомогательные функции для сбора данных
+function getEnabledPagesData() {
+    if (!window.gridApi1) return [];
+    const data = [];
+    window.gridApi1.forEachNode(node => data.push(node.data));
+    return data;
+}
 
+function getObjectTypesData() {
+    const data = {};
+    for (let i = 1; i <= 12; i++) {
+        if (window.objectTypeGrids && window.objectTypeGrids[i]) {
+            const tableData = [];
+            window.objectTypeGrids[i].forEachNode(node => tableData.push(node.data));
+            data[`objectType_${i}`] = tableData;
+        }
+    }
+    return data;
+}
 
-//     onDelete(event) {
-//         event.stopPropagation();
-//         const api = this.params.api;
-//         const clickedNode = this.params.node;
-//         const selectedNodes = api.getSelectedNodes();
-       
-//         const isBulkDelete = selectedNodes.length > 0 &&
-//                             selectedNodes.includes(clickedNode);
-       
-//         const nodesToRemove = isBulkDelete ? selectedNodes : [clickedNode];
-       
-//         if (!confirm(`Удалить ${nodesToRemove.length} строк(у)?`)) return;
-       
-//         api.applyTransaction({
-//             remove: nodesToRemove.map(node => node.data)
-//         });
-       
-//         api.deselectAll();
-//     }
+function getRepresentationsData() {
+    const data = {};
+    for (let i = 1; i <= 7; i++) {
+        if (window.representationGrids && window.representationGrids[i]) {
+            const tableData = [];
+            window.representationGrids[i].forEachNode(node => tableData.push(node.data));
+            data[`representation_${i}`] = tableData;
+        }
+    }
+    return data;
+}
 
+function getComponentsData() {
+    const data = {};
+    for (let repId = 1; repId <= 7; repId++) {
+        for (let compId = 1; compId <= 5; compId++) {
+            const key = `${repId}_${compId}`;
+            if (window.componentGrids && window.componentGrids[key]) {
+                const tableData = [];
+                window.componentGrids[key].forEachNode(node => tableData.push(node.data));
+                data[`component_${key}`] = tableData;
+            }
+        }
+    }
+    return data;
+}
 
+function formatDataForServer(data) {
+    const message = {
+        ObjectTypes: [],
+        Views: [],
+        AdditionalData: {
+            objectTypes: data.objectTypes,
+            representations: data.representations,
+            components: data.components
+        }
+    };
 
+// Форматирование данных доступных страниц
+if (data.enabledPages && data.enabledPages.length > 0) {
+    for (let i = 0; i < Math.min(12, data.enabledPages.length); i++) {
+        message.ObjectTypes.push({
+            name: (data.enabledPages[i].name === `тип объекта ${i+1}`) ? null : data.enabledPages[i].name,
+            enabled: data.enabledPages[i].enabled
+        });
+    }
 
-//     getGui() {
-//         return this.eGui;
-//     }
+    for (let i = 0; i < Math.min(7, Math.floor((data.enabledPages.length - 12) / 6)); i++) {
+        const viewIndex = 12 + i * 6;
+        if (viewIndex < data.enabledPages.length) {
+            message.Views.push({
+                name: (data.enabledPages[viewIndex].name === `Представление ${i+1}`) ? null : data.enabledPages[viewIndex].name,
+                enabled: data.enabledPages[viewIndex].enabled,
+                Components: []
+            });
 
-
-
-
-//     destroy() {
-//         this.insertButton?.removeEventListener('click', this.onInsert);
-//         this.deleteButton?.removeEventListener('click', this.onDelete);
-//     }
-// }
-
-function showSettingsOfEnabled(enabledData){ //покакзывать таблички что включены
-    divSettings2 = document.getElementById("gridContainer2");
-    let display = enabledData[0].enabled ? "block" : "none";
-    divSettings2.style.display = display;
+            for (let j = 1; j <= 5; j++) {
+                const compIndex = viewIndex + j;
+                if (compIndex < data.enabledPages.length) {
+                    message.Views[i].Components.push({
+                        name: (data.enabledPages[compIndex].name === `Компонент ${i+1}.${j}`) ? null : data.enabledPages[compIndex].name,
+                        enabled: data.enabledPages[compIndex].enabled
+                    });
+                }
+            }
+        }
+    }
+    return message;
+    }
+}
+// Функция для отображения настроек
+function showSettingsOfEnabled(enabledData) {
+    const divSettings2 = document.getElementById("gridContainer2");
+    let display = enabledData && enabledData[0] && enabledData[0].enabled ? "block" : "none";
+    if (divSettings2) divSettings2.style.display = display;
 }
