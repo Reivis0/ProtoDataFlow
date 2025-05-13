@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //     console.error('Error fetching data:', error);
     // });
 
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
     let serverData = loadData();
 
     initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
@@ -691,9 +691,9 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
     userData["data_awdfasda"]['forMatricies'] = JSON.parse(sessionStorage.getItem("for-matricies"));
-    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
-    //toServerSave();
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-model`)));
+    toServerSave();
     showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['forMatricies'][currentObjAndType.Object]["specific-requrements"].length}`);
 })
 

@@ -39,7 +39,7 @@ const config = {
     }
     
     GlobalLogin = login;
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
 
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
@@ -826,9 +826,9 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
     if(tempFlag){
         userData["data_awdfasda"]['compliance-matricies-data'] = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
-        localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-        console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
-        //toServerSave();
+        localStorage.setItem(`data-model`, JSON.stringify(userData));
+        console.log(JSON.parse(localStorage.getItem(`data-model`)));
+        toServerSave();
         showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
     }
 });

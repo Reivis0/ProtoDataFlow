@@ -657,7 +657,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     //     counter1 = sessionStorage.getItem("counter1");
     
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
     sessionStorage.setItem("all-objects", JSON.stringify([]));
     let serverData = loadData()
     
@@ -862,9 +862,9 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     message = message.filter(row => (row.Object !== ""));
     console.log(message);
     userData["data_awdfasda"]["all-objects"] = JSON.parse(JSON.stringify(message));
-    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
-    //toServerSave();
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-model`)));
+    toServerSave();
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
 

@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
     }
 
     GlobalLogin = login;
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
+    console.log(userData);
     
 
     // Получаем данные с сервера
@@ -80,11 +81,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     setupHeaderButtons();
     initModelLoader();
     loadSavedData(inputs);
-    createComplianceButtons("information-about-model.html");
-    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-    createComplianceButtons();
-    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
-    createTraceabilityButtons("information-about-model.html");
+
 });
 // Основные функции
 function validateRequiredFields(inputs) {
@@ -159,7 +156,7 @@ function createNewModel() {
     const modelId = Date.now();
     const newModel = {
         id: modelId,
-        name: `Модель ${savedModels.length + 1} `,
+        name: `Модель  ${savedModels.length + 1}`,
         variant: `Вариант 1`,
         date: new Date(),
         data: getFormData()
@@ -170,13 +167,22 @@ function createNewModel() {
     updateModelList(newModel);
     showToast(`Создана: ${newModel.name} - ${newModel.variant}`, 'success');
     
-    //Убрать когда будет сервер
-    userData[newModel.name] = {data_awdfasda: {"initial-data": {}, "initial-requrements": [], "all-objects": [], "forMatricies":{}, "traceability-matricies-data": {}, "compliance-matricies-data": {}}};
-    
-    
     userData["data_awdfasda"] = {"initial-data": {}, "initial-requrements": [], "all-objects": [], "forMatricies":{}, "traceability-matricies-data": {}, "compliance-matricies-data": {}};
-    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}}`, JSON.stringify(userData));
-    loadModel(modelId);
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    loadModel(modelId, false);
+
+
+    fetch(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            key:  sessionStorage.getItem("currentModel"),
+            value: userData
+        })
+    });
+
 }
 
 function getFormData() {
@@ -199,12 +205,12 @@ function loadSavedModels() {
         //console.log(savedModels);
 
         //убрать когда будет сервер
-        Array.from(Object.keys(userData)).forEach(key => { // по идее не должно быть
-            if(key !== "specialFieldForModels_ddqasdawd" && key !== "data_awdfasda" && savedModels.findIndex(model => model.name === key) === -1){
-                delete userData[key];
-                console.log(key);
-            }
-        });
+        // Array.from(Object.keys(userData)).forEach(key => { // по идее не должно быть
+        //     if(key !== "specialFieldForModels_ddqasdawd" && key !== "data_awdfasda" && savedModels.findIndex(model => model.name === key) === -1){
+        //         delete userData[key];
+        //         console.log(key);
+        //     }
+        // });
         savedModels.forEach(model => updateModelList(model));
         
     }
@@ -213,8 +219,8 @@ function loadSavedModels() {
 function saveModels() {
      userData.specialFieldForModels_ddqasdawd = savedModels;
      userData.specialFieldForModels_ddqasdawd.data = sessionStorage.getItem('formData1');
-     localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-     console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+     localStorage.setItem(`data-model`, JSON.stringify(userData));
+     console.log(JSON.parse(localStorage.getItem(`data-model`)));
 
 }
 
@@ -256,15 +262,13 @@ function formatDate(date) {
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString().slice(0, 5);
 }
 
-function loadModel(modelId) {
+function loadModel(modelId, flag = true) {
     const model = savedModels.find(m => m.id === modelId);
     if (!model) return;
 
-    const curModel = savedModels.find(m => m.id === currentModelId);
+    //const temp1 = curModel.data.modelName ? curModel.data.modelName : document.getElementById(curModel.id).children[0].children[0].textContent;
 
-    const temp1 = curModel.data.modelName ? curModel.data.modelName : document.getElementById(curModel.id).children[0].children[0].textContent;
-
-    userData[temp1]["data_awdfasda"] = userData["data_awdfasda"];
+    //userData[temp1]["data_awdfasda"] = userData["data_awdfasda"];
 
     currentModelId = modelId;
     inputs[0].value = model.data.author || '';
@@ -294,28 +298,70 @@ function loadModel(modelId) {
         modelList.insertBefore(btn, modelList.children[1]);
     }
     //saveModels();
-    sessionStorage.setItem("currentModel", model.data.modelName);
-    console.log(sessionStorage.getItem("currentModel"));
+    sessionStorage.setItem("currentModel", model.name);
+    //console.log(sessionStorage.getItem("currentModel"));
+    //console.log(model)
+    if(flag){
+        console.log(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
+        fetch(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); 
+        })
+        .then(answer => {
+            userData = answer;
+            sessionStorage.setItem("for-matricies", JSON.stringify(userData["data_awdfasda"]["forMatricies"]));
+        
+            sessionStorage.setItem("compliance-matricies-data", JSON.stringify(userData["data_awdfasda"]["compliance-matricies-data"]));
+        
+            sessionStorage.setItem("traceability-matricies-data", JSON.stringify(userData["data_awdfasda"]["traceability-matricies-data"]));
+        
+            sessionStorage.setItem("all-objects", JSON.stringify(userData["data_awdfasda"]["all-objects"]));
+        
+            sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
+        
+            sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+        
+            console.log(userData);
 
-    //убрать когда будет сервер
-    const temp2 = model.data.modelName ? model.data.modelName : btn.children[0].children[0].textContent;
-    userData["data_awdfasda"] = userData[temp2]["data_awdfasda"];
+            showToast(`Загружена: ${model.name} - ${model.variant}`, 'success');
+            createComplianceButtons("information-about-model.html");
+            document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+            createComplianceButtons();
+            document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+            createTraceabilityButtons("information-about-model.html");
+
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });  
+    }
+    else{
+        sessionStorage.setItem("for-matricies", JSON.stringify(userData["data_awdfasda"]["forMatricies"]));
+        
+        sessionStorage.setItem("compliance-matricies-data", JSON.stringify(userData["data_awdfasda"]["compliance-matricies-data"]));
+        
+        sessionStorage.setItem("traceability-matricies-data", JSON.stringify(userData["data_awdfasda"]["traceability-matricies-data"]));
+        
+        sessionStorage.setItem("all-objects", JSON.stringify(userData["data_awdfasda"]["all-objects"]));
+        
+        sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
+        
+        sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+        
+        console.log(userData);
+
+        showToast(`Загружена: ${model.name} - ${model.variant}`, 'success');
+        createComplianceButtons("information-about-model.html");
+        document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+        createComplianceButtons();
+        document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+        createTraceabilityButtons("information-about-model.html");
+    }
     
-    sessionStorage.setItem("for-matricies", JSON.stringify(userData["data_awdfasda"]["forMatricies"]));
     
-    sessionStorage.setItem("compliance-matricies-data", JSON.stringify(userData["data_awdfasda"]["compliance-matricies-data"]));
-    
-    sessionStorage.setItem("traceability-matricies-data", JSON.stringify(userData["data_awdfasda"]["traceability-matricies-data"]));
-    
-    sessionStorage.setItem("all-objects", JSON.stringify(userData["data_awdfasda"]["all-objects"]));
-    
-    sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
-    
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
-    
-    console.log(userData);
-    
-    showToast(`Загружена: ${model.name} - ${model.variant}`, 'success');
 }
 
 function saveDataLocally(inputs, callback) {
@@ -346,43 +392,34 @@ function saveDataLocally(inputs, callback) {
 
         }
     }
+    
     if(savedModels[index].name !== model.data.modelName){
 
 
         sessionStorage.setItem("currentModel", model.data.modelName);
-        console.log(sessionStorage.getItem("currentModel"));
+        //console.log(sessionStorage.getItem("currentModel"));
         document.getElementById(currentModelId).firstElementChild.firstElementChild.textContent = model.data.modelName;
+        const oldName = structuredClone(model.name);
+        const newName = model.data.modelName;
+        model.name = model.data.modelName
+        savedModels[index].name = newName;
 
-        //послать запрос на сервер поменять имя файла с savedModels[index].name на model.data.modelName у пользователя с именем GlobalLogin
-        // const obj = {old: savedModels[index].name, new:model.data.modelName, user:GlobalLogin };
-        // fetch(ServerAdress + `changeName`, { 
-        //     method: 'POST',
-        //     headers: {
-        //     'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(obj),
-        // }
-        // )
-        // .then(response => {
-        //     if (!response.ok) {
-        //         throw new Error(`HTTP error! status: ${response.status}`);
-        //     }
-        //     return response.json(); 
-        // })
-        // .then(answer => {
-        //     console.log(answer);
-        // })
-        // .catch(error => {
-        //     console.error('Error fetching data:', error);
-        // });  
-        //это убрать
-        const temp = userData[savedModels[index].name];
-        delete userData[savedModels[index].name];
-        savedModels[index].name = model.data.modelName;
-        userData[model.data.modelName] = temp;
+
+        fetch(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                old: oldName,
+                new: newName,
+                updatedInfo: savedModels
+            })
+        })
+
     }
 
-    //saveModels();
+    saveModels();
     
     try {
         sessionStorage.setItem('formData1', JSON.stringify(model.data));
@@ -413,7 +450,7 @@ function loadSavedData(inputs) {
 }
 
 function setupFormSubmit(inputs) {
-    document.getElementById('data-input').addEventListener('submit', (e) => {
+    document.getElementById('submit-btn').addEventListener('click', (e) => {
         e.preventDefault();
         if (validateForm(inputs)) {
             saveDataLocally(inputs);
@@ -484,7 +521,7 @@ function setupActionButtons(inputs) {
     document.getElementById('toServerBtn').addEventListener('click', () => {
         saveDataLocally(inputs);
         saveModels();
-        //toServerSave(); //к серверу
+        toServerSave(); //к серверу
         showToast('Данные добавлены в модель!', 'success');
     });
     

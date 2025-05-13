@@ -1,0 +1,7 @@
+-- CreateTable
+CREATE TABLE "settings" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "config" JSONB NOT NULL
+);

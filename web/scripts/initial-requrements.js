@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     // .catch(error => {
         //     console.error('Error fetching data:', error);
         // });
-        userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+        userData = JSON.parse(localStorage.getItem(`data-model`));
         let serverData = loadData();
         let initialData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
         let GrdOptions;
@@ -691,8 +691,7 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
 
 
 
-    let Views = loadViews();
-    sessionStorage.setItem("Views", JSON.stringify(Views));
+    let Views = JSON.parse(sessionStorage.getItem("Views"));
     Array.from(Object.keys(forMatricies)).forEach(obj => {
         Views.forEach(view => {
             if(forMatricies[obj]["views"][view.header] === null || forMatricies[obj]["views"][view.header] === undefined){
@@ -721,9 +720,9 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
     userData["data_awdfasda"]['initial-requrements'] = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
-    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-    console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
-    //toServerSave();
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-model`)));
+    toServerSave();
     showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['initial-requrements'].length}`);
 
 })

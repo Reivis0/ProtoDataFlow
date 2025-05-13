@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
      }
 
     GlobalLogin = login;
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
     console.log(userData);
      //sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:"component.html", name: null, flag: false}));
 
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
      for(let i = 0; i < level2s.length; ++i){
         level3Pressed(level3s[i].children[0]);
     }
-    updateTable();
+    Update();
     makeMatrix(false, false);
  
     makeTheTablePretty();
@@ -1308,9 +1308,9 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
     if(tempFlag){
         userData["data_awdfasda"]['traceability-matricies-data'] = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
-        localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-        console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
-        //toServerSave();
+        localStorage.setItem(`data-model`, JSON.stringify(userData));
+        console.log(JSON.parse(localStorage.getItem(`data-model`)));
+        toServerSave();
         showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
     }
 });

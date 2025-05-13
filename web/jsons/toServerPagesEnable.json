@@ -67,7 +67,67 @@
         "Components": [
             {
               "name": null,
-              "enabled" : false
+              "enabled" : false,
+              "code": "ADW-15",
+              "headers": [
+                {
+                    "header": "Название 1",
+                    "type": "string",
+                    "maxSmth": 50,
+                    "name": "column1",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 2",
+                    "type": "string",
+                    "maxSmth": 50,
+                    "name": "column2",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 3",
+                    "type": "string",
+                    "maxSmth": 50,
+                    "name": "column3",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 4",
+                    "type": "string",
+                    "maxSmth": 50,
+                    "name": "column4",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 5",
+                    "type": "num",
+                    "maxSmth": 10000,
+                    "name": "column5",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 6",
+                    "type": "num",
+                    "maxSmth": 10000,
+                    "name": "column6",
+                    "enabled": true
+
+                },
+                {
+                    "header": "Название 7",
+                    "type": "string",
+                    "maxSmth": 50,
+                    "name": "column7",
+                    "enabled": true
+
+                }
+
+            ]
             },
 
             {

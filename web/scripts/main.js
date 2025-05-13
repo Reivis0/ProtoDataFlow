@@ -86,14 +86,16 @@ function createTraceabilityButtons(currentPage){
 }
 
 function toServerSave(){
-    let login = sessionStorage.getItem("GlobalLogin")
-    let userData = JSON.parse(localStorage.getItem(`data-${login}`));
-    fetch(ServerAdress + `save?${login}`, { 
-        method: 'POST',
+    const login = sessionStorage.getItem("GlobalLogin");
+    const userData = JSON.parse(localStorage.getItem(`data-model`));
+    const curModel = sessionStorage.getItem("currentModel");
+    fetch(ServerAdress + `/data/${login}/${curModel}`, { 
+        method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        //body: JSON.stringify(userData),
+        body: JSON.stringify({model: userData}),
     }
     )
     .then(response => {
@@ -110,6 +112,6 @@ function toServerSave(){
     });  
 }
 
-let ServerAdress = " asfasfa";
+let ServerAdress = "http://localhost:3000";
 
 

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     }
     GlobalLogin = login;
 
-    userData = JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`));
+    userData = JSON.parse(localStorage.getItem(`data-model`));
     console.log(userData);
 
     const inputs = [
@@ -189,7 +189,7 @@ function setupActionButtons(inputs) {
     document.getElementById('toServerBtn').addEventListener('click', () => {
         saveDataLocally(inputs);
         saveToModel();
-        //toServerSave(); //к серверу
+        toServerSave(); //к серверу
         showToast('Данные добавлены в модель!', 'success');
     });
     
@@ -301,8 +301,8 @@ function showToast(message, type) {
 
 function saveToModel(){
     userData["data_awdfasda"]['initial-data'] = JSON.parse(sessionStorage.getItem('initial-data'));
-    localStorage.setItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`, JSON.stringify(userData));
-     console.log(JSON.parse(localStorage.getItem(`data-${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}`)));
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+     console.log(JSON.parse(localStorage.getItem(`data-model`)));
 }
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю

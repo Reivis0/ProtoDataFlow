@@ -14,74 +14,6 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     originalData = JSON.parse(localStorage.getItem("all-users"));
 
     
-    // fetch("http://127.0.0.1:8080")
-    // .then(response => {
-    // if (!response.ok) {
-    //     throw new Error(`HTTP error! status: ${response.status}`);
-    // }
-    // return response.json(); 
-    // })
-    // .then(data => {
-    //     const gridOptions = {
-    //     columnDefs: columnDefs,
-    //     rowData: data,
-    //     defaultColDef: {
-    //         flex: 1,
-    //         minWidth: 100,
-    //         editable: (params) => {
-    //             // Only allow editing if the row is selected
-    //             return params.node.isSelected();
-    //         },
-    //         filter: true,
-    //         sortable: true,
-    //         resizable: true
-    //     },
-    //     rowSelection: 'multiple',
-    //     rowDragManaged: true,
-    //     animateRows: true,
-    //     suppressRowClickSelection: true, // Allow selection on click
-    //     enableCellTextSelection: true,
-    //     undoRedoCellEditing: true,
-    //     undoRedoCellEditingLimit: 10,
-    //     onCellValueChanged: (params) => {
-    //         // Visual feedback for changed cells
-    //         params.node.setDataValue('__dirty', true);
-    //         const cellEl = params.api.getCellRendererInstances({
-    //             rowNodes: [params.node],
-    //             columns: [params.column]
-    //         })[0]?.getGui();
-    //         if (cellEl) {
-    //             cellEl.style.backgroundColor = '#fffde7';
-    //             setTimeout(() => {
-    //                 cellEl.style.backgroundColor = '';
-    //             }, 1000);
-    //         }
-    //     },
-    //     onRowSelected: (params) => {
-    //         // Refresh the row to update editable state when selection changes
-    //         params.api.refreshCells({
-    //             rowNodes: [params.node],
-    //             force: true
-    //         });
-    //     },
-    //     // Prevent editing when not selected
-    //     onCellEditingStarted: (params) => {
-    //         if (!params.node.isSelected()) {
-    //             // Cancel editing if row isn't selected
-    //             params.api.stopEditing(true);
-    //         }
-    //     }
-    // };
-    
-    // gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
-    // originalData = data;
-
-    // })
-    // .catch(error => {
-    //     console.error('Error fetching data:', error);
-    // });
-
-    
     
    createGrid(JSON.parse(JSON.stringify(originalData)));
     //gridApi = agGrid.createGrid(document.querySelector("#myGrid"), gridOptions);
@@ -89,19 +21,6 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     saveButton.addEventListener('click', saveChanges);
 })
 
-// function loadData() {
-//     // Эмуляция запроса к серверу
-//     const mockData = [
-//         { id: 1, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-//         { id: 2, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-//         { id: 3, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-//         { id: 4, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-//         { id: 5, level: "User", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "123", password: "123", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"},
-//         { id: 6, level: "Admin", surname: "fsafasf", name: "dfdfsdf", patronymic: "dfaffdsaf", login: "321", password: "321", acsess: true, startDate: new Date("2005-02-03"), endDate: new Date("2005-02-03"), email: "asfas@mail.com", phone: 54345, comment: "dfdsfd"}
-//     ];
-//     originalData = JSON.parse(JSON.stringify(mockData));
-//     return mockData;
-// }
 
 // Кнопки с действиями
 class ActionsButtons {
@@ -170,7 +89,7 @@ class ActionsButtons {
                   patronymic: "",
                   login: "",
                   password: "",
-                  acsess: false,
+                  access: false,
                   startDate: null,
                   endDate: null,
                   email: "",
@@ -313,27 +232,120 @@ function saveChanges() {
     измененных - ${changedRows.length}, 
     удаленных - ${deletedRows.length},
     новых строк - ${newRows.length}`);
-    // fetch(ServerAdress + `updateUsers`, { 
-    //     method: 'POST',
-    //     headers: {
-    //     'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(changes),
-    // }
-    // )
-    // .then(response => {
-    //     if (!response.ok) {
-    //         throw new Error(`HTTP error! status: ${response.status}`);
-    //     }
-    //     return response.json(); 
-    // })
-    // .then(answer => {
-    //     console.log(answer);
-    // })
-    // .catch(error => {
-    //     console.error('Error fetching data:', error);
-    // });  
-      
+
+
+    changedRows.forEach(row => {
+        let message = structuredClone(row);
+        if(!message.endDate){
+            delete message.endDate;
+        }
+        if(!message.startDate){
+            delete message.startDate;
+        }
+        if(!message.email){
+            delete message.email;
+        }
+        if(!message.name){
+            message.name = " "
+        }
+        if(!message.surname){
+            message.surname = " "
+        }
+        if(!message.patronymic){
+            message.patronymic = " "
+        }
+        if(!message.comment){
+            message.comment = " "
+        }
+        
+        if(message.phone){
+            message.phone = message.phone.toString();
+        }
+        else{
+            delete message.phone;
+        }
+        fetch(ServerAdress+'/users/'+message.login, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message)
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log(response);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); 
+        })
+        .then(answer => {
+            console.log(answer);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });  
+    });
+    
+    deletedRows.forEach(row => {
+        fetch(ServerAdress+'/users/'+row.login, {
+            method: 'DELETE'
+        })
+    });
+
+    newRows.forEach(row => {
+        let message = structuredClone(row);
+        if(!message.endDate){
+            delete message.endDate;
+        }
+        if(!message.startDate){
+            delete message.startDate;
+        }
+        if(!message.email){
+            delete message.email;
+        }
+        if(!message.name){
+            message.name = " "
+        }
+        if(!message.surname){
+            message.surname = " "
+        }
+        if(!message.patronymic){
+            message.patronymic = " "
+        }
+        if(!message.comment){
+            message.comment = " "
+        }
+        
+        if(message.phone){
+            message.phone = message.phone.toString();
+        }
+        else{
+            delete message.phone;
+        }
+        console.log(message);
+        fetch(ServerAdress+'/users/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message)
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log(response);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); 
+        })
+        .then(answer => {
+            console.log(answer);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });  
+    });
+
+
 
       //Удалить удаленные строки
       originalData = originalData.filter(row => 
@@ -354,13 +366,12 @@ function saveChanges() {
       })];
 
 
-      //удалить когда будет сервер
       localStorage.setItem("all-users", JSON.stringify(originalData));
-      console.log(JSON.parse(localStorage.getItem("all-users")));
-      newRows.forEach(row => {
-        localStorage.setItem(`data-${row.login}`, JSON.stringify({specialFieldForModels_ddqasdawd: null, data_awdfasda: null})); //такое название поля чтобы точно не совпало с названиями модели
-        console.log(JSON.parse(localStorage.getItem(`data-${row.login}`))); 
-      });
+      //console.log(JSON.parse(localStorage.getItem("all-users")));
+    //   newRows.forEach(row => {
+    //     localStorage.setItem(`data-${row.login}`, JSON.stringify({specialFieldForModels_ddqasdawd: null, data_awdfasda: null})); //такое название поля чтобы точно не совпало с названиями модели
+    //     //console.log(JSON.parse(localStorage.getItem(`data-${row.login}`))); 
+    //   });
 
       gridApi.forEachNode(node => {
           if (node.data.__isNew) {
@@ -410,7 +421,7 @@ const columnDefs = [
             editable: params => params.node.isSelected() && params.data.__isNew
         },
         {
-            field: "acsess",
+            field: "access",
             headerName: "Доступ",
             cellEditor: "agCheckboxCellEditor"
         },
@@ -418,6 +429,7 @@ const columnDefs = [
             field: "startDate", 
             headerName: "Дата начала",
             cellEditor: 'agDateCellEditor',
+            cellDataType: 'date',
             //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
             cellEditorParams: {
                 min: '2000-01-01',
@@ -428,6 +440,7 @@ const columnDefs = [
             field: "endDate", 
             headerName: "Дата окончания",
             cellEditor: 'agDateCellEditor',
+            cellDataType: 'date',
             //cellRenderer: (params) => params.value ? new Date(params.value).toLocaleDateString() : '',
             cellEditorParams: {
                 min: '2000-01-01',
@@ -442,6 +455,7 @@ const columnDefs = [
         { 
             field: "phone", 
             headerName: "Телефон",
+            cellDataType: 'number',
             cellEditor: 'agNumberCellEditor',
         },
         { field: "comment",
@@ -464,6 +478,42 @@ const columnDefs = [
 
 function createGrid(data) {
         // НАстройки таблицы убрать закоментить когда будет сервер
+    for(let i = 0; i < data.length; ++i){
+        if(data[i].phone && data[i].phone !== " "){
+            try{
+                data[i].phone = parseInt(data[i].phone);
+            } catch(e){
+                print(e);
+                data[i].phone = null;
+            }
+        }
+        else{
+             data[i].phone = null;
+        }
+        if(data[i].endDate && data[i].endDate !== " "){
+            try{
+                data[i].endDate = new Date(data[i].endDate);
+            } catch(e){
+                print(e);
+                data[i].endDate = null;
+            }
+        }
+        else{
+             data[i].endDate = null;
+        }
+        if(data[i].startDate && data[i].startDate !== " "){
+            try{
+                data[i].startDate = new Date(data[i].startDate);
+            } catch(e){
+                print(e);
+                data[i].startDate = null;
+            }
+        }
+        else{
+             data[i].startDate = null;
+        }
+    }
+    console.log(data);
     const gridOptions = {
         columnDefs: columnDefs,
         rowData: data,
