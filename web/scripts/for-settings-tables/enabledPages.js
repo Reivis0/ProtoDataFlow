@@ -90,6 +90,7 @@ function setupButtons1() {
           }
         }
         console.log('Saving all:', message);
+        
         showSettingsOfEnabled(allData);
         fetch('http://127.0.0.1:8080/api/auth', { 
           method: 'POST',

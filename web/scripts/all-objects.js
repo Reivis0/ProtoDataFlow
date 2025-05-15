@@ -94,84 +94,74 @@ function loadData(){
     return data;
 }
 
-function loadViews(){
-    let views = [
-        {
-            "number": 1,
-            "header": "dgfgf_1",
-            "code": "SDFS-3",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "sdd_1",
-                    "code": "fafa-53_"
-                },
-                {
-                    "number": 2,
-                    "name": "sddfdd_2",
-                    "code": "fafa-54"
-                },
-                {
-                    "number": 3,
-                    "name": "sddaaa_3",
-                    "code": "fafa-55"
-                }
-            ]
+// function loadViews(){
+//     let views = [
+//         {
+//             "number": 1,
+//             "header": "Представление_1",
+//             "code": "SDFS-1",
+//             "components": [
+//                 {
+//                     "number": 1,
+//                     "name": "Компонент_1",
+//                     "code": "fafa-53_"
+//                 },
+//                 {
+//                     "number": 2,
+//                     "name": "Компонент_2",
+//                     "code": "fafa-54"
+//                 },
+//                 {
+//                     "number": 3,
+//                     "name": "Компонент_3",
+//                     "code": "fafa-55"
+//                 }
+//             ]
     
     
-        },
-        {
-            "number": 2,
-            "header": "dgfgf_2",
-            "code": "SDFS-3",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "sdd_1",
-                    "code": "fafa-53_"
-                },
-                {
-                    "number": 2,
-                    "name": "sddfdd_2",
-                    "code": "fafa-54"
-                },
-                {
-                    "number": 3,
-                    "name": "sddaaa_3",
-                    "code": "fafa-55"
-                }
-            ]
+//         },
+//         {
+//             "number": 2,
+//             "header": "Представление_2",
+//             "code": "SDFS-2",
+//             "components": [
+//                 {
+//                     "number": 4,
+//                     "name": "Компонент_4",
+//                     "code": "fafa-56_"
+//                 },
+//                 {
+//                     "number": 5,
+//                     "name": "Компонент_5",
+//                     "code": "fafa-57"
+//                 },
+//             ]
     
     
-        },
-        {
-            "number": 5,
-            "header": "dgfgf_5",
-            "code": "SDFS-3",
-            "components": [
-                {
-                    "number": 1,
-                    "name": "sdd_1",
-                    "code": "fafa-53_"
-                },
-                {
-                    "number": 2,
-                    "name": "sddfdd_2",
-                    "code": "fafa-54"
-                },
-                {
-                    "number": 3,
-                    "name": "sddaaa_3",
-                    "code": "fafa-55"
-                }
-            ]
+//         },
+//         {
+//             "number": 5,
+//             "header": "Представление_5",
+//             "code": "SDFS-5",
+//             "components": [
+//                 {
+//                     "number": 1,
+//                     "name": "Компонент_6",
+//                     "code": "fafa-58_"
+//                 },
+//                 {
+//                     "number": 2,
+//                     "name": "Компонент_7",
+//                     "code": "fafa-59"
+//                 },
+//             ]
     
     
-        }
-    ]
+//         }
+//     ]
 
-    return views;
-}
+//     return views;
+// }
 
 class ActionsButtons {
     init(params) {
@@ -541,7 +531,10 @@ function setupButtons() {
     });
     
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
     
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -577,18 +570,22 @@ function setupButtons() {
     
 }
 
-function localSave(){
+function localSave(flag = true){
     let allData = [];
     gridApi.forEachNode(node => allData.push(node.data));
     allData = allData.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
     localSaveData = JSON.parse(JSON.stringify(allData));
     sessionStorage.setItem("all-objects", JSON.stringify(allData));
     console.log('Saving all:', allData);
-    showNotification(`Сохранено ${allData.length} строк (вся таблица)`);
+    if(flag){
+         showToast(`Сохранено ${allData.length} строк (вся таблица)`, 'success');
+    }
 }
 
 let counter1;
 let Views;
+let GlobalLogin;
+let userData;
 
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
 
@@ -598,6 +595,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
     // let messageForIdentification = {login: login, model: "model", variant: "var"};
     // fetch('http://127.0.0.1:8080/api/auth', { 
     //     method: 'POST',
@@ -658,54 +656,54 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //     document.getElementById("code").textContent = serverData.information.code;
 
     //     counter1 = sessionStorage.getItem("counter1");
-        
-
-    //     setTimeout(() => {
-    //         gridApi.forEachNode(node => enableButtons(node));
-    //     }, 0);
-    // })
-    // .catch(error => {
-    //     console.error('Error fetching data:', error);
-    // });
-
-    let serverData = loadData();
+    
+    userData = JSON.parse(localStorage.getItem(`data-model`));
+    sessionStorage.setItem("all-objects", JSON.stringify([]));
+    let serverData = loadData()
     
     enabledButtons = serverData.information.Settings;
     
     localSaveData = JSON.parse(sessionStorage.getItem("all-objects"));
+    console.log(localSaveData);
+    if(!localSaveData.length){
+        localSaveData =userData["data_awdfasda"]['all-objects'];
+    }
     let GrdOptions;
-    
-    if(!localSaveData) {
-        
-        const previousData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
-        // console.log(previousData);
-        if(!previousData){
-            
-            GrdOptions = createGridOptions(serverData, true);
-            localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        }
-        else{
-            
-            let ConvertedObjects = new Set();
-            previousData.forEach(row =>{
-                ConvertedObjects.add(row.column2);
-            });
-            
-            let ConvertedData = [];
-            const arrayObjects = Array.from(ConvertedObjects);
-            arrayObjects.forEach(obj => {
-                ConvertedData.push({Object: obj, Type: "(нет)"});
-            });
-            
-            serverData.data = JSON.parse(JSON.stringify(ConvertedData));
-            serverData.Objects = JSON.parse(JSON.stringify(arrayObjects));
-            GrdOptions = createGridOptions(serverData, false);
-            localSaveData = JSON.parse(JSON.stringify(ConvertedData));
-        }
+    const previousData = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
+    // console.log(previousData);
+    if(!previousData){
+        showNotification("Что-то пошло не так!!");
+        setTimeout(() => {
+            window.location.href = "initial-requrements.html";
+        }, 5000)
+        // GrdOptions = createGridOptions(serverData, true);
+        // localSaveData = JSON.parse(JSON.stringify(serverData.data));
     }
     else{
-        serverData.data = JSON.parse(JSON.stringify(localSaveData));
-        GrdOptions = createGridOptions(serverData, false);
+        
+        let ConvertedObjects = new Set();
+        previousData.forEach(row =>{
+            if(row.flag)
+            {
+                ConvertedObjects.add(row.column2);
+            }
+        });
+    
+        let ConvertedData = [];
+        const arrayObjects = Array.from(ConvertedObjects);
+        arrayObjects.forEach(obj => {
+            const index = localSaveData.findIndex(row => row.Object === obj);
+            let type = null;
+            if(index > -1){
+                type = localSaveData[index].Type;
+            }
+            ConvertedData.push({Object: obj, Type: type});
+        });
+
+        serverData.data = JSON.parse(JSON.stringify(ConvertedData));
+        serverData.Objects = JSON.parse(JSON.stringify(arrayObjects));
+        GrdOptions = createGridOptions(serverData, true);
+        //localSaveData = JSON.parse(JSON.stringify(ConvertedData));
     }
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
@@ -718,24 +716,28 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         gridApi.forEachNode(node => enableButtons(node));
     }, 0);
     
-    fetch('http://127.0.0.1:8080/api/auth')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(Views => {
-        console.log(Views);
-        sessionStorage.setItem("Views", JSON.stringify(Views));
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
+    // fetch('http://127.0.0.1:8080/api/auth')
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+    //     return response.json(); 
+    // })
+    // .then(Views => {
+    //     console.log(Views);
+    //     sessionStorage.setItem("Views", JSON.stringify(Views));
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching data:', error);
+    // });
 
     // Views = loadViews();
     // sessionStorage.setItem("Views", JSON.stringify(Views));
     
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("all-objects.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("all-objects.html");
 });
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
@@ -746,7 +748,21 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     });
     
     curDat = curDat.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
+    curDat.forEach(row => {
+        if(row.Type === "(нет)"|| row.Type === ""){
+            row.Type = null;
+        }
+        else{
+            const typeNums = Object.keys(typesDictionary);
+            for(let i = 0; i < typeNums.length; ++i) {
+                if(typesDictionary[typeNums[i]] === row.Type){
+                    row.Type = typeNums[i];
+                    break
+                }
+            }
 
+        }
+    });
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -775,7 +791,23 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
     });
 
     curDat = curDat.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
+    curDat.forEach(row => {
+        if(row.Type === "(нет)"|| row.Type === ""){
+            row.Type = null;
+        }
+        else{
+            const typeNums = Object.keys(typesDictionary);
+            for(let i = 0; i < typeNums.length; ++i) {
+                if(typesDictionary[typeNums[i]] === row.Type){
+                    row.Type = typeNums[i];
+                    break
+                }
+            }
+
+        }
+    });
     // console.log(curDat, localSaveData);
+    //console.log(curDat, localSaveData)
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -793,10 +825,12 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
     ++counter1;
+    console.log(counter1);
     sessionStorage.setItem("counter1", counter1);
     sessionStorage.setItem("all-objects", JSON.stringify(localSaveData));
-    sessionStorage.setItem("currentObjAndType", JSON.stringify(localSaveData[counter1]));
-    // console.log(JSON.stringify(localSaveData[counter1]));
+    const temp1 = localSaveData[counter1];
+    temp1.Type = typesDictionary[temp1.Type];
+    sessionStorage.setItem("currentObjAndType", JSON.stringify(temp1));
     window.location.href = "specific-requrements.html";
 })
 
@@ -827,26 +861,19 @@ document.getElementById("toServerBtn").addEventListener("click", (e) => {
     });
     message = message.filter(row => (row.Object !== ""));
     console.log(message);
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-      
+    userData["data_awdfasda"]["all-objects"] = JSON.parse(JSON.stringify(message));
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-model`)));
+    toServerSave();
     showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
 })
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}

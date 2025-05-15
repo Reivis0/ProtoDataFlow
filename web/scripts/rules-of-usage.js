@@ -1,5 +1,5 @@
 
-
+let GlobalLogin;
 document.addEventListener("DOMContentLoaded", (e) => {
     let login = sessionStorage.getItem("GlobalLogin");
     if(login === '' || login === null) {
@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
+    GlobalLogin = login;
 })
 
 const checkbox1 = document.getElementById("agreement-in");
@@ -42,45 +43,12 @@ form.addEventListener('submit', (e) => {
     obj.name = document.getElementById("name-in").value;
     obj.surname = document.getElementById("surname-in").value;
     obj.patronymic = document.getElementById("patronymic-in").value;
-    tempPlaceFlag(JSON.stringify(obj)); 
+    tempPlaceFlag(obj); 
 
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(obj),
-      }
-    
-    )
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-    
-    //window.location.assigsn("log-in.html");
     window.location.assign("information-about-model.html");
 
 })
-/*
-buttonNext.addEventListener("click", (e) => {
-    let obj = new Object();
-    obj.login = sessionStorage.getItem("GlobalLogin"); 
-    obj.date = "";
-    tempPlaceFlag(JSON.stringify(obj)); //заменить потом на postFunction
-    e.preventDefault();
-    //window.location.assigsn("log-in.html");
-    window.location.assign("data-from-user.html");
-})
-*/
+
 
 buttonBack.addEventListener("click", (e) => {
     sessionStorage.clear();
@@ -89,6 +57,20 @@ buttonBack.addEventListener("click", (e) => {
      window.location.href = "log-in.html";
 })
 
-function tempPlaceFlag(message){
-    alert(message);
+function tempPlaceFlag(obj){
+
+    fetch(ServerAdress + `/users/${GlobalLogin}/agree`, {
+        method: 'POST'
+        }
+    )
+    console.log(`http://localhost:3000/${GlobalLogin}/agree`);
+    const AllUsers = JSON.parse(localStorage.getItem("all-users"));
+     for(let i = 0; i < AllUsers.length; ++i){
+        if(AllUsers[i].login === GlobalLogin){
+            AllUsers[i].agreement = true;
+            break;
+        }
+     }
+     localStorage.setItem("all-users", JSON.stringify(AllUsers));
+     //console.log(JSON.parse(localStorage.getItem("all-users")));
 }

@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  level       String
+  surname     String?
+  name        String?
+  patronymic  String?
+  login       String    @unique
+  password    String
+  access      Boolean   @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+  email       String?
+  phone       String?
+  comment     String?
+  agreement   Boolean?  @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userData    UserData[]
+  modelsMetadata Json?
+  
+  @@map("users")
+}
+
+model UserData {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key       String
+  value     Json
+
+  @@unique([userId, key], name: "user_key_unique")
+  @@map("user_data")
+}
+
+model Settings{
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  config Json
+
+    @@map("settings")
+}

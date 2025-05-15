@@ -1,4 +1,18 @@
-document.addEventListener("DOMContentLoaded", () => {
+let userData;
+let GlobalLogin;
+document.addEventListener("DOMContentLoaded", (e) => {
+
+    let login = sessionStorage.getItem("GlobalLogin");
+    if(login === '' || login === null) {
+        e.preventDefault();
+        //window.location.assigsn("log-in.html");
+        window.location.href = "log-in.html";
+    }
+    GlobalLogin = login;
+
+    userData = JSON.parse(localStorage.getItem(`data-model`));
+    console.log(userData);
+
     const inputs = [
         document.getElementById("concept"),
         document.getElementById("conditions"),
@@ -19,6 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     addInputCounters(inputs);
     setupDropUpMenus();
     setupHeaderButtons();
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("initial-data.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("initial-data.html");
 });
 
 // Настройка формы на основе данных
@@ -31,6 +49,18 @@ function configureForm(labels, inputs, serverData) {
         inputs[i].maxLength = maxLen > 0 ? maxLen : 100;
         inputs[i].setAttribute('maxlength', inputs[i].maxLength);
     });
+    const formData = {
+        concept: inputs[0].value.trim(),
+        conditions: inputs[1].value.trim(),
+        assumptions: inputs[2].value.trim(),
+        otherInfo: inputs[3].value.trim(),
+        lastSaved: new Date().toISOString()
+    };
+    const temp = sessionStorage.getItem('initial-data');
+    if(!temp){
+        sessionStorage.setItem('initial-data', JSON.stringify(userData["data_awdfasda"]['initial-data']));
+    }
+    //sessionStorage.setItem('initial-data', JSON.stringify(formData));
 }
 
 // Мок-данные
@@ -54,7 +84,7 @@ function saveDataLocally(inputs, callback) {
     };
     
     try {
-        sessionStorage.setItem('formData', JSON.stringify(formData));
+        sessionStorage.setItem('initial-data', JSON.stringify(formData));
         showToast('Данные сохранены!', 'success');
         if (callback) callback();
     } catch (e) {
@@ -62,9 +92,24 @@ function saveDataLocally(inputs, callback) {
     }
 }
 
+function validateRequiredFields(inputs) {
+    const requiredFields = [0]; // Индексы обязательных полей: АХХАХА ОНО ТУТ ОДНО ЛООЛ
+    let isValid = true;
+    
+    for (const index of requiredFields) {
+        if (!inputs[index].value.trim()) {
+            showToast(`Поле "${inputs[index].previousElementSibling.textContent}" обязательно для заполнения`, 'error');
+            inputs[index].focus();
+            isValid = false;
+            break;
+        }
+    }
+    
+    return isValid;
+}
 // Загрузка сохранённых данных
 function loadSavedData(inputs) {
-    const savedData = sessionStorage.getItem('formData');
+    const savedData = sessionStorage.getItem('initial-data');
     if (!savedData) return;
 
     try {
@@ -82,14 +127,17 @@ function loadSavedData(inputs) {
 function setupFormSubmit(inputs) {
     document.getElementById('data-input').addEventListener('submit', (e) => {
         e.preventDefault();
-        saveDataLocally(inputs);
+         if (validateRequiredFields(inputs)) {
+            saveDataLocally(inputs);
+            showNotification("Не забудьте добавить данные в модель!");
+        }
     });
 }
 
 // Настройка обработчиков кнопок footer
 function setupActionButtons(inputs) {
     const navigateWithCheck = (url) => {
-        const savedData = sessionStorage.getItem('formData');
+        const savedData = sessionStorage.getItem('initial-data');
         const currentData = {
             concept: inputs[0].value.trim(),
             conditions: inputs[1].value.trim(),
@@ -116,27 +164,46 @@ function setupActionButtons(inputs) {
     // Кнопка "Назад"
     document.getElementById("backBtn").addEventListener("click", (e) => {
         e.preventDefault();
-        navigateWithCheck("information-about-model.html");
-    });
+        if (!validateRequiredFields(inputs)) {
+            //document.getElementById('data-input').dispatchEvent(new Event('submit'));
+            if(confirm(`Не все обязательные поля заполелны. Уйти без сохранения?`)){
+                window.location.href = "information-about-model.html";
+            }
+        }
+        else{
+            navigateWithCheck("information-about-model.html");
+        }
+        });
     
     // Кнопка "Вперед"
     document.getElementById("nextBtn").addEventListener("click", (e) => {
         e.preventDefault();
+        if (!validateRequiredFields(inputs)) {
+            document.getElementById('data-input').dispatchEvent(new Event('submit'));
+            return;
+        }
         navigateWithCheck("initial-requrements.html");
     });
     
     // Кнопка "Добавить"
     document.getElementById('toServerBtn').addEventListener('click', () => {
-       // saveDataLocally(inputs);
+        saveDataLocally(inputs);
+        saveToModel();
+        toServerSave(); //к серверу
+        showToast('Данные добавлены в модель!', 'success');
     });
+    
     
     // Кнопка "Выйти"
     document.getElementById('exitBtn').addEventListener('click', () => {
-        if (confirm('Удалить все сохранённые данные?')) {
-            sessionStorage.removeItem('formData');
-            document.getElementById('data-input').reset();
-            showToast('Данные удалены!', 'info');
-        }
+        // if (confirm('Удалить все сохранённые данные?')) {
+        //     sessionStorage.removeItem('initial-data');
+        //     document.getElementById('data-input').reset();
+        //     showToast('Данные удалены!', 'info');
+        // }
+        // navigateWithCheck("log-in.html");
+        sessionStorage.clear();
+        window.location.href = "log-in.html";
     });
 }
 
@@ -168,21 +235,21 @@ function setupDropUpMenus() {
         });
         
         // Обработчики для пунктов меню
-        menu.querySelectorAll('.dropUpBtn').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const action = this.textContent;
-                showToast(`Выбрано: ${action}`, 'info');
-                menu.style.display = 'none';
+        // menu.querySelectorAll('.dropUpBtn').forEach(item => {
+        //     item.addEventListener('click', function(e) {
+        //         e.stopPropagation();
+        //         const action = this.textContent;
+        //         showToast(`Выбрано: ${action}`, 'info');
+        //         menu.style.display = 'none';
                 
-                // Логика для разных пунктов меню
-                if (action.includes('соответствия')) {
-                    // Действия для матрицы соответствия
-                } else if (action.includes('верификации')) {
-                    // Действия для матрицы верификации
-                }
-            });
-        });
+        //         // Логика для разных пунктов меню
+        //         if (action.includes('соответствия')) {
+        //             // Действия для матрицы соответствия
+        //         } else if (action.includes('верификации')) {
+        //             // Действия для матрицы верификации
+        //         }
+        //     });
+        // });
     });
     
     // Закрытие всех меню при клике вне
@@ -230,4 +297,35 @@ function showToast(message, type) {
     document.body.appendChild(toast);
     
     setTimeout(() => toast.remove(), 3000);
+}
+
+function saveToModel(){
+    userData["data_awdfasda"]['initial-data'] = JSON.parse(sessionStorage.getItem('initial-data'));
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+     console.log(JSON.parse(localStorage.getItem(`data-model`)));
+}
+
+function showNotification(message, type = 'success') { //показать уведомление пользователю
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '75px';
+    notification.style.right = '30px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    notification.textContent = message;
+   
+    const existing = document.querySelector('.ag-grid-notification');
+    if (existing) existing.remove();
+   
+    notification.classList.add('ag-grid-notification');
+    document.body.appendChild(notification);
+   
+    setTimeout(() => { //исчезает через время
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
 }

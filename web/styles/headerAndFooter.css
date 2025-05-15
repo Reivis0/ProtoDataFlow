@@ -90,12 +90,22 @@ footer{
 }
 .footer-btn .material-icons svg{
     font-size: 24px;
-    fill: #555;
+    /* fill: #555; */
     }
 
 .footer-btn:hover {
     background: #eae2ff;
     border: 2px solid #bcb0e2;
+}
+.footer-btn:disabled{
+  background-color: #dddcdc;
+  border: 2px solid #cfcece;
+  cursor: default;
+}
+
+.footer-btn:disabled:hover {
+  background-color: #dddcdc;
+  border: 2px solid #cfcece;
 }
 
 /* main {

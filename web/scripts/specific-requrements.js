@@ -1,4 +1,3 @@
-// const { jsx } = require("react/jsx-runtime");
 
 function loadData(){
     let answer = {
@@ -43,7 +42,7 @@ function loadData(){
                     type: "num",
                     maxSmth: 10000,
                     name: "column5",
-                    enabled: false
+                    enabled: true
 
                 },
                 {
@@ -67,24 +66,24 @@ function loadData(){
 
         },
         data: [
-            {"column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
-            {"column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
-            {"column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
-            {"column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
-            {"column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
-            {"column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
-            {"column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
+            {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            {"flag": true, "column1": "11111", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            {"flag": true, "column1": "22222", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            {"flag": true, "column1": "33333", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" },
+            {"flag": true, "column1": "44444", "column2": "kykjyuk", "column3": "adsadad", "column4": "Sahjda", "column5": 678, "column6": 959.6, "column7": "asadad" },
+            {"flag": true, "column1": "55555", "column2": "l,ljykjyuk", "column3": "pooadad", "column4": "iuuuada", "column5": 678, "column6": 969.6, "column7": "asadad"},
+            {"flag": true, "column1": "66666", "column2": "qaykjyuk", "column3": "ksadad", "column4": "uuada", "column5": 678, "column6": 99.6, "column7": "asadad" },
+            {"flag": true, "column1": "77777", "column2": "fdjykjyuk", "column3": "qdqssadad", "column4": "hrtsadada", "column5": 678, "column6": 999.6, "column7": "asadad" },
+            {"flag": true, "column1": "88888", "column2": "ujykjyuk", "column3": "jdadad", "column4": "efada", "column5": 678, "column6": 979.6, "column7": "asadad" },
+            {"flag": true, "column1": "99999", "column2": "vbykjyuk", "column3": "vxcvadad", "column4": "lkjhlsadada", "column5": 678, "column6": 9969.6, "column7": "asadad" }
         ]
     };
     return answer;
@@ -92,7 +91,7 @@ function loadData(){
 
 function returnGridOptions(information, data){ //получить настройки таблицы
 
-    let coldefs = []; //выбрать только включенные столбики
+    let coldefs = [{field: "flag", headerName: "", cellEditor: "agCheckboxCellEditor"}]; //выбрать только включенные столбики
     information.headers.forEach(element => {
         if(element.enabled){
             let column = {field: element.name, headerName: element.header};
@@ -105,6 +104,8 @@ function returnGridOptions(information, data){ //получить настрой
                 column.cellEditor = 'agNumberCellEditor';
                 column.cellEditorParams = {min: 0, max: element.maxSmth, precision: 1};
                 column.filter = 'agNumberColumnFilter';
+                column.type = "rightAligned";
+                column.flex = '1';
             }
             coldefs.push(column);
         }
@@ -115,22 +116,37 @@ function returnGridOptions(information, data){ //получить настрой
         coldefs[i].pinned = "left";
         coldefs[i].flex = 0.8;
     }
+    coldefs.forEach(col => {
+        if(col.field === "column4") {
+            col.flex = "1";
+        }
+    })
 
     let id = 0
 
     for(let i = 0; i < data.length; ++i) {
-        if(!(data[i].id === undefined || data[i].id === null)){
-            break
-        }
         data[i].id = id;
         ++id;
     }
 
+    while(data.length < 15){
+        data.push({
+                   "id" : ++id,
+                   "flag": false,
+                   "column1" : "",
+                   "column2" : "",
+                   "column3" : "",
+                   "column4" : "",
+                   "column5" : null,
+                   "column6" : null,
+                   "column7" : "",
+        });
+    }
     let gridOptions = {
         rowData: data,
         columnDefs: coldefs,
         defaultColDef: {
-            flex: 1,
+            flex: 2,
             editable: true,
             sortable: true,
             filter: true,
@@ -166,10 +182,12 @@ let gridApi;
 
 let localSaveData = []; //для локального сохранения
 let dataForFilter = []; //для локального сохранения
-
+let GlobalLogin;
+let userData;
 let deletedNodes = [];
+let forMatricies;
 
-function localSave() {
+function localSave(flag=true) {
     let newData = JSON.parse(JSON.stringify(dataForFilter));
     let filteredData = [];
     gridApi.forEachNode(node => filteredData.push(node.data));
@@ -197,9 +215,20 @@ function localSave() {
 
     localSaveData = JSON.parse(JSON.stringify(newData));
 
-    sessionStorage.setItem("initial-requrements-data", JSON.stringify(localSaveData));
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    tempArray = []
+    localSaveData.forEach(row => {
+        const {id, flag, ...data } = row;
+        if(!Array.from(Object.keys(data)).every(el => {
+            return (data[el] === "" || data[el] == null)
+        })){
+            tempArray.push(row);
+        }
+    });
+    forMatricies[currentObjAndType.Object]["specific-requrements"] = tempArray;
+    sessionStorage.setItem("for-matricies", JSON.stringify(forMatricies));
     console.log('Saving all:', localSaveData);
-    showNotification(`Сохранено строк: ${localSaveData.length}`);
+    if(flag){showToast(`Сохранено строк: ${tempArray.length}`, 'success');}
     
 }
 
@@ -217,7 +246,10 @@ function setupButtons() {
       });
 
     // Сохранение всей таблицы
-    document.getElementById('saveAllBtn').addEventListener('click', localSave);
+    document.getElementById('saveAllBtn').addEventListener('click', (e) => {
+        localSave();
+        showNotification("Не забудьте добавить данные в модель!");
+    });
 
     document.getElementById('removeFiltersBtn').addEventListener('click', () => {
         gridApi.setFilterModel(null);
@@ -262,6 +294,7 @@ function setupButtons() {
                          index: rowIndex + 1,
                          rows: Array(count).fill().map((_, i) => ({
                             "id" : nextId+i,
+                            "flag": false,
                             "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                             "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                             "column3" : "",
@@ -279,6 +312,7 @@ function setupButtons() {
                  index: allData.length,
                  rows: Array(count).fill().map((_, i) => ({
                         "id" : nextId+i,
+                        "flag": false,
                         "column1" : listSourceBtn.textContent === "Все" ? "" : listSourceBtn.textContent,
                         "column2" : listCategoryBtn.textContent === "Все" ? "" : listCategoryBtn.textContent,
                         "column3" : "",
@@ -395,7 +429,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         //window.location.assigsn("log-in.html");
         window.location.href = "log-in.html";
     }
-
+    GlobalLogin = login;
     // let messageForIdentification = {login: login, model: "model", variant: "var"};
     // fetch('http://127.0.0.1:8080/api/auth', { 
     //     method: 'POST',
@@ -453,7 +487,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     //     console.error('Error fetching data:', error);
     // });
 
-
+    userData = JSON.parse(localStorage.getItem(`data-model`));
     let serverData = loadData();
 
     initialRequrements = JSON.parse(sessionStorage.getItem("initial-requrements-data"));
@@ -461,24 +495,43 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("objectName").textContent = currentObjAndType.Object;
     document.getElementById("objectType").textContent = currentObjAndType.Type;
     let GrdOptions;
+    let initialData;
 
-    if(!localSaveData) {
-        GrdOptions = returnGridOptions(serverData.information, serverData.data);
-        localSaveData = JSON.parse(JSON.stringify(serverData.data));
-        let id = 0;
-        for(let i = 0; i < localSaveData.length; ++i) {
-            localSaveData[i].id = id
-            ++id;
+    forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
+    if(!Array.from(Object.keys(forMatricies)).length){
+        forMatricies = userData["data_awdfasda"]['forMatricies'];
+    }
+    initialData = forMatricies[currentObjAndType.Object]["specific-requrements"];
+
+    if(!initialData) {
+        // GrdOptions = returnGridOptions(serverData.information, serverData.data);
+        // localSaveData = JSON.parse(JSON.stringify(serverData.data));
+        // let id = 0;
+        // for(let i = 0; i < localSaveData.length; ++i) {
+        //     localSaveData[i].id = id
+        //     ++id;
+        // }
+
+        // dataForFilter = JSON.parse(JSON.stringify(localSaveData));
+        initialData = [];
+    }
+    let additionalData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object);
+    console.log(additionalData)
+    for(let i = 0; i < additionalData.length; ++i){
+        let index = initialData.findIndex(row => row.column1 == additionalData[i].column1 && row.column3 == additionalData[i].column3)
+        if(index > -1){
+            additionalData[i].column2 = initialData[index].column2
+            initialData[index] = additionalData[i];
+        }else{
+            additionalData[i].column2 = "";
+            initialData.push(additionalData[i]);
         }
-
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
     }
-    else{
-        localSaveData = initialRequrements.filter(row => row.column2 === currentObjAndType.Object)
-        localSaveData.forEach(row => row.column2 = "");
-        GrdOptions = returnGridOptions(serverData.information, localSaveData);
-        dataForFilter = JSON.parse(JSON.stringify(localSaveData));
-    }
+    //initialData = initialData.concat(initialRequrements.filter(row => row.column2 === currentObjAndType.Object))
+    //localSaveData = localSaveData.concat(serverData.data);
+    //initialData.forEach(row => row.column2 = "");
+    GrdOptions = returnGridOptions(serverData.information, initialData);
+    dataForFilter = JSON.parse(JSON.stringify(initialData));
     gridApi = agGrid.createGrid(document.getElementById("myGrid"), GrdOptions);
     setupButtons();
     document.getElementById("mainFormName").textContent = serverData.information.name;
@@ -491,6 +544,12 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
     CreateSourceOptions();
     CreateCategoryOptions();
+    localSave(false);
+
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("specific-requrements.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("specific-requrements.html");
 
 });
 
@@ -521,8 +580,32 @@ function showNotification(message, type = 'success') { //показать уве
 
 document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
-    console.log(localSaveData, dataForFilter);
-    console.log(typeof localSaveData, typeof dataForFilter)
+    
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+       
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+        // for(let i = 0; i < deletedNodes.length; ++i){
+        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+        //     if(index !== -1){
+        //         newData.splice(index, 1);
+        //     }
+        // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
+
+
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();
@@ -541,14 +624,37 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     }
     let counter1 = sessionStorage.getItem("counter1");
     --counter1;
-    sessionStorage.setItem("counter1", counter1);
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
+    sessionStorage.setItem("counter1", Math.max(counter1, -1));
     window.location.href = "all-objects.html";
 })
 
 document.getElementById("nextBtn").addEventListener("click", (e) => {
     e.preventDefault();
     console.log(localSaveData);
+
+    const filteredData = [];
+    gridApi.forEachNode(node => filteredData.push(node.data));
+       
+    filteredData.sort((a, b) => a.id - b.id)
+    const newData = JSON.parse(JSON.stringify(dataForFilter));
+
+
+        // for(let i = 0; i < deletedNodes.length; ++i){
+        //     const index = newData.findIndex(element => JSON.stringify(element) === JSON.stringify(deletedNodes[i]));
+        //     if(index !== -1){
+        //         newData.splice(index, 1);
+        //     }
+        // }
+    for(let i = 0; i < filteredData.length; ++i){
+        const index = newData.findIndex(element => element.id === filteredData[i].id)
+        if(index !== -1){
+            newData[index] = filteredData[i]
+        }
+        else{
+            newData.push(filteredData[i]);
+        }
+    }
+    dataForFilter = JSON.parse(JSON.stringify(newData));
 
     if(dataForFilter.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
@@ -567,12 +673,10 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     }
 
-    sessionStorage.setItem("specific-requrements", JSON.stringify(localSaveData));
     sessionStorage.setItem("counter2", 0);
     // sessionStorage
 
     // console.log(sessionStorage.getItem("counter1"));
-
 
     window.location.href = "View.html";
 })
@@ -586,31 +690,11 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
     localSave();
-    const message = {
-        object: currentObjAndType.Object,
-        data: localSaveData
-    };
-    fetch('http://127.0.0.1:8080/api/auth', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({information:"asda", data:message}),
-      }
-      )
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json(); 
-      })
-      .then(answer => {
-          console.log(answer);
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
-    showNotification(`Сохранено строк в модели: ${localSaveData.length}`);
+    userData["data_awdfasda"]['forMatricies'] = JSON.parse(sessionStorage.getItem("for-matricies"));
+    localStorage.setItem(`data-model`, JSON.stringify(userData));
+    console.log(JSON.parse(localStorage.getItem(`data-model`)));
+    toServerSave();
+    showNotification(`Сохранено строк в модели: ${userData["data_awdfasda"]['forMatricies'][currentObjAndType.Object]["specific-requrements"].length}`);
 })
 
 function CreateSourceOptions(){
@@ -749,4 +833,14 @@ function addCategoryListener(categoryBtn){
             }
         }
     })
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }

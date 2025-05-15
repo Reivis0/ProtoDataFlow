@@ -1,0 +1,183 @@
+body { 
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 95vh;
+    margin: 0;
+    height: 100%;
+    overflow-x: hidden;
+}
+main{
+    min-height: 75vh;
+
+}
+
+.pvtUi{
+    margin: 0 auto;
+    overflow: auto;
+}
+
+#matrix-container { 
+    margin: 0 auto;
+    margin-top: 10px; 
+    max-height: 90vh;
+    max-width: 95vw;
+    overflow: auto;
+ }
+
+ .pvtUi table td, .pvtUi table th {
+    height: 40px;
+    min-width: 40px;  /* adjust to your desired size */
+    align-content: center;
+    text-align: center !important;
+    padding: 10px !important;
+    font-size: 12px;
+  }
+  .pvtUi table th{
+    height: 20px;
+  }
+
+.pvtColLabel {
+    background-color: #53e153 !important;
+}
+.pvtRowLabel { background-color: #49d0d0 !important; }
+
+/* Editable cell styles */
+.editable-cell {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.editable-cell:hover {
+  background-color: #f0f0f0 !important;
+}
+.cell-edit-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: inherit;
+  padding: 5px;
+}
+.cell-edit-input:focus {
+  outline: 2px solid transparent;
+}
+
+.pvtTable td.zero-total {
+  background-color: #ff6b6b !important;
+  color: white !important;
+}
+
+.transposeBtn{
+    width: 200px;
+}
+
+.for-lists{
+  /* background-color: aqua; */
+  width: 60%;
+  margin: 0 auto;
+  align-items: center;
+  width: 60vw;
+  margin-bottom: 20px;
+  min-width: 800px;
+}
+
+label {
+  font-size: 120%;
+  /* margin-left: 5%; */
+  font-weight: bold;
+  overflow-x: hidden;
+}
+
+#matrixName{
+    height: 30px;
+    width: 300px;
+    align-content: center;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+.dropdown {
+    position: relative;
+  display: inline-block;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.listObjectBtn, .listSourceBtn{
+    background: #fefcfc;
+    min-width: 200px;
+    height: 60px;
+    border-radius: 5px;
+    transition: all 0.2s;  
+}
+
+.sourceBtn:hover, .objectBtn:hover {
+    background-color: #e9e9e9;
+    border: 2px solid transparent;
+}
+
+
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    background-color: white;
+    min-width: 220px;
+    max-width: 300px;
+    max-height: 250px; /* максимальная высота списка*/
+    overflow-y: auto; /* появление scroll-bar */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 3;
+    overflow-x: hidden; /* убирает прокрутку по горизонтали */
+    left: 50%; /* что-то для центрирования */
+    transform: translateX(-50%); /* что-то для центрирования 2 */
+    flex-direction: column;
+    border-radius: 4px;
+}
+
+.dropdownBtn {
+    background: none;
+    background-color: white;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1f1f1f;
+    border-radius: 0;
+    padding: 10px 16px;
+    /* white-space: nowrap; */
+    font-family: 'IBM Plex Sans', sans-serif;
+    margin-top: 3px;
+    
+}
+
+.specialBtn{
+    font-weight: 600;
+    color: #1a73e8;
+    border-bottom: 2px solid #eee;
+    background-color: #ffffff;
+    margin-top: 3px;
+}
+
+.dropDownBtn:hover {
+    background-color: #f5f5f5;
+    border: 2px solid transparent;
+}
+
+.dropdown-content {
+    animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform:translateX(-50%) translateY(-5%);
+    }
+    to {
+        opacity: 1;
+        transform:translateX(-50%) translateY(0);;
+    }
+}
