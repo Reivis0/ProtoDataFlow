@@ -1,0 +1,29 @@
+body { 
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    height: 100%;
+    overflow-x: hidden;
+}
+main{
+    min-height: 89vh;
+    align-content: center;
+
+}
+footer{
+    display: block;
+    bottom: 0px;
+}
+.footer-buttons {
+  display: flex;
+  height: 120%;
+  align-items: center;
+}
+
+.messageBox{
+    margin-top: 10px;
+    font-size: 14px;
+    color: gray;
+}

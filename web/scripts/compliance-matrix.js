@@ -53,6 +53,7 @@ const config = {
      if(navigationData.name){
         matrixName = navigationData.name;
         traceabilityData = complianceMatricies[navigationData.name]["data"];
+        localSaveData = structuredClone(traceabilityData);
         matrixNameInput.value = matrixName;
         document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][0]
         document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][1]
@@ -60,6 +61,39 @@ const config = {
         document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][3]
         document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][4]
         document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = complianceMatricies[navigationData.name]["buttons"][5]
+
+        setTimeout(() => {
+            const table = document.getElementsByClassName("pvtTable")[0];
+        
+            const ws1 = XLSX.utils.aoa_to_sheet(
+                [
+                    [`Матрица соответствия ${matrixName}`],
+                ], { origin: "C1" }
+            );
+                
+            // Add data at A3
+            XLSX.utils.sheet_add_dom(ws1, table, {
+                skipHeader: true,
+                origin: "C3"
+            });
+                
+        
+            ws1['!merges'] = [{s: {r:0, c:2}, e: {r:0, c:8}}];
+    
+            let temp = JSON.parse(sessionStorage.getItem("exel_compliance"));
+    
+    
+            temp[matrixName] = {
+                    data: XLSX.utils.sheet_to_json(ws1, {header: 1}),
+                    merges: ws1['!merges'] || [],
+                    cols: ws1['!cols'] || [],
+                    rows: ws1['!rows'] || []
+                }
+    
+            sessionStorage.setItem("exel_compliance", JSON.stringify(temp));
+            localSave(false);
+
+        }, 400)
      }
     
      forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
@@ -109,9 +143,9 @@ const config = {
          viewToCode[view.header] = view.code;
      })
     updateTable();
-    makeMatrix(transposed);
+    // makeMatrix(transposed);
  
-    makeTheTablePretty();
+    // makeTheTablePretty();
        
     const dropDowns = Array.from(document.getElementsByClassName("dropdown"));
      for (let i = 0; i < dropDowns.length; ++i) {
@@ -129,12 +163,12 @@ const config = {
          });
      }
 
-     setupButtons();
-     document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-     createComplianceButtons("compliance-matrix.html");
-     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
-     createTraceabilityButtons("compliance-matrix.html");
-     console.log(navigationData);
+    setupButtons();
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("compliance-matrix.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("compliance-matrix.html");
+    setupHeaderButtons();
    });
 
    function level1Pressed(button){
@@ -747,7 +781,8 @@ function makeTheTablePretty() {
             window.location.href = "component.html";
         }
         else{
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            const names = Array.from(Object.keys(complianceMatricies));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"compliance-matrix.html", name: names[num-1], flag: false}));
             window.location.href = "compliance-matrix.html";
         }
     }
@@ -823,13 +858,45 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 let tempFlag = false;
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
-    localSave();
+    localSave(false);
     if(tempFlag){
+
+        const table = document.getElementsByClassName("pvtTable")[0];
+    
+        const ws1 = XLSX.utils.aoa_to_sheet(
+            [
+                [`Матрица соответствия ${matrixName}`],
+            ], { origin: "C1" }
+        );
+            
+        // Add data at A3
+        XLSX.utils.sheet_add_dom(ws1, table, {
+            skipHeader: true,
+            origin: "C3"
+        });
+            
+    
+        ws1['!merges'] = [{s: {r:0, c:2}, e: {r:0, c:8}}];
+
+        let temp = JSON.parse(sessionStorage.getItem("exel_compliance"));
+
+
+        temp[matrixName] = {
+                data: XLSX.utils.sheet_to_json(ws1, {header: 1}),
+                merges: ws1['!merges'] || [],
+                cols: ws1['!cols'] || [],
+                rows: ws1['!rows'] || []
+            }
+
+        sessionStorage.setItem("exel_compliance", JSON.stringify(temp));
+
         userData["data_awdfasda"]['compliance-matricies-data'] = JSON.parse(sessionStorage.getItem("compliance-matricies-data"));
+        userData["data_awdfasda"]["filesCompl"] = temp;
         localStorage.setItem(`data-model`, JSON.stringify(userData));
         console.log(JSON.parse(localStorage.getItem(`data-model`)));
         toServerSave();
         showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+        tempFlag = false;
     }
 });
 
@@ -867,7 +934,7 @@ function setupButtons() {
     
 }
 
-function localSave() {
+function localSave(flag = true) {
 
     if(!matrixName){
         showNotification("Введите название матрицы", false);
@@ -887,8 +954,10 @@ function localSave() {
     complianceMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
     sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
     //console.log('Saving all:', traceabilityData);
-    showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
-    showNotification("Не забудьте добавить данные в модель!");
+    if(flag){
+        showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
+        showNotification("Не забудьте добавить данные в модель!");
+    }
     createComplianceButtons();
     tempFlag = true;
     
@@ -934,6 +1003,12 @@ matrixNameInput.addEventListener("change", (e) => {
             delete complianceMatricies[matrixName];
             complianceMatricies[e.target.value] = temp;
             sessionStorage.setItem("compliance-matricies-data", JSON.stringify(complianceMatricies));
+
+            let temp2 = JSON.parse(sessionStorage.getItem("exel_compliance"));
+            let file = temp2[matrixName]
+            delete temp2[matrixName]
+            temp2[e.target.value] = file
+            sessionStorage.setItem("exel_compliance", JSON.stringify(temp));
         }
         else{
             complianceMatricies[`${e.target.value}`] = {};

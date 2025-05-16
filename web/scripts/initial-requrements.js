@@ -523,6 +523,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     createComplianceButtons("initial-requrements.html");
     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
     createTraceabilityButtons("initial-requrements.html");
+    setupHeaderButtons();
 });
 
 function showNotification(message, type = 'success') { //показать уведомление пользователю

@@ -1,167 +1,4 @@
 
-function loadData(){
-    let data = {
-        "Objects": ["dfdsfsd", "dfsdfsdf", "aaeo,l", "asdadad", " gsdgsgsgfg", "hhtrd"],
-        "Types": [
-            {
-                "num" : 1,
-                "name": "Type1"
-            },
-            {
-                "num" : 4,
-                "name": "Type4"
-            },
-            {
-                "num" : 12,
-                "name": "Type12"
-            },
-        ],
-        "data" : [
-            {
-                "Object": "dfdsfsd",
-                "Type": 4
-            },
-            {
-                "Object": "dfsdfsdf",
-                "Type": null
-            },
-            {
-                "Object": "hhtrd",
-                "Type": 1
-            },
-            {
-                "Object": "aaeo,l",
-                "Type": 12
-            }
-        ],
-        "information":{
-        "code": "QWE-3",
-        "name": "Перечень моделируемых объектов",
-        "Settings": [
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": false,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":false
-            },
-            {
-                "PM": true,
-                "example":true
-            }
-
-        ]
-    }
-    }
-
-    return data;
-}
-
-// function loadViews(){
-//     let views = [
-//         {
-//             "number": 1,
-//             "header": "Представление_1",
-//             "code": "SDFS-1",
-//             "components": [
-//                 {
-//                     "number": 1,
-//                     "name": "Компонент_1",
-//                     "code": "fafa-53_"
-//                 },
-//                 {
-//                     "number": 2,
-//                     "name": "Компонент_2",
-//                     "code": "fafa-54"
-//                 },
-//                 {
-//                     "number": 3,
-//                     "name": "Компонент_3",
-//                     "code": "fafa-55"
-//                 }
-//             ]
-    
-    
-//         },
-//         {
-//             "number": 2,
-//             "header": "Представление_2",
-//             "code": "SDFS-2",
-//             "components": [
-//                 {
-//                     "number": 4,
-//                     "name": "Компонент_4",
-//                     "code": "fafa-56_"
-//                 },
-//                 {
-//                     "number": 5,
-//                     "name": "Компонент_5",
-//                     "code": "fafa-57"
-//                 },
-//             ]
-    
-    
-//         },
-//         {
-//             "number": 5,
-//             "header": "Представление_5",
-//             "code": "SDFS-5",
-//             "components": [
-//                 {
-//                     "number": 1,
-//                     "name": "Компонент_6",
-//                     "code": "fafa-58_"
-//                 },
-//                 {
-//                     "number": 2,
-//                     "name": "Компонент_7",
-//                     "code": "fafa-59"
-//                 },
-//             ]
-    
-    
-//         }
-//     ]
-
-//     return views;
-// }
 
 class ActionsButtons {
     init(params) {
@@ -659,7 +496,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     
     userData = JSON.parse(localStorage.getItem(`data-model`));
     sessionStorage.setItem("all-objects", JSON.stringify([]));
-    let serverData = loadData()
+    let serverData = JSON.parse(sessionStorage.getItem("objTypes"));
     
     enabledButtons = serverData.information.Settings;
     
@@ -711,6 +548,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     document.getElementById("code").textContent = serverData.information.code;
     
     counter1 = sessionStorage.getItem("counter1");
+    localSave(false);
     
     setTimeout(() => {
         gridApi.forEachNode(node => enableButtons(node));
@@ -748,21 +586,23 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
     });
     
     curDat = curDat.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
-    curDat.forEach(row => {
-        if(row.Type === "(нет)"|| row.Type === ""){
-            row.Type = null;
-        }
-        else{
-            const typeNums = Object.keys(typesDictionary);
-            for(let i = 0; i < typeNums.length; ++i) {
-                if(typesDictionary[typeNums[i]] === row.Type){
-                    row.Type = typeNums[i];
-                    break
-                }
-            }
+    // curDat.forEach(row => {
+    //     if(row.Type === "(нет)"|| row.Type === ""){
+    //         row.Type = null;
+    //     }
+    //     else{
+    //         const typeNums = Object.keys(typesDictionary);
+    //         for(let i = 0; i < typeNums.length; ++i) {
+    //             if(typesDictionary[typeNums[i]] === row.Type){
+    //                 row.Type = typeNums[i];
+    //                 break
+    //             }
+    //         }
 
-        }
-    });
+    //     }
+    // });
+    // console.log(curDat, "curDat");
+    // console.log(localSaveData, "localSacveData");
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();

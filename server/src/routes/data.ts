@@ -81,7 +81,8 @@ data.get('/:login/:key', async ({set, params }) => {
             existingData = existingData.value
         }
         else{
-            existingData = { "initial-data": {}, "initial-requrements": [], "all-objects": [], "forMatricies": {}, "traceability-matricies-data": {}, "compliance-matricies-data": {} }
+            existingData = { "initial-data": {}, "initial-requrements": [], "all-objects": [], "forMatricies": {}, "traceability-matricies-data": {},
+             "compliance-matricies-data": {}, "filesTrace": {}, "filesCompl": {} }
         }
         
 
@@ -157,7 +158,7 @@ data.patch('/:login', async ({body, set, params }) => {
 data.put('/:login/:key', async({body, set, params }) => {
     try{
 
-        console.log(body)
+        //console.log(body)
         const existingData = await prisma.userData.findFirst({
             where: { user: { login: params.login }, key: params.key }
         })
@@ -180,19 +181,29 @@ data.put('/:login/:key', async({body, set, params }) => {
             }
         }
 
-        await prisma.user.update({
-            where: { login: params.login }, data:{ modelsMetadata: body.model.specialFieldForModels_ddqasdawd}
+
+        return prisma.$transaction(async tx => {
+            await tx.user.update({
+                where: { login: params.login }, data:{ modelsMetadata: body.model.specialFieldForModels_ddqasdawd}
+            })
+            return tx.userData.update({
+                where: {user_key_unique: {key:params.key, userId: currentUser.id}}, data: {value: body.model.data_awdfasda}
+            })
         })
 
-        await prisma.userData.update({
-            where: {user_key_unique: {key:params.key, userId: currentUser.id}}, data: {value: body.model.data_awdfasda}
-        })
+        // await prisma.user.update({
+        //     where: { login: params.login }, data:{ modelsMetadata: body.model.specialFieldForModels_ddqasdawd}
+        // })
 
-        set.status = 200;
-        return {
-            success: true,
-            message: 'Data updated successfully'
-        }
+        // await prisma.userData.update({
+        //     where: {user_key_unique: {key:params.key, userId: currentUser.id}}, data: {value: body.model.data_awdfasda}
+        // })
+
+        // set.status = 200;
+        // return {
+        //     success: true,
+        //     message: 'Data updated successfully'
+        // }
         
 
 

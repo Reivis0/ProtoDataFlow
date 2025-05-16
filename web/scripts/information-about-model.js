@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     GlobalLogin = login;
     userData = JSON.parse(localStorage.getItem(`data-model`));
-    console.log(userData);
+    //console.log(userData);
+    // const AuserData = JSON.parse(localStorage.getItem(`data-model`));
+    // console.log(AuserData);
     
 
     // Получаем данные с сервера
@@ -81,6 +83,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
     setupHeaderButtons();
     initModelLoader();
     loadSavedData(inputs);
+    sessionStorage.setItem("objTypes", JSON.stringify(loadTypes()));
+    // sessionStorage.setItem("exel_traceability", JSON.stringify({}));
+    // sessionStorage.setItem("exel_compliance", JSON.stringify({}));
 
 });
 // Основные функции
@@ -302,7 +307,7 @@ function loadModel(modelId, flag = true) {
     //console.log(sessionStorage.getItem("currentModel"));
     //console.log(model)
     if(flag){
-        console.log(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
+        //console.log(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
         fetch(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
         .then(response => {
             if (!response.ok) {
@@ -312,6 +317,7 @@ function loadModel(modelId, flag = true) {
         })
         .then(answer => {
             userData = answer;
+            localStorage.setItem(`data-model`, JSON.stringify(userData));
             sessionStorage.setItem("for-matricies", JSON.stringify(userData["data_awdfasda"]["forMatricies"]));
         
             sessionStorage.setItem("compliance-matricies-data", JSON.stringify(userData["data_awdfasda"]["compliance-matricies-data"]));
@@ -323,6 +329,10 @@ function loadModel(modelId, flag = true) {
             sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
         
             sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+            
+            sessionStorage.setItem("exel_compliance", JSON.stringify(userData["data_awdfasda"]["filesCompl"] ));
+
+            sessionStorage.setItem("exel_traceability", JSON.stringify(userData["data_awdfasda"]["filesTrace"]));  
         
             console.log(userData);
 
@@ -350,6 +360,10 @@ function loadModel(modelId, flag = true) {
         sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
         
         sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+
+        sessionStorage.setItem("exel_compliance", JSON.stringify(userData["data_awdfasda"]["filesCompl"] ));
+
+        sessionStorage.setItem("exel_traceability", JSON.stringify(userData["data_awdfasda"]["filesTrace"]));        
         
         console.log(userData);
 
@@ -515,7 +529,7 @@ function setupActionButtons(inputs) {
             return;
         }
         navigateWithCheck("initial-data.html");
-        console.log(sessionStorage.getItem('formData1'));
+        console.log(userData);
     });
     
     document.getElementById('toServerBtn').addEventListener('click', () => {
@@ -552,15 +566,15 @@ function hasUnsavedChanges(inputs) {
     }
 }
 
-function setupHeaderButtons() {
-    document.getElementById("What2do").addEventListener("click", () => {
-        showToast("Раздел помощи будет реализован позже", "info");
-    });
+// function setupHeaderButtons() {
+//     document.getElementById("What2do").addEventListener("click", () => {
+//         showToast("Раздел помощи будет реализован позже", "info");
+//     });
     
-    document.getElementById("How2do").addEventListener("click", () => {
-        showToast("Раздел помощи будет реализован позже", "info");
-    });
-}
+//     document.getElementById("How2do").addEventListener("click", () => {
+//         showToast("Раздел помощи будет реализован позже", "info");
+//     });
+// }
 
 function setupDropUpMenus() {
     const dropUps = document.querySelectorAll('.dropUp');
@@ -721,4 +735,99 @@ function loadViews(){
     ]
 
     return views;
+}
+
+function loadTypes(){
+    let data = {
+        "Objects": ["dfdsfsd", "dfsdfsdf", "aaeo,l", "asdadad", " gsdgsgsgfg", "hhtrd"],
+        "Types": [
+            {
+                "num" : 1,
+                "name": "Type1"
+            },
+            {
+                "num" : 4,
+                "name": "Type4"
+            },
+            {
+                "num" : 12,
+                "name": "Type12"
+            },
+        ],
+        "data" : [
+            {
+                "Object": "dfdsfsd",
+                "Type": 4
+            },
+            {
+                "Object": "dfsdfsdf",
+                "Type": null
+            },
+            {
+                "Object": "hhtrd",
+                "Type": 1
+            },
+            {
+                "Object": "aaeo,l",
+                "Type": 12
+            }
+        ],
+        "information":{
+        "code": "QWE-3",
+        "name": "Перечень моделируемых объектов",
+        "Settings": [
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": false,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":true
+            }
+
+        ]
+    }
+    }
+
+    return data;
 }

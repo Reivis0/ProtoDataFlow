@@ -52,17 +52,16 @@ form.addEventListener('submit', (e) => {
             })
             .then(model => {
                 localStorage.setItem(`data-model`, JSON.stringify(model));
+                if(!answer.agreement) {
+                    window.location.assign("rules-of-usage.html");
+                }
+                else{
+                    window.location.assign("information-about-model.html");
+                }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });  
-
-            if(!answer.agreement) {
-                window.location.assign("rules-of-usage.html");
-            }
-            else{
-               window.location.assign("information-about-model.html");
-            }
         }
         else {
             error_div.innerText = "Доступ закончился";

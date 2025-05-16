@@ -550,6 +550,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     createComplianceButtons("specific-requrements.html");
     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
     createTraceabilityButtons("specific-requrements.html");
+    setupHeaderButtons();
 
 });
 
