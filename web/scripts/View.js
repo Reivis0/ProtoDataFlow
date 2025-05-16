@@ -261,7 +261,6 @@ class ActionsButtons {
 
             sessionStorage.setItem("cellBtnPressed", true);
 
-
             const compNums = Object.keys(settings);
             for(let i = 0; i < compNums.length; ++i) {
                 if(componentsDictionary[compNums[i]] === compName){
@@ -273,9 +272,17 @@ class ActionsButtons {
                     break
                 }
             }
+        });
 
-            
-        })
+        this.loadPMButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            showToast("Эта кнопка пока не сделана", "info");
+        });
+
+        this.loadExampleButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            showToast("Эта кнопка пока не сделана", "info");
+        });
     }
 
 
@@ -349,6 +356,7 @@ function createGridOptions(data) {
         suppressRowClickSelection: true,
         enableCellTextSelection: false,
         suppressClipboardPaste: false,
+        cellSelection: true
         
     };
     

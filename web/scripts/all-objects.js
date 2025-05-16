@@ -119,7 +119,18 @@ class ActionsButtons {
             sessionStorage.setItem("currentObjAndType", JSON.stringify(this.params.data));
             // console.log(JSON.stringify(this.params.data));
             window.location.href = "specific-requrements.html";
-        })
+        });
+
+        
+        this.loadPMButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            showToast("Эта кнопка пока не сделана", "info");
+        });
+
+        this.loadExampleButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            showToast("Эта кнопка пока не сделана", "info");
+        });
     }
 
 

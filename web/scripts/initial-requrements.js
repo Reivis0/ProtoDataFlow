@@ -231,7 +231,7 @@ function localSave(flag = true) {
 
     sessionStorage.setItem("initial-requrements-data", JSON.stringify(tempArray));
     console.log('Saving all:', localSaveData);
-    console.log(JSON.parse(sessionStorage.getItem("initial-requrements-data")));
+    //console.log(JSON.parse(sessionStorage.getItem("initial-requrements-data")));
     if(flag){
         showToast(`Сохранено строк: ${tempArray.length}`, 'success');
     }
