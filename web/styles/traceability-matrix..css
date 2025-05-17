@@ -72,6 +72,7 @@ main{
 
 .transposeBtn{
     width: 200px;
+    margin: 0 10px;
 }
 
 .for-lists{
@@ -185,4 +186,57 @@ label {
         opacity: 1;
         transform:translateX(-50%) translateY(0);;
     }
+}
+
+
+.toolbar-btn:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+.toolbar-btn:disabled .material-icons {
+fill: #999;
+}
+.toolbar-btn {
+background: none;
+width: 50px;
+border: 2px solid transparent;
+cursor: pointer;
+padding: 8px;
+border-radius: 4px;
+transition: all 0.2s;  
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.toolbar-btn:hover {
+background: rgb(242, 252, 254);
+border: 2px solid rgb(216, 243, 255);
+}
+
+.toolbar-btn .material-icons svg{
+font-size: 24px;
+fill: #555;
+}
+
+.toolbar-btn.active {
+background: #e0e0e0;
+box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.toolbar-btn:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+.toolbar-btn:disabled .material-icons svg {
+fill: #999;
+}
+
+.actionButtons{
+  min-width: 800px;
+  display: flex;
+  margin-left: 0px;
+  align-items: center;
+  align-content: center;
 }

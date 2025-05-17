@@ -9,28 +9,35 @@ const config = {
       cols: ["Объект ", "Код ", "Представление ", "Компонент ", "Элемент "],
       val: "Значение"
     }
-  };
+};
 
   //TODO:
   //сделать undo redo через два циклических стека. undo - старое во второй стек, в первом указатель - 1, redo - старое в первый стек, второй указатель + 1; Если ячейка не найдена - ничего не делать   
   
-  let traceabilityData = [];
+let traceabilityData = [];
 
-    let transposed = false;
+let transposed = false;
 
-    let GlobalLogin;
-    let GlobalAllObjects;
-    let GlobalForMatricies;
-    let GlobalViews;
-    let viewToCode = {};
-    let localSaveData = [];
-    let complianceMatricies;
-    let navigationData;
-    let matrixName;
-    let userData;
-    const matrixNameInput = document.getElementById("matrixName");
+let GlobalLogin;
+let GlobalAllObjects;
+let GlobalForMatricies;
+let GlobalViews;
+let viewToCode = {};
+let localSaveData = [];
+let complianceMatricies;
+let navigationData;
+let matrixName;
+let userData;
+const matrixNameInput = document.getElementById("matrixName");
 
-   document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
+const undoArray = [];
+const redoArray = [];
+let undoIndex = 0;
+let redoIndex = 0;
+const undoRedoMaxSize = 30;
+
+
+document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
     let login = sessionStorage.getItem("GlobalLogin");
     if(login === '' || login === null) {
         e.preventDefault();
@@ -169,17 +176,17 @@ const config = {
     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
     createTraceabilityButtons("compliance-matrix.html");
     setupHeaderButtons();
-   });
+});
 
-   function level1Pressed(button){
+function level1Pressed(button){
     button.addEventListener("click", (e) => {
         let obj = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = obj;
         updateTable();
     })
-   }
+}
 
-   function level2Pressed(button){
+function level2Pressed(button){
     button.addEventListener("click", (e) => {
         let view = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = view
@@ -217,17 +224,17 @@ const config = {
         div.parentElement.children[1].textContent = "Все";
         updateTable();
     })
-   }
+}
 
-   function level3Pressed(button){
+function level3Pressed(button){
     button.addEventListener("click", (e) => {
         let obj = button.textContent;
         e.target.parentElement.parentElement.children[1].textContent = obj;
         updateTable();
     })
-   }
+}
 
-   function updateTable(transponded = false) {
+function updateTable(transponded = false) {
     const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent;
     const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent;
     const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1].textContent;
@@ -425,7 +432,7 @@ function makeTheTablePretty() {
       }, 50);
 }
 
-  function transformData(data) {
+function transformData(data) {
   return data.map(item => {
       const newItem = {};
       config.dataFields.rows.forEach((field, i) => newItem[config.displayNames.rows[i]] = item[field]);
@@ -433,12 +440,12 @@ function makeTheTablePretty() {
       newItem[config.displayNames.val] = item[config.dataFields.val];
       return newItem;
     });
-  }
+}
   
   // текущая клетка
-  var activePivotInfo = null;
+let activePivotInfo = null;
   
-  $(document).on('click', function(event) {
+$(document).on('click', function(event) {
       if (activePivotInfo && !$(event.target).closest('.pvtVal').length) {
           let td = activePivotInfo.input.parentElement;
           saveAndRemoveInput(activePivotInfo.input);
@@ -475,25 +482,31 @@ function makeTheTablePretty() {
             newValue = 9.9
           }
           newValue.toFixed(1);
-          
-  
-          traceabilityData[index].value = newValue;
+          if(traceabilityData[index][config.dataFields.val]!== newValue){
+            undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+            //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+            undoIndex+=1;
+            if(undoIndex === undoRedoMaxSize){
+                undoIndex = 0;
+            }
+          }
+          traceabilityData[index][config.dataFields.val] = newValue;
   
           calculateRow(td);
           calculateColumn();
           
           activePivotInfo = null;
       }
-  });
+});
   
-  $(document).on('keyup', function(e) {
+$(document).on('keyup', function(e) {
       if (e.key === "Escape" && activePivotInfo) {
           $(activePivotInfo.input).remove();
           activePivotInfo = null;
       }
-  });
+});
   
-  function saveAndRemoveInput(inputElement) {
+function saveAndRemoveInput(inputElement) {
       var cell = $(inputElement).parent();
       var value = $(inputElement).val();
       
@@ -513,9 +526,9 @@ function makeTheTablePretty() {
           cell.html(roundedValue.toFixed(1));
       }
       $(inputElement).remove();
-  }
+}
   
-  function makeMatrix(transposed) {
+function makeMatrix(transposed) {
     $("#pivotContainer")
           .empty()
           .removeData()
@@ -551,33 +564,32 @@ function makeTheTablePretty() {
                       input.focus().select().keypress(function (event) {
                           var keycode = (event.keyCode ? event.keyCode : event.which);
                           if (keycode == '13') {
-                              var newValue = parseFloat(input.val());
+                            var newValue = parseFloat(input.val());
                               
-                              // Validate input
-                              if (isNaN(newValue) || newValue < 0) {
-                                newValue = 0;
-                              }
-                              if (newValue > 9.9) {
-                                newValue = 9.9;
-                              }
                               
-                              // Round to one decimal place
-                              newValue = Math.round(newValue * 10) / 10;
+                            if (isNaN(newValue) || newValue < 0) {
+                              newValue = 0;
+                            }
+                            if (newValue > 9.9) {
+                              newValue = 9.9;
+                            }
                               
-                              $(e.srcElement).attr("data-value", newValue);
-                              $(e.srcElement).html(newValue.toFixed(1)); // Format with 1 decimal
-                              $(e.srcElement).remove('input');
+                            newValue = Math.round(newValue * 10) / 10;
+                              
+                            $(e.srcElement).attr("data-value", newValue);
+                            $(e.srcElement).html(newValue.toFixed(1)); 
+                            $(e.srcElement).remove('input');
   
-                              let index = traceabilityData.findIndex(row => {
+                            let index = traceabilityData.findIndex(row => {
                                 let flag = true;
                                 for(let i = 0; i < config.dataFields.rows.length; ++i) {
-                                  flag = row[config.dataFields.rows[i]] === filters[config.displayNames.rows[i]];
-                                  if(!flag){
-                                    break;
-                                  }
+                                    flag = row[config.dataFields.rows[i]] === filters[config.displayNames.rows[i]];
+                                    if(!flag){
+                                        break;
+                                    }
                                 }
   
-                                if(flag){
+                                 if(flag){
                                   for(let i = 0; i < config.dataFields.cols.length; ++i) {
                                     flag = row[config.dataFields.cols[i]] === filters[config.displayNames.cols[i]];
                                     if(!flag){
@@ -590,10 +602,18 @@ function makeTheTablePretty() {
   
                               });
   
-                              traceabilityData[index].value = newValue;
-              
-                              calculateRow(e.srcElement);
-                              calculateColumn();
+                            if(traceabilityData[index][config.dataFields.val] !== newValue){
+                                undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+                                //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+                                undoIndex+=1;
+                                if(undoIndex === undoRedoMaxSize){
+                                    undoIndex = 0;
+                                }
+                            }
+                            traceabilityData[index][config.dataFields.val] = newValue;
+            
+                            calculateRow(e.srcElement);
+                            calculateColumn();
                           }
                       });
                   }
@@ -611,24 +631,23 @@ function makeTheTablePretty() {
           }
       });
       
-  };
+};
   
 
   
-  $(document).keydown(function (e) {
-    if (e.key === "Escape") { // escape key maps to keycode `27`
+$(document).keydown(function (e) {
+    if (e.key === "Escape") { 
         $(".pvtTable tr td").each(function (i, v) {
             if ($(v).children().length > 0) {
-                // Restore original value
                 var originalValue = $(v).attr("data-value") || "0.0";
                 $(v).html(parseFloat(originalValue).toFixed(1));
                 $(v).remove('input');
             }
         });
     }
-  });
+});
   
-  function calculateRow(td) {
+function calculateRow(td) {
     $tr = $(td).parent();
     $lastTd = $tr.find("td:last");
     var sum = 0;
@@ -645,9 +664,9 @@ function makeTheTablePretty() {
       $lastTd.removeClass('zero-total');
     }
   
-  }
+}
   
-  function calculateColumn() {
+function calculateColumn() {
   
     $(".pvtTable tbody tr:first td").each(function (index, val) {
         var total = 0;
@@ -682,9 +701,9 @@ function makeTheTablePretty() {
     } else {
       $grandTotalCell.removeClass('zero-total');
     }
-  }
+}
   
-  document.getElementById("transposeBtn").addEventListener("click", (e) => {
+document.getElementById("transposeBtn").addEventListener("click", (e) => {
     const obj1 = document.getElementsByClassName(`level1 left`)[0].parentElement.children[1];
     const obj2 = document.getElementsByClassName(`level1 right`)[0].parentElement.children[1];
     const view1 = document.getElementsByClassName(`level2 left`)[0].parentElement.children[1];
@@ -736,9 +755,9 @@ function makeTheTablePretty() {
     updateTable(true);
     makeTheTablePretty();
     
-  });
+});
 
-  document.getElementById("backBtn").addEventListener("click", (e) => {
+document.getElementById("backBtn").addEventListener("click", (e) => {
     e.preventDefault();
     if(traceabilityData.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
@@ -1030,3 +1049,86 @@ function showToast(message, type) {
     
     setTimeout(() => toast.remove(), 3000);
 }
+
+function undoFunction(){
+    let tempIndex;
+    if(undoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = undoIndex - 1
+    }
+    if(undoArray[tempIndex] === null || undoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[undoArray[tempIndex].index];
+    keys = Array.from(Object.keys(undoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== undoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("прeдыдущей измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    redoArray[redoIndex] = {index: undoArray[tempIndex].index, cell: structuredClone(traceabilityData[undoArray[tempIndex].index])};
+    //console.log(redoArray, redoArray[redoIndex]["cell"].value, "redo")
+    redoIndex += 1;
+    if(redoIndex === undoRedoMaxSize){
+        redoIndex = 0;
+    }
+    traceabilityData[undoArray[tempIndex].index][config.dataFields.val] = undoArray[tempIndex]["cell"][config.dataFields.val];
+    undoIndex = tempIndex;
+    undoArray[undoIndex] = undefined;
+    makeMatrix(transposed);
+    makeTheTablePretty();
+}
+
+document.getElementById("undoBtn").addEventListener("click", undoFunction);
+
+function redoFunction(){
+    let tempIndex;
+    if(redoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = redoIndex - 1
+    }
+    if(redoArray[tempIndex] === null || redoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[redoArray[tempIndex].index];
+    keys = Array.from(Object.keys(redoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== redoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    undoArray[undoIndex] = {index: redoArray[tempIndex].index, cell: structuredClone(traceabilityData[redoArray[tempIndex].index])};
+    //console.log(undoArray, undoArray[undoIndex]["cell"].value, "undo")
+    undoIndex+=1;
+    if(undoIndex === undoRedoMaxSize){
+        undoIndex = 0;
+    }
+    traceabilityData[redoArray[tempIndex].index][config.dataFields.val] = redoArray[tempIndex]["cell"][config.dataFields.val];
+    redoIndex = tempIndex;
+    redoArray[redoIndex] = undefined;
+    makeMatrix(transposed);
+    makeTheTablePretty();
+}
+
+document.getElementById("redoBtn").addEventListener("click", redoFunction);
+
+document.addEventListener('keydown', function(event) {
+    if(event.ctrlKey){
+        if(event.key === 'z'){
+            undoFunction();
+        }
+        else if(event.key === 'y'){
+            redoFunction();
+        }
+    }
+});

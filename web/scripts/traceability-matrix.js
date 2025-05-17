@@ -40,6 +40,13 @@ let matrixName;
 let userData;
 const matrixNameInput = document.getElementById("matrixName");
 
+
+const undoArray = [];
+const redoArray = [];
+let undoIndex = 0;
+let redoIndex = 0;
+const undoRedoMaxSize = 30;
+
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
      let login = sessionStorage.getItem("GlobalLogin");
      if(login === '' || login === null) {
@@ -936,8 +943,15 @@ $(document).on('click', function(event) {
           }
           newValue.toFixed(1);
           
-  
-          traceabilityData[index].value = newValue;
+          if(traceabilityData[index][config.dataFields.val]!== newValue){
+            undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+            //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+            undoIndex+=1;
+            if(undoIndex === undoRedoMaxSize){
+                undoIndex = 0;
+            }
+          }
+          traceabilityData[index][config.dataFields.val] = newValue;
   
           calculateRow(td);
           calculateColumn();
@@ -1087,11 +1101,18 @@ function makeMatrix(leftIsRequrement, rightIsRequrement, typeOfLeft = false, typ
                                 return flag;
   
                               });
-  
-                              traceabilityData[index].value = newValue;
+                            if(traceabilityData[index][config.dataFields.val] !== newValue){
+                                undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+                                //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+                                undoIndex+=1;
+                                if(undoIndex === undoRedoMaxSize){
+                                    undoIndex = 0;
+                                }
+                            }
+                            traceabilityData[index][config.dataFields.val] = newValue;
               
-                              calculateRow(e.srcElement);
-                              calculateColumn();
+                            calculateRow(e.srcElement);
+                            calculateColumn();
                           }
                       });
                   }
@@ -1556,3 +1577,86 @@ function showToast(message, type) {
     
     setTimeout(() => toast.remove(), 3000);
 }
+
+function undoFunction(){
+    let tempIndex;
+    if(undoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = undoIndex - 1
+    }
+    if(undoArray[tempIndex] === null || undoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[undoArray[tempIndex].index];
+    keys = Array.from(Object.keys(undoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== undoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("прeдыдущей измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    redoArray[redoIndex] = {index: undoArray[tempIndex].index, cell: structuredClone(traceabilityData[undoArray[tempIndex].index])};
+    //console.log(redoArray, redoArray[redoIndex]["cell"].value, "redo")
+    redoIndex += 1;
+    if(redoIndex === undoRedoMaxSize){
+        redoIndex = 0;
+    }
+    traceabilityData[undoArray[tempIndex].index][config.dataFields.val] = undoArray[tempIndex]["cell"][config.dataFields.val];
+    undoIndex = tempIndex;
+    undoArray[undoIndex] = undefined;
+    Update();
+    makeTheTablePretty();
+}
+
+document.getElementById("undoBtn").addEventListener("click", undoFunction);
+
+function redoFunction(){
+    let tempIndex;
+    if(redoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = redoIndex - 1
+    }
+    if(redoArray[tempIndex] === null || redoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[redoArray[tempIndex].index];
+    keys = Array.from(Object.keys(redoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== redoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    undoArray[undoIndex] = {index: redoArray[tempIndex].index, cell: structuredClone(traceabilityData[redoArray[tempIndex].index])};
+    //console.log(undoArray, undoArray[undoIndex]["cell"].value, "undo")
+    undoIndex+=1;
+    if(undoIndex === undoRedoMaxSize){
+        undoIndex = 0;
+    }
+    traceabilityData[redoArray[tempIndex].index][config.dataFields.val] = redoArray[tempIndex]["cell"][config.dataFields.val];
+    redoIndex = tempIndex;
+    redoArray[redoIndex] = undefined;
+    Update();
+    makeTheTablePretty();
+}
+
+document.getElementById("redoBtn").addEventListener("click", redoFunction);
+
+document.addEventListener('keydown', function(event) {
+    if(event.ctrlKey){
+        if(event.key === 'z'){
+            undoFunction();
+        }
+        else if(event.key === 'y'){
+            redoFunction();
+        }
+    }
+});
