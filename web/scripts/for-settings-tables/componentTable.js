@@ -37,6 +37,69 @@ function createComponentGridOptions(representationId, componentId) {
             hasFlag: true,
             flagEnabled: false,
             requiresFile: true
+        },
+        {
+            id: 'column1',
+            element: 'Название столбца 1',
+            fieldType: 'Строка',
+            size: '50',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column2',
+            element: 'Название столбца 2',
+            fieldType: 'Строка',
+            size: '50',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column3',
+            element: 'Название столбца 3',
+            fieldType: 'Строка',
+            size: '50',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column4',
+            element: 'Название столбца 4',
+            fieldType: 'Строка',
+            size: '50',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column5',
+            element: 'Название столбца 5',
+            fieldType: 'Число',
+            size: 'NNN,N',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column6',
+            element: 'Название столбца 6',
+            fieldType: 'Число',
+            size: 'NNN,N',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
+        },
+        {
+            id: 'column7',
+            element: 'Название столбца 7',
+            fieldType: 'Строка',
+            size: '50',
+            hasFlag: true,
+            flagEnabled: false,
+            requiresFile: false
         }
     ];
 
@@ -58,8 +121,10 @@ function createComponentGridOptions(representationId, componentId) {
             },
             {
                 field: "fieldType",
-                headerName: "Тип поля",
-                flex: 1
+                headerName: "название",
+                flex: 1,
+                editable: true
+                
             },
             {
                 field: "size",
@@ -83,6 +148,7 @@ function initializeComponentTables() {
             const containerId = `componentGrid_${repId}_${compId}`;
             const container = document.createElement('div');
             container.id = containerId;
+            container.style.height = "50vh";
             container.className = 'gridContainer hiddenContainer';
             container.innerHTML = `
                 <h2>Компонент ${repId}.${compId}</h2>

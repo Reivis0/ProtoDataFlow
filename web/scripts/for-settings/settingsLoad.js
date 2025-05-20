@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', (e) => {
     let gridOptions1 = createGridOptions1(enabeledPagesData);
     gridApi1 = agGrid.createGrid(document.querySelector("#myGrid1"), gridOptions1);
     setupButtons1();
-    
-    showSettingsOfEnabled(enabeledPagesData);
+    setTimeout( () => {
+        showSettingsOfEnabled(enabeledPagesData);
+    }, 100)
 
     const exitButton = document.createElement('button');
     exitButton.textContent = "Выйти";
@@ -27,6 +28,10 @@ document.addEventListener('DOMContentLoaded', (e) => {
     exitButton.style.zIndex = "5";
     
     document.body.appendChild(exitButton);
+
+    setTimeout( () => {
+        showNotification("настройки в процессе создания", false)
+    }, 1000)
 });
 
 

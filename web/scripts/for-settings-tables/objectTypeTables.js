@@ -181,7 +181,11 @@ function initializeObjectTypeTables() {
         container.id = containerId;
         container.className = 'gridContainer hiddenContainer';
         container.innerHTML = `
-            <h2>Тип Объекта ${i}</h2>
+            <h2 style="margin: 10px 0">Тип Объекта ${i}</h2>
+            <div style="margin: 10px auto; width: 40%;">
+                <label for="name${i}">Название: </label>
+                <input type="text" id="name${i}" name="name${i}" required placeholder="Название типа ${i}">
+            </div>
             <div class="ag-grid-toolbar">
                 <button class="toolbar-btn" id="insertRowsBtn_${i}" title="Вставить строки">
                     <span class="material-icons">add</span>
@@ -204,7 +208,7 @@ function initializeObjectTypeTables() {
                     <span class="material-icons">save_alt</span>
                 </button>
             </div>
-            <div id="myGrid_${i}" class="ag-theme-alpine" style="height: calc(100% - 50px);"></div>
+            <div id="myGrid_${i}" class="ag-theme-alpine" style="height: calc(100% - 100px);"></div>
         `;
         
         document.getElementById('generalContainer').appendChild(container);

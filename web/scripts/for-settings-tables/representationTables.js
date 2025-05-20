@@ -106,8 +106,9 @@ function createRepresentationGridOptions(representationId) {
             },
             {
                 field: "fieldType",
-                headerName: "Тип поля",
-                flex: 1
+                headerName: "Название",
+                flex: 1,
+                editable: true
             },
             {
                 field: "size",
@@ -190,14 +191,14 @@ function initializeRepresentationTables() {
         container.id = containerId;
         container.className = 'gridContainer hiddenContainer';
         container.innerHTML = `
-            <h2>Настройки формы Представление ${i}</h2>
+            <h2 style="margin: 10px 0">Настройки формы Представление ${i}</h2>
             <div class="ag-grid-toolbar">
                 <button class="toolbar-btn" id="saveRepresentationBtn_${i}" title="Сохранить">
                     <span class="material-icons">save</span>
                 </button>
             </div>
             <div id="representationGrid_${i}" class="ag-theme-alpine representation-grid" 
-                 style="height: 500px; width: 100%;"></div>
+                 style="height: 600px; width: 100%;"></div>
         `;
         
         document.getElementById('generalContainer').appendChild(container);

@@ -164,9 +164,9 @@ if (data.enabledPages && data.enabledPages.length > 0) {
     return message;
     }
 }
-// Функция для отображения настроек
-function showSettingsOfEnabled(enabledData) {
-    const divSettings2 = document.getElementById("gridContainer2");
-    let display = enabledData && enabledData[0] && enabledData[0].enabled ? "block" : "none";
-    if (divSettings2) divSettings2.style.display = display;
-}
+// // Функция для отображения настроек
+// function showSettingsOfEnabled(enabledData) {
+//     const divSettings2 = document.getElementById("gridContainer2");
+//     let display = enabledData && enabledData[0] && enabledData[0].enabled ? "block" : "none";
+//     if (divSettings2) divSettings2.style.display = display;
+// }
