@@ -136,6 +136,7 @@ function createComponentGridOptions(representationId, componentId) {
             sortable: true,
             filter: true
         },
+        undoRedoCellEditing: true,
         getRowId: params => params.data.id
     };
 
@@ -153,6 +154,13 @@ function initializeComponentTables() {
             container.innerHTML = `
                 <h2>Компонент ${repId}.${compId}</h2>
                 <div class="ag-grid-toolbar">
+                 <button class="toolbar-btn" id="undoBtnComp_${repId}_${compId}" title="Отменить (Ctrl+Z)">
+                     <span class="material-icons">undo</span>
+                 </button>
+                 <button class="toolbar-btn" id="redoBtnComp_${repId}_${compId}" title="Вернуть (Ctrl+Y)">
+                     <span class="material-icons">redo</span>
+                 </button>
+                 <div style="flex-grow: 1"></div>
                     <button class="toolbar-btn" id="saveComponentBtn_${repId}_${compId}">
                         <span class="material-icons">save</span>
                     </button>
@@ -170,8 +178,60 @@ function initializeComponentTables() {
                 gridOptions
             );
             componentGrids[`${repId}_${compId}`] = gridApi;
+            
+            setupComponentTableButtons(repId, compId);
+            setupComponentToRepresentationSync(repId, compId); // Add this line
         }
     }
+}
+
+function setupComponentTableButtons(repId, compId) {
+    const saveBtn = document.getElementById(`saveComponentBtn_${repId}_${compId}`);
+    if (!saveBtn) return;
+    
+    saveBtn.addEventListener('click', () => {
+        // const allData = [];
+        // representationGrids[representationId].forEachNode(node => allData.push(node.data));
+        // console.log('Сохранение данных представления:', allData);
+        // showNotification(`Настройки Представления ${representationId} сохранены`);
+        saveSettingsToStorage();
+        // Здесь можно добавить отправку данных на сервер
+        // saveRepresentationData(representationId, allData);
+    });
+
+    const gridApi = componentGrids[`${repId}_${compId}`];
+    document.getElementById(`undoBtnComp_${repId}_${compId}`).addEventListener("click", () => {
+        gridApi.undoCellEditing();
+        //console.log(`${repId}_${compId}`)
+    });
+    
+    document.getElementById(`redoBtnComp_${repId}_${compId}`).addEventListener("click", () => {
+        gridApi.redoCellEditing();
+    });
+}
+
+// Add this to componentTable.js
+function setupComponentToRepresentationSync(representationId, componentId) {
+    const gridApi = componentGrids[`${representationId}_${componentId}`];
+    
+    gridApi.addEventListener('cellValueChanged', (params) => {
+        // Check if we're editing name or code in component table
+        if (params.data.id === 'component_name' || params.data.id === 'component_code') {
+            const representationGrid = representationGrids[representationId];
+            if (!representationGrid) return;
+            
+            // Find corresponding row in representation table
+            const rowId = params.data.id === 'component_name' ? 
+                `component_${componentId}_name` : `component_${componentId}_code`;
+            
+            representationGrid.forEachNode(node => {
+                if (node.data.id === rowId) {
+                    node.data.fieldType = params.value;
+                    representationGrid.applyTransaction({ update: [node.data] });
+                }
+            });
+        }
+    });
 }
 
 // Инициализация при загрузке

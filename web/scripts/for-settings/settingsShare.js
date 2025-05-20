@@ -170,3 +170,268 @@ if (data.enabledPages && data.enabledPages.length > 0) {
 //     let display = enabledData && enabledData[0] && enabledData[0].enabled ? "block" : "none";
 //     if (divSettings2) divSettings2.style.display = display;
 // }
+
+// Add this to settingsShare.js
+function generateFirstJSON() {
+    const enabledData = getEnabledPagesData();
+    const componentsData = getComponentsData();
+    const representationsData = getRepresentationsData();
+    
+    const result = {
+        ObjectTypes: [],
+        Views: []
+    };
+
+    // Process ObjectTypes - get names from input fields
+    for (let i = 1; i <= 12; i++) {
+        const nameInput = document.getElementById(`name${i}`);
+        const nameValue = nameInput ? nameInput.value : null;
+        
+        // Check if we have corresponding enabled data
+        const enabledStatus = enabledData[i-1] ? enabledData[i-1].enabled : false;
+        
+        result.ObjectTypes.push({
+            name: nameValue || null,
+            enabled: enabledStatus
+        });
+    }
+
+    // Process Views and Components
+    for (let viewNum = 1; viewNum <= 7; viewNum++) {
+        const viewIndex = 12 + (viewNum - 1) * 6;
+        if (viewIndex >= enabledData.length) break;
+
+        // Get view name from representation table (fieldType column)
+        let viewName = null;
+        let viewCode = null;
+        if (representationsData[`representation_${viewNum}`]) {
+            const viewData = representationsData[`representation_${viewNum}`];
+            const formNameRow = viewData.find(row => row.id === 'form_name');
+            if (formNameRow) {
+                viewName = formNameRow.fieldType || null;
+            }
+            const formCodeRow = viewData.find(row => row.id === 'form_code');
+            if (formCodeRow) {
+                viewCode = formCodeRow.fieldType || null;
+            }
+        }
+
+        const view = {
+            name: viewName,
+            code: viewCode, // Added code field
+            enabled: enabledData[viewIndex].enabled,
+            Components: []
+        };
+
+        // Add components (5 per view)
+        for (let compNum = 1; compNum <= 5; compNum++) {
+            const compIndex = viewIndex + compNum;
+            if (compIndex >= enabledData.length) break;
+
+            const componentKey = `${viewNum}_${compNum}`;
+            const componentData = componentsData[`component_${componentKey}`] || [];
+            
+            // Get component name and code from component table
+            let componentName = null;
+            let componentCode = null;
+            const nameRow = componentData.find(row => row.id === 'component_name');
+            if (nameRow) {
+                componentName = nameRow.fieldType || null;
+            }
+            const codeRow = componentData.find(row => row.id === 'component_code');
+            if (codeRow) {
+                componentCode = codeRow.fieldType || null;
+            }
+
+            // Find headers data from component table
+            const headers = componentData
+                .filter(item => item.id.includes('column'))
+                .map(item => ({
+                    header: item.element,
+                    type: item.fieldType.toLowerCase().includes('число') ? 'num' : 'string',
+                    maxSmth: item.size === '-' ? undefined : parseInt(item.size),
+                    name: item.id,
+                    enabled: item.flagEnabled
+                }));
+
+            view.Components.push({
+                name: componentName,
+                enabled: enabledData[compIndex].enabled,
+                code: componentCode,
+                headers: headers.length > 0 ? headers : undefined
+            });
+        }
+
+        result.Views.push(view);
+    }
+
+    return result;
+}
+
+function saveSettingsToStorage() {
+    try {
+        // Get data from all tables
+        const allData = {
+            enabledPages: getEnabledPagesData(),
+            objectTypes: {},
+            representations: {},
+            components: {},
+            objectTypeNames: {}
+        };
+
+        // Save object type names from input fields
+        for (let i = 1; i <= 12; i++) {
+            const nameInput = document.getElementById(`name${i}`);
+            if (nameInput) {
+                allData.objectTypeNames[`objectType_${i}`] = nameInput.value;
+            }
+        }
+
+        // Save object type tables data
+        for (let i = 1; i <= 12; i++) {
+            if (window.objectTypeGrids && window.objectTypeGrids[i]) {
+                const tableData = [];
+                window.objectTypeGrids[i].forEachNode(node => tableData.push(node.data));
+                allData.objectTypes[`objectType_${i}`] = tableData;
+            }
+        }
+
+        // Save representation tables data
+        for (let i = 1; i <= 7; i++) {
+            if (window.representationGrids && window.representationGrids[i]) {
+                const tableData = [];
+                window.representationGrids[i].forEachNode(node => tableData.push(node.data));
+                allData.representations[`representation_${i}`] = tableData;
+            }
+        }
+
+        // Save component tables data
+        for (let repId = 1; repId <= 7; repId++) {
+            for (let compId = 1; compId <= 5; compId++) {
+                const key = `${repId}_${compId}`;
+                if (window.componentGrids && window.componentGrids[key]) {
+                    const tableData = [];
+                    window.componentGrids[key].forEachNode(node => tableData.push(node.data));
+                    allData.components[`component_${key}`] = tableData;
+                }
+            }
+        }
+
+        // Save to sessionStorage
+        sessionStorage.setItem('allSettingsData', JSON.stringify(allData));
+        console.log('All settings data saved to sessionStorage');
+        showNotification('Настройки сохранены', 'success');
+        
+        // Also save the JSON formats if needed
+        sessionStorage.setItem('JSONSettings1', JSON.stringify(generateFirstJSON()));
+        sessionStorage.setItem('JSONSettings2', JSON.stringify(generateSecondJSON()));
+        sessionStorage.setItem('JSONSettings3', JSON.stringify(generateThirdJSON()));
+        
+        return true;
+    } catch (e) {
+        console.error('Ошибка сохранения в sessionStorage:', e);
+        showNotification('Ошибка сохранения настроек', 'error');
+        return false;
+    }
+}
+
+function loadSettingsFromStorage() {
+    try {
+        return {
+            json1: JSON.parse(sessionStorage.getItem('JSONSettings1') || 'null'),
+            json2: JSON.parse(sessionStorage.getItem('JSONSettings2') || 'null'),
+            json3: JSON.parse(sessionStorage.getItem('JSONSettings3') || 'null')
+        };
+    } catch (e) {
+        console.error('Ошибка загрузки из sessionStorage:', e);
+        return { json1: null, json2: null, json3: null };
+    }
+}
+
+function getAllTableData() {
+    const allData = {
+        enabledPages: getEnabledPagesData(),
+        objectTypes: {},
+        representations: {},
+        components: {},
+        objectTypeNames: {}
+    };
+
+    // Get object type names from input fields
+    for (let i = 1; i <= 12; i++) {
+        const nameInput = document.getElementById(`name${i}`);
+        if (nameInput) {
+            allData.objectTypeNames[`objectType_${i}`] = nameInput.value;
+        }
+    }
+
+    // Get object type tables data
+    for (let i = 1; i <= 12; i++) {
+        if (window.objectTypeGrids && window.objectTypeGrids[i]) {
+            const tableData = [];
+            window.objectTypeGrids[i].forEachNode(node => tableData.push(node.data));
+            allData.objectTypes[`objectType_${i}`] = tableData;
+        }
+    }
+
+    // Get representation tables data
+    for (let i = 1; i <= 7; i++) {
+        if (window.representationGrids && window.representationGrids[i]) {
+            const tableData = [];
+            window.representationGrids[i].forEachNode(node => tableData.push(node.data));
+            allData.representations[`representation_${i}`] = tableData;
+        }
+    }
+
+    // Get component tables data
+    for (let repId = 1; repId <= 7; repId++) {
+        for (let compId = 1; compId <= 5; compId++) {
+            const key = `${repId}_${compId}`;
+            if (window.componentGrids && window.componentGrids[key]) {
+                const tableData = [];
+                window.componentGrids[key].forEachNode(node => tableData.push(node.data));
+                allData.components[`component_${key}`] = tableData;
+            }
+        }
+    }
+
+    return allData;
+}
+
+function restoreTableData(savedData) {
+    if (!savedData) return false;
+
+    // Restore object type names
+    for (let i = 1; i <= 12; i++) {
+        const nameInput = document.getElementById(`name${i}`);
+        if (nameInput && savedData.objectTypeNames && savedData.objectTypeNames[`objectType_${i}`]) {
+            nameInput.value = savedData.objectTypeNames[`objectType_${i}`];
+        }
+    }
+
+    // Restore object type tables data
+    for (let i = 1; i <= 12; i++) {
+        if (window.objectTypeGrids && window.objectTypeGrids[i] && savedData.objectTypes && savedData.objectTypes[`objectType_${i}`]) {
+            window.objectTypeGrids[i].setGridOption('rowData', savedData.objectTypes[`objectType_${i}`]);
+        }
+    }
+
+    // Restore representation tables data
+    for (let i = 1; i <= 7; i++) {
+        if (window.representationGrids && window.representationGrids[i] && savedData.representations && savedData.representations[`representation_${i}`]) {
+            window.representationGrids[i].setGridOption('rowData', savedData.representations[`representation_${i}`]);
+        }
+    }
+
+    // Restore component tables data
+    for (let repId = 1; repId <= 7; repId++) {
+        for (let compId = 1; compId <= 5; compId++) {
+            const key = `${repId}_${compId}`;
+            if (window.componentGrids && window.componentGrids[key] && savedData.components && savedData.components[`component_${key}`]) {
+                window.componentGrids[key].setGridOption('rowData', savedData.components[`component_${key}`]);
+            }
+        }
+    }
+
+    return true;
+}
