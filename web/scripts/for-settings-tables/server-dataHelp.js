@@ -136,9 +136,9 @@ function generateThirdJSON() {
             const compCodeRow = componentTableData.find(row => row.id === 'component_code');
                         // Find headers data from component table
             const headers = componentTableData
-                .filter(item => item.id.includes('column') && item.flagEnabled)
+                .filter(item => item.id.includes('column'))
                 .map(item => ({
-                    header: item.element,
+                    header: item.fieldType,
                     type: item.fieldType.toLowerCase().includes('число') ? 'num' : 'string',
                     maxSmth: item.size === '-' ? undefined : parseInt(item.size),
                     name: item.id,

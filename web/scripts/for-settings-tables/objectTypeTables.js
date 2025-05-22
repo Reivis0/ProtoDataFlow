@@ -363,25 +363,78 @@ function generateSecondJSON() {
         // Only include if name exists
         if (objectName) {
             result.push({
-                Object: objectName,
-                Type: i
+                name: objectName,
+                num: i
             });
         }
         else{
             result.push({
-                Object: `Тип ${i}`,
-                Type: i
+                name: `Тип ${i}`,
+                num: i
             });
         }
     }
     
-    // // Add null type example if we have any objects
-    // if (result.length > 0) {
-    //     result.push({
-    //         Object: result[0].Object + "_copy",
-    //         Type: null
-    //     });
-    // }
+    //временно
+    temp = {};
+    temp.data = [];
+    temp.Objects = [];
+    temp.Types = result;
+    temp.information = {
+        "code": "QWE-3",
+        "name": "Перечень моделируемых объектов",
+        "Settings": [
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": false,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":true
+            }
+
+        ]
+    };
     
-    return result;
+    return temp;
 }

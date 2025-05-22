@@ -288,7 +288,7 @@ function createGridOptions(data, flag) {
                 }
                 else{
                     const typeNums = Object.keys(typesDictionary);
-                    console.log(typeNums, typesDictionary);
+                    //console.log(typeNums, typesDictionary);
                     for(let i = 0; i < typeNums.length; ++i) {
                         if(typesDictionary[typeNums[i]] === type){
                             loadPMButton.disabled = !enabledButtons[typeNums[i] - 1].PM;
@@ -423,6 +423,21 @@ function localSave(flag = true){
     gridApi.forEachNode(node => allData.push(node.data));
     allData = allData.filter(row => !(row.Object === null || row.Object === "" || row.Object === undefined));
     localSaveData = JSON.parse(JSON.stringify(allData));
+    localSaveData.forEach(row => {
+        if(row.Type === "(нет)"|| row.Type === ""){
+            row.Type = null;
+        }
+        else{
+            const typeNums = Object.keys(typesDictionary);
+            for(let i = 0; i < typeNums.length; ++i) {
+                if(typesDictionary[typeNums[i]] === row.Type){
+                    row.Type = typeNums[i];
+                    break
+                }
+            }
+
+        }
+    });
     sessionStorage.setItem("all-objects", JSON.stringify(allData));
     console.log('Saving all:', allData);
     if(flag){
@@ -658,7 +673,7 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         }
     });
     // console.log(curDat, localSaveData);
-    //console.log(curDat, localSaveData)
+    // console.log(curDat, localSaveData)
     if(curDat.length !== localSaveData.length){
         if(confirm(`Сохранить данные в табице?`)){
             localSave();

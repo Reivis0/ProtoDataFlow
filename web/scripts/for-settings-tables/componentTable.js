@@ -6,18 +6,19 @@ function createComponentGridOptions(representationId, componentId) {
         {
             id: 'component_code',
             element: 'Код компонента',
-            fieldType: 'Строка',
+            fieldType: `Comp-${representationId}.${componentId}`,
             size: '3',
             hasFlag: true,
-            flagEnabled: false
+            flagEnabled: true
         },
         {
             id: 'component_name',
             element: 'Название компонента',
-            fieldType: 'Строка',
+            fieldType: `Компонент ${representationId}.${componentId}`,
             size: '100',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
+            requiresFile: true, //Вика, почему оно влияет на флаг редактируемости???????
             flagNote: 'НР' // Не редактируется
         },
         {
@@ -41,64 +42,64 @@ function createComponentGridOptions(representationId, componentId) {
         {
             id: 'column1',
             element: 'Название столбца 1',
-            fieldType: 'Строка',
-            size: '50',
+            fieldType: 'столбец 1',
+            size: 50,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column2',
             element: 'Название столбца 2',
-            fieldType: 'Строка',
-            size: '50',
+            fieldType: 'столбец 2',
+            size: 50,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column3',
             element: 'Название столбца 3',
-            fieldType: 'Строка',
-            size: '50',
+            fieldType: 'столбец 3',
+            size: 50,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column4',
             element: 'Название столбца 4',
-            fieldType: 'Строка',
-            size: '50',
+            fieldType: 'столбец 4',
+            size: 50,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column5',
             element: 'Название столбца 5',
-            fieldType: 'Число',
-            size: 'NNN,N',
+            fieldType: 'столбец 5',
+            size: 10000,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column6',
             element: 'Название столбца 6',
-            fieldType: 'Число',
-            size: 'NNN,N',
+            fieldType: 'столбец 6',
+            size: 10000,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'column7',
             element: 'Название столбца 7',
-            fieldType: 'Строка',
-            size: '50',
+            fieldType: 'столбец 7',
+            size: 50,
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         }
     ];
@@ -112,7 +113,8 @@ function createComponentGridOptions(representationId, componentId) {
                 width: 50,
                 cellRenderer: flagRenderer,
                 cellRendererParams: { representationId, componentId },
-                editable: false
+                editable: false,
+                filter: false
             },
             {
                 field: "element",
@@ -129,7 +131,8 @@ function createComponentGridOptions(representationId, componentId) {
             {
                 field: "size",
                 headerName: "Размер",
-                width: 100
+                width: 100,
+                editable: true
             }
         ],
         defaultColDef: {
@@ -149,7 +152,7 @@ function initializeComponentTables() {
             const containerId = `componentGrid_${repId}_${compId}`;
             const container = document.createElement('div');
             container.id = containerId;
-            container.style.height = "50vh";
+            container.style.height = "60vh";
             container.className = 'gridContainer hiddenContainer';
             container.innerHTML = `
                 <h2>Компонент ${repId}.${compId}</h2>
@@ -167,7 +170,7 @@ function initializeComponentTables() {
                 </div>
                 <div id="componentGridInner_${repId}_${compId}" 
                     class="ag-theme-alpine" 
-                    style="height: 400px; width: 100%;"></div>
+                    style="height: 90%; width: 100%;"></div>
             `;
 
             document.getElementById('generalContainer').appendChild(container);

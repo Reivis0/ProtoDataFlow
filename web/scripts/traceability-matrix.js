@@ -135,32 +135,33 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
          for(let j = 0; j < 3; ++j){
             level1Pressed(level1s[i].children[j]);
         }
+        CreateLevel2Buttons(level1s[i].parentElement.children[1]);
      }
-     const views = Array.from(Object.keys(forMatricies[allObjects[0]].views))
+     //const views = Array.from(Object.keys(forMatricies[allObjects[0]].views))
      level2s =  Array.from(document.getElementsByClassName("level2"));
      //console.log(views);
-     for(let i = 0; i < level2s.length; ++i){
-         views.forEach(source => {
-             const newSource = document.createElement("button");
-             newSource.classList.add("dropdownBtn");
-             newSource.classList.add(i === 0 ? "left" : "right");
-             newSource.textContent = source;
-             level2Pressed(newSource);
-             level2s[i].appendChild(newSource);
-         });
-         level2s[i].children[0].textContent = "Все"
-         level2Pressed(level2s[i].children[0])
-     }
+    //  for(let i = 0; i < level2s.length; ++i){
+    //      views.forEach(source => {
+    //          const newSource = document.createElement("button");
+    //          newSource.classList.add("dropdownBtn");
+    //          newSource.classList.add(i === 0 ? "left" : "right");
+    //          newSource.textContent = source;
+    //          level2Pressed(newSource);
+    //          level2s[i].appendChild(newSource);
+    //      });
+    //      level2s[i].children[0].textContent = "Все"
+    //      level2Pressed(level2s[i].children[0])
+    //  }
      console.log(forMatricies);
      GlobalViews = JSON.parse(sessionStorage.getItem("Views"));
      GlobalViews.forEach(view => {
          viewToCode[view.header] = view.code;
      })
 
-     level3s =  Array.from(document.getElementsByClassName("level3"));
-     for(let i = 0; i < level2s.length; ++i){
-        level3Pressed(level3s[i].children[0]);
-    }
+    //  level3s =  Array.from(document.getElementsByClassName("level3"));
+    //  for(let i = 0; i < level2s.length; ++i){
+    //     level3Pressed(level3s[i].children[0]);
+    // }
     Update();
        
     const dropDowns = Array.from(document.getElementsByClassName("dropdown"));

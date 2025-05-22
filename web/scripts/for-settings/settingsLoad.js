@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', (e) => {
     document.body.appendChild(exitButton);
     addJSONDownloadButtons();
 
-    // setTimeout( () => {
-    //     showNotification("настройки в процессе создания", false)
-    // }, 1000)
+    setTimeout( () => {
+        showNotification("настройки в процессе создания", false)
+    }, 1000)
 
     //   setTimeout( () => {
     //     // console.log("First JSON:", JSON.stringify(generateFirstJSON(), null, 2));
@@ -61,6 +61,16 @@ document.addEventListener('DOMContentLoaded', (e) => {
     //     console.log("Second JSON:", generateSecondJSON());
     //     console.log("Third JSON:", generateThirdJSON());   
     // }, 5000)
+    setTimeout( () => {
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div style="height: 120px; width: 100px;" id="adwada">
+                <p></p>
+                <!-- Гениальное решение чтобы кнопки не закрывали таблицу в самом низу -->
+            </div>
+            `
+        document.getElementById('generalContainer').appendChild(container);
+    }, 1000)
 
 });
 
@@ -81,10 +91,20 @@ function addJSONDownloadButtons() {
         btn.style.zIndex = "5";
         btn.addEventListener('click', () => {
         saveSettingsToStorage()
-        console.log("First JSON:", generateFirstJSON());
-        console.log("Second JSON:", generateSecondJSON());
-        console.log("Third JSON:", generateThirdJSON());
+        const meesage = {settings1:  generateFirstJSON(), settings2: generateSecondJSON(), settings3: generateThirdJSON()}
+        console.log("First JSON:", meesage.settings1);
+        console.log("Second JSON:",  meesage.settings2);
+        console.log("Third JSON:",  meesage.settings3);
         //на сервер  
+        fetch(ServerAdress+'/settings/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: meesage
+            })
+        })
         });
         return btn;
     };
@@ -265,7 +285,7 @@ async function initializeAllTablesWithSavedData() {
             showSettingsOfEnabled(savedData.enabledPages);
         }
         
-        console.log('All tables initialized with saved data');
+        //console.log('All tables initialized with saved data');
         return true;
     } catch (error) {
         console.error('Error initializing tables with saved data:', error);

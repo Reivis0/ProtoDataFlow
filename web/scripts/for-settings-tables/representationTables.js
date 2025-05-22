@@ -8,19 +8,19 @@ function createRepresentationGridOptions(representationId) {
         {
             id: 'form_code',
             element: 'Код формы',
-            fieldType: 'Строка',
+            fieldType: `View-${representationId}`,
             size: '3',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'form_name',
             element: 'Название формы',
-            fieldType: 'Строка',
+            fieldType: `Представление ${representationId}`,
             size: '100',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: true,
             flagNote: 'НР'
         },
@@ -46,19 +46,19 @@ function createRepresentationGridOptions(representationId) {
         ...Array.from({length: 5}, (_, i) => ({
             id: `component_${i+1}_code`,
             element: `Строка ${i+1} Код компонента`,
-            fieldType: 'Строка',
+            fieldType: `Comp-${representationId}.${i+1}`,
             size: '3',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         })),
         ...Array.from({length: 5}, (_, i) => ({
             id: `component_${i+1}_name`,
             element: `Строка ${i+1} Название компонента`,
-            fieldType: 'Строка',
+            fieldType: `Компонент ${representationId}.${i+1}`,
             size: '100',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: true,
             flagNote: 'НР'
         })),

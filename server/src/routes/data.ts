@@ -126,13 +126,18 @@ data.patch('/:login', async ({body, set, params }) => {
                 message: 'User not found'
             }
         }
-        await prisma.userData.update({
-            where: {user_key_unique: {key:body.old, userId: currentUser.id}}, data: {key: body.new}
+
+        return prisma.$transaction(async tx => {
+
+            await tx.userData.update({
+                where: {user_key_unique: {key:body.old, userId: currentUser.id}}, data: {key: body.new}
+                })
+            
+            return tx.user.update({
+                where: { login: params.login }, data:{ modelsMetadata: body.updatedInfo}
             })
-        
-        await prisma.user.update({
-            where: { login: params.login }, data:{ modelsMetadata: body.updatedInfo}
         })
+
 
         } catch (error) {
         console.error('Error creating data:', error)

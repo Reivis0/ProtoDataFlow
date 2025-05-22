@@ -148,7 +148,7 @@ function convertToEnabled(jsonobj) { //переделать сообщение �
     return data
 }
 
-function tempData() {
+function tempData() { //потом вырезать, для старта без базы
     let message = {
         "ObjectTypes": [
           {
@@ -157,17 +157,17 @@ function tempData() {
           },
           {
             "name": null,
+            "enabled" : false
+          },
+    
+          {
+            "name": null,
+            "enabled" : false
+          },
+    
+          {
+            "name": null,
             "enabled" : true
-          },
-    
-          {
-            "name": null,
-            "enabled" : false
-          },
-    
-          {
-            "name": null,
-            "enabled" : false
           },
     
           {
@@ -207,7 +207,7 @@ function tempData() {
     
           {
             "name": null,
-            "enabled" : false
+            "enabled" : true
           }
     
         ],
@@ -218,7 +218,12 @@ function tempData() {
             "Components": [
                 {
                   "name": null,
-                  "enabled" : false
+                  "enabled" : true
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : true
                 },
     
                 {
@@ -233,12 +238,38 @@ function tempData() {
     
                 {
                   "name": null,
-                  "enabled" : true
+                  "enabled" : false
+                }
+    
+              ]
+          },
+          {
+            "name": null,
+            "enabled": true,
+            "Components": [
+                {
+                  "name": null,
+                  "enabled" : false
                 },
     
                 {
                   "name": null,
                   "enabled" : false
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : false
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : true
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : true
                 }
     
               ]
@@ -316,38 +347,7 @@ function tempData() {
     
                 {
                   "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
                   "enabled" : true
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
-                }
-    
-              ]
-          },
-          {
-            "name": null,
-            "enabled": false,
-            "Components": [
-                {
-                  "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
                 },
     
                 {

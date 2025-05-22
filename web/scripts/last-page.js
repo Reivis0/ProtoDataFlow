@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
                         ["ID", "Флаг", "Столбик 1", "Столбик 2", "Столбик 3", "Столбик 4", "Столбик 5", "Столбик 6", "Столбик 7"]
                     ], { origin: "C3" });
                     
-                    XLSX.utils.sheet_add_json(ws6, forMatricies[object]["specific-requrements"], {
+                    XLSX.utils.sheet_add_json(ws6, forMatricies[object]["views"][view][component], {
                         skipHeader: true,
                         origin: "C4"
                     });
