@@ -52,17 +52,35 @@ form.addEventListener('submit', (e) => {
             })
             .then(model => {
                 localStorage.setItem(`data-model`, JSON.stringify(model));
+
+                fetch(ServerAdress+'/settings/')
+                            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(settings => {
+
+                sessionStorage.setItem('JSONSettings1', JSON.stringify(settings.settings1));
+                sessionStorage.setItem('JSONSettings2', JSON.stringify(settings.settings2));
+                sessionStorage.setItem('JSONSettings3', JSON.stringify(settings.settings3));
+
+                if(!answer.agreement) {
+                    window.location.assign("rules-of-usage.html");
+                }
+                else{
+                    window.location.assign("information-about-model.html");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });  
-
-            if(!answer.agreement) {
-                window.location.assign("rules-of-usage.html");
-            }
-            else{
-               window.location.assign("information-about-model.html");
-            }
         }
         else {
             error_div.innerText = "Доступ закончился";

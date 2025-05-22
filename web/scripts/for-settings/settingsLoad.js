@@ -1,16 +1,33 @@
+window.enabledData = window.enabledData || null;
+
 document.addEventListener('DOMContentLoaded', (e) => {
     let status = sessionStorage.getItem('GlobalLevel');
     if(status !== 'superAdmin') {
         e.preventDefault();
         window.location.href = "log-in.html";
     }
+    const settings = loadSettingsFromStorage();
+    //const settings = loadSettingsFromStorage();
 
-    enabeledPagesData = convertToEnabled(tempData());
-    let gridOptions1 = createGridOptions1(enabeledPagesData);
+    if (settings.json1) {
+        // If we have saved settings, use them
+        enabledData = convertToEnabled(settings.json1);
+    } else {
+        // Otherwise use mock data
+        enabledData = convertToEnabled(tempData());
+    }
+
+    // initializeObjectTypeTables();
+    // initializeRepresentationTables();
+    // initializeComponentTables();
+
+    let gridOptions1 = createGridOptions1(enabledData);
     gridApi1 = agGrid.createGrid(document.querySelector("#myGrid1"), gridOptions1);
+    setTimeout( () => {
+        initializeAllTablesWithSavedData();
+        showSettingsOfEnabled(enabledData);
+    }, 100)
     setupButtons1();
-    
-    showSettingsOfEnabled(enabeledPagesData);
 
     const exitButton = document.createElement('button');
     exitButton.textContent = "Выйти";
@@ -22,12 +39,80 @@ document.addEventListener('DOMContentLoaded', (e) => {
     exitButton.style.position = 'fixed';
     exitButton.style.bottom = '20px';
     exitButton.style.right = '20px';
-    exitButton.style.width = "9%";
+    exitButton.style.width = "160px";
     exitButton.style.backgroundColor = "white";
     exitButton.style.zIndex = "5";
     
+        // Initialize all tables with saved data
+    
+
     document.body.appendChild(exitButton);
+    addJSONDownloadButtons();
+
+    setTimeout( () => {
+        showNotification("настройки в процессе создания", false)
+    }, 1000)
+
+    //   setTimeout( () => {
+    //     // console.log("First JSON:", JSON.stringify(generateFirstJSON(), null, 2));
+    //     // console.log("Second JSON:", JSON.stringify(generateSecondJSON(), null, 2));
+    //     // console.log("Third JSON:", JSON.stringify(generateThirdJSON(), null, 2));   
+    //     console.log("First JSON:", generateFirstJSON());
+    //     console.log("Second JSON:", generateSecondJSON());
+    //     console.log("Third JSON:", generateThirdJSON());   
+    // }, 5000)
+    setTimeout( () => {
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div style="height: 120px; width: 100px;" id="adwada">
+                <p></p>
+                <!-- Гениальное решение чтобы кнопки не закрывали таблицу в самом низу -->
+            </div>
+            `
+        document.getElementById('generalContainer').appendChild(container);
+    }, 1000)
+
 });
+
+function addJSONDownloadButtons() {
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.bottom = '70px';
+    container.style.right = '20px';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '10px';
+    container.style.zIndex = "5";
+    
+    const createButton = (label) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.width = "160px";
+        btn.style.zIndex = "5";
+        btn.addEventListener('click', () => {
+        saveSettingsToStorage()
+        const meesage = {settings1:  generateFirstJSON(), settings2: generateSecondJSON(), settings3: generateThirdJSON()}
+        console.log("First JSON:", meesage.settings1);
+        console.log("Second JSON:",  meesage.settings2);
+        console.log("Third JSON:",  meesage.settings3);
+        //на сервер  
+        fetch(ServerAdress+'/settings/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: meesage
+            })
+        })
+        });
+        return btn;
+    };
+    
+    container.appendChild(createButton('Применить настройки', generateFirstJSON));
+    
+    document.body.appendChild(container);
+}
 
 
 // function showSettingsOfEnabled(enabledData) {
@@ -139,6 +224,165 @@ function showSettingsOfEnabled(enabledData) {
             
             if (compContainer) {
                 compContainer.style.display = (isViewEnabled && isCompEnabled) ? 'block' : 'none';
+            }
+        }
+    }
+}
+
+async function initializeAllTablesWithSavedData() {
+    try {
+        // Load saved settings from storage
+        const savedData = JSON.parse(sessionStorage.getItem('allSettingsData')) || {};
+        
+        // Initialize all tables if they don't exist
+        if (!window.objectTypeGrids) {
+            initializeObjectTypeTables();
+        }
+        if (!window.representationGrids) {
+            initializeRepresentationTables();
+        }
+        if (!window.componentGrids) {
+            initializeComponentTables();
+        }
+        
+        // Wait for tables to be initialized
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Restore object type names
+        for (let i = 1; i <= 12; i++) {
+            const nameInput = document.getElementById(`name${i}`);
+            if (nameInput && savedData.objectTypeNames && savedData.objectTypeNames[`objectType_${i}`]) {
+                nameInput.value = savedData.objectTypeNames[`objectType_${i}`];
+            }
+        }
+        
+        // Restore object type tables data
+        for (let i = 1; i <= 12; i++) {
+            if (window.objectTypeGrids && window.objectTypeGrids[i] && savedData.objectTypes && savedData.objectTypes[`objectType_${i}`]) {
+                window.objectTypeGrids[i].setGridOption('rowData', savedData.objectTypes[`objectType_${i}`]);
+            }
+        }
+        
+        // Restore representation tables data
+        for (let i = 1; i <= 7; i++) {
+            if (window.representationGrids && window.representationGrids[i] && savedData.representations && savedData.representations[`representation_${i}`]) {
+                window.representationGrids[i].setGridOption('rowData', savedData.representations[`representation_${i}`]);
+            }
+        }
+        
+        // Restore component tables data
+        for (let repId = 1; repId <= 7; repId++) {
+            for (let compId = 1; compId <= 5; compId++) {
+                const key = `${repId}_${compId}`;
+                if (window.componentGrids && window.componentGrids[key] && savedData.components && savedData.components[`component_${key}`]) {
+                    window.componentGrids[key].setGridOption('rowData', savedData.components[`component_${key}`]);
+                }
+            }
+        }
+        
+        // Update visibility based on enabled pages
+        if (savedData.enabledPages) {
+            showSettingsOfEnabled(savedData.enabledPages);
+        }
+        
+        //console.log('All tables initialized with saved data');
+        return true;
+    } catch (error) {
+        console.error('Error initializing tables with saved data:', error);
+        return false;
+    }
+}
+
+function updateTablesFromSavedData(savedData) {
+    if (!savedData) return;
+    
+    // Update Object Types names from input fields
+    for (let i = 0; i < Math.min(12, savedData.ObjectTypes.length); i++) {
+        const nameInput = document.getElementById(`name${i+1}`);
+        if (nameInput && savedData.ObjectTypes[i].name) {
+            nameInput.value = savedData.ObjectTypes[i].name;
+        }
+    }
+    
+    // Update Representations and Components
+    for (let viewNum = 0; viewNum < Math.min(7, savedData.Views.length); viewNum++) {
+        const view = savedData.Views[viewNum];
+        const representationId = viewNum + 1;
+        
+        // Update representation table
+        if (representationGrids[representationId]) {
+            const repGrid = representationGrids[representationId];
+            const repData = [];
+            repGrid.forEachNode(node => repData.push(node.data));
+            
+            // Update form name and code
+            const formNameRow = repData.find(row => row.id === 'form_name');
+            const formCodeRow = repData.find(row => row.id === 'form_code');
+            
+            if (formNameRow && view.name) {
+                formNameRow.fieldType = view.name;
+                repGrid.applyTransaction({ update: [formNameRow] });
+            }
+            
+            if (formCodeRow && view.code) {
+                formCodeRow.fieldType = view.code;
+                repGrid.applyTransaction({ update: [formCodeRow] });
+            }
+            
+            // Update components in representation table
+            for (let compNum = 0; compNum < Math.min(5, view.Components.length); compNum++) {
+                const component = view.Components[compNum];
+                const compNameRow = repData.find(row => row.id === `component_${compNum+1}_name`);
+                const compCodeRow = repData.find(row => row.id === `component_${compNum+1}_code`);
+                
+                if (compNameRow && component.name) {
+                    compNameRow.fieldType = component.name;
+                    repGrid.applyTransaction({ update: [compNameRow] });
+                }
+                
+                if (compCodeRow && component.code) {
+                    compCodeRow.fieldType = component.code;
+                    repGrid.applyTransaction({ update: [compCodeRow] });
+                }
+            }
+        }
+        
+        // Update component tables
+        for (let compNum = 0; compNum < Math.min(5, view.Components.length); compNum++) {
+            const component = view.Components[compNum];
+            const componentKey = `${representationId}_${compNum+1}`;
+            
+            if (componentGrids[componentKey]) {
+                const compGrid = componentGrids[componentKey];
+                const compData = [];
+                compGrid.forEachNode(node => compData.push(node.data));
+                
+                // Update component name and code
+                const nameRow = compData.find(row => row.id === 'component_name');
+                const codeRow = compData.find(row => row.id === 'component_code');
+                
+                if (nameRow && component.name) {
+                    nameRow.fieldType = component.name;
+                    compGrid.applyTransaction({ update: [nameRow] });
+                }
+                
+                if (codeRow && component.code) {
+                    codeRow.fieldType = component.code;
+                    compGrid.applyTransaction({ update: [codeRow] });
+                }
+                
+                // Update headers if they exist
+                if (component.headers) {
+                    component.headers.forEach(header => {
+                        const headerRow = compData.find(row => row.id === header.name);
+                        if (headerRow) {
+                            headerRow.fieldType = header.type === 'num' ? 'Число' : 'Строка';
+                            headerRow.size = header.maxSmth ? header.maxSmth.toString() : '-';
+                            headerRow.flagEnabled = header.enabled;
+                            compGrid.applyTransaction({ update: [headerRow] });
+                        }
+                    });
+                }
             }
         }
     }

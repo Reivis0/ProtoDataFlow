@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     GlobalLogin = login;
     userData = JSON.parse(localStorage.getItem(`data-model`));
-    console.log(userData);
+    //console.log(userData);
+    // const AuserData = JSON.parse(localStorage.getItem(`data-model`));
+    // console.log(AuserData);
     
 
     // Получаем данные с сервера
@@ -69,8 +71,21 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
         document.getElementById("forCentring").style.flexGrow = "0.6";
     }
-    let Views = loadViews();
-    sessionStorage.setItem("Views", JSON.stringify(Views));
+    
+    // const settings3 = JSON.parse(sessionStorage.getItem('JSONSettings3'));
+    // sessionStorage.setItem("Views", JSON.stringify(settings3));
+
+    // const ViewAndCompDict = {};
+    // settings3.forEach(view => {
+    //     ViewAndCompDict[view.header] = {num: view.number, components: {}}
+    //     view.components.forEach(comp => {
+    //         ViewAndCompDict[view.header]["components"][comp.name] = comp.number
+    //     });
+    // });
+
+    // sessionStorage.setItem("ViewAndCompDict", JSON.stringify(ViewAndCompDict))
+
+    sessionStorage.setItem("Views", sessionStorage.getItem('JSONSettings3'));
     // Инициализация
     const dataFromServer = receiveData();
     configureForm(labels, inputs, dataFromServer);    
@@ -81,6 +96,14 @@ document.addEventListener("DOMContentLoaded", (e) => {
     setupHeaderButtons();
     initModelLoader();
     loadSavedData(inputs);
+    sessionStorage.setItem("objTypes", sessionStorage.getItem('JSONSettings2'));
+    // sessionStorage.setItem("exel_traceability", JSON.stringify({}));
+    // sessionStorage.setItem("exel_compliance", JSON.stringify({}));
+    console.log(JSON.parse(sessionStorage.getItem('JSONSettings1')));
+    console.log(JSON.parse(sessionStorage.getItem('JSONSettings2')));
+    // console.log(JSON.parse(sessionStorage.getItem("objTypes")));
+    console.log(JSON.parse(sessionStorage.getItem('JSONSettings3')));
+    // console.log(JSON.parse(sessionStorage.getItem("Views")));
 
 });
 // Основные функции
@@ -302,7 +325,7 @@ function loadModel(modelId, flag = true) {
     //console.log(sessionStorage.getItem("currentModel"));
     //console.log(model)
     if(flag){
-        console.log(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
+        //console.log(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
         fetch(ServerAdress+`/data/${GlobalLogin ? GlobalLogin : sessionStorage.getItem("GlobalLogin")}/${model.name}`)
         .then(response => {
             if (!response.ok) {
@@ -312,6 +335,56 @@ function loadModel(modelId, flag = true) {
         })
         .then(answer => {
             userData = answer;
+            localStorage.setItem(`data-model`, JSON.stringify(userData));
+
+            // let temp1 = userData["data_awdfasda"]["forMatricies"]["Объект 1"]["views"];
+            // temp1["Представление 1"] = temp1["Представление_1"]
+            // temp1["Представление 2"] = temp1["Представление_2"]
+            // temp1["Представление 5"] = temp1["Представление_5"]
+            // delete temp1["Представление_1"]
+            // delete temp1["Представление_2"]
+            // delete temp1["Представление_5"]
+
+            // temp1["Представление 1"]["Компонент 1.1"] = temp1["Представление 1"]["Компонент_1"]
+            // temp1["Представление 1"]["Компонент 1.2"] = temp1["Представление 1"]["Компонент_2"]
+            // temp1["Представление 1"]["Компонент 1.3"] = temp1["Представление 1"]["Компонент_3"]
+            // temp1["Представление 2"]["Компонент 2.4"] = temp1["Представление 2"]["Компонент_4"]
+            // temp1["Представление 2"]["Компонент 2.5"] = temp1["Представление 2"]["Компонент_5"]
+            // temp1["Представление 5"]["Компонент 5.1"] = temp1["Представление 5"]["Компонент_6"]
+            // temp1["Представление 5"]["Компонент 5.2"] = temp1["Представление 5"]["Компонент_7"]
+
+            // delete temp1["Представление 1"]["Компонент_1"]
+            // delete temp1["Представление 1"]["Компонент_2"]
+            // delete temp1["Представление 1"]["Компонент_3"]
+            // delete temp1["Представление 2"]["Компонент_4"]
+            // delete temp1["Представление 2"]["Компонент_5"]
+            // delete temp1["Представление 5"]["Компонент_6"]
+            // delete temp1["Представление 5"]["Компонент_7"]
+
+            // let temp2 = userData["data_awdfasda"]["forMatricies"]["Объект 2"]["views"];
+            // temp2["Представление 1"] = temp2["Представление_1"]
+            // temp2["Представление 2"] = temp2["Представление_2"]
+            // temp2["Представление 5"] = temp2["Представление_5"]
+            // delete temp2["Представление_1"]
+            // delete temp2["Представление_2"]
+            // delete temp2["Представление_5"]
+
+            // temp2["Представление 1"]["Компонент 1.1"] = temp2["Представление 1"]["Компонент_1"]
+            // temp2["Представление 1"]["Компонент 1.2"] = temp2["Представление 1"]["Компонент_2"]
+            // temp2["Представление 1"]["Компонент 1.3"] = temp2["Представление 1"]["Компонент_3"]
+            // temp2["Представление 2"]["Компонент 2.4"] = temp2["Представление 2"]["Компонент_4"]
+            // temp2["Представление 2"]["Компонент 2.5"] = temp2["Представление 2"]["Компонент_5"]
+            // temp2["Представление 5"]["Компонент 5.1"] = temp2["Представление 5"]["Компонент_6"]
+            // temp2["Представление 5"]["Компонент 5.2"] = temp2["Представление 5"]["Компонент_7"]
+
+            // delete temp2["Представление 1"]["Компонент_1"]
+            // delete temp2["Представление 1"]["Компонент_2"]
+            // delete temp2["Представление 1"]["Компонент_3"]
+            // delete temp2["Представление 2"]["Компонент_4"]
+            // delete temp2["Представление 2"]["Компонент_5"]
+            // delete temp2["Представление 5"]["Компонент_6"]
+            // delete temp2["Представление 5"]["Компонент_7"]
+            
             sessionStorage.setItem("for-matricies", JSON.stringify(userData["data_awdfasda"]["forMatricies"]));
         
             sessionStorage.setItem("compliance-matricies-data", JSON.stringify(userData["data_awdfasda"]["compliance-matricies-data"]));
@@ -323,6 +396,10 @@ function loadModel(modelId, flag = true) {
             sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
         
             sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+            
+            sessionStorage.setItem("exel_compliance", JSON.stringify(userData["data_awdfasda"]["filesCompl"] ));
+
+            sessionStorage.setItem("exel_traceability", JSON.stringify(userData["data_awdfasda"]["filesTrace"]));  
         
             console.log(userData);
 
@@ -350,6 +427,10 @@ function loadModel(modelId, flag = true) {
         sessionStorage.setItem("initial-data", JSON.stringify(userData["data_awdfasda"]["initial-data"]));
         
         sessionStorage.setItem("initial-requrements-data", JSON.stringify(userData["data_awdfasda"]["initial-requrements"]));
+
+        sessionStorage.setItem("exel_compliance", JSON.stringify(userData["data_awdfasda"]["filesCompl"] ));
+
+        sessionStorage.setItem("exel_traceability", JSON.stringify(userData["data_awdfasda"]["filesTrace"]));        
         
         console.log(userData);
 
@@ -515,7 +596,7 @@ function setupActionButtons(inputs) {
             return;
         }
         navigateWithCheck("initial-data.html");
-        console.log(sessionStorage.getItem('formData1'));
+        console.log(userData);
     });
     
     document.getElementById('toServerBtn').addEventListener('click', () => {
@@ -552,15 +633,15 @@ function hasUnsavedChanges(inputs) {
     }
 }
 
-function setupHeaderButtons() {
-    document.getElementById("What2do").addEventListener("click", () => {
-        showToast("Раздел помощи будет реализован позже", "info");
-    });
+// function setupHeaderButtons() {
+//     document.getElementById("What2do").addEventListener("click", () => {
+//         showToast("Раздел помощи будет реализован позже", "info");
+//     });
     
-    document.getElementById("How2do").addEventListener("click", () => {
-        showToast("Раздел помощи будет реализован позже", "info");
-    });
-}
+//     document.getElementById("How2do").addEventListener("click", () => {
+//         showToast("Раздел помощи будет реализован позже", "info");
+//     });
+// }
 
 function setupDropUpMenus() {
     const dropUps = document.querySelectorAll('.dropUp');
@@ -706,12 +787,12 @@ function loadViews(){
             "components": [
                 {
                     "number": 1,
-                    "name": "Компонент_6",
+                    "name": "Компонент_1",
                     "code": "fafa-58_"
                 },
                 {
                     "number": 2,
-                    "name": "Компонент_7",
+                    "name": "Компонент_2",
                     "code": "fafa-59"
                 },
             ]
@@ -721,4 +802,99 @@ function loadViews(){
     ]
 
     return views;
+}
+
+function loadTypes(){
+    let data = {
+        "Objects": ["dfdsfsd", "dfsdfsdf", "aaeo,l", "asdadad", " gsdgsgsgfg", "hhtrd"],
+        "Types": [
+            {
+                "num" : 1,
+                "name": "Type1"
+            },
+            {
+                "num" : 4,
+                "name": "Type4"
+            },
+            {
+                "num" : 12,
+                "name": "Type12"
+            },
+        ],
+        "data" : [
+            {
+                "Object": "dfdsfsd",
+                "Type": 4
+            },
+            {
+                "Object": "dfsdfsdf",
+                "Type": null
+            },
+            {
+                "Object": "hhtrd",
+                "Type": 1
+            },
+            {
+                "Object": "aaeo,l",
+                "Type": 12
+            }
+        ],
+        "information":{
+        "code": "QWE-3",
+        "name": "Перечень моделируемых объектов",
+        "Settings": [
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": false,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":false
+            },
+            {
+                "PM": true,
+                "example":true
+            }
+
+        ]
+    }
+    }
+
+    return data;
 }

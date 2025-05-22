@@ -8,19 +8,19 @@ function createRepresentationGridOptions(representationId) {
         {
             id: 'form_code',
             element: 'Код формы',
-            fieldType: 'Строка',
+            fieldType: `View-${representationId}`,
             size: '3',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         },
         {
             id: 'form_name',
             element: 'Название формы',
-            fieldType: 'Строка',
+            fieldType: `Представление ${representationId}`,
             size: '100',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: true,
             flagNote: 'НР'
         },
@@ -46,19 +46,19 @@ function createRepresentationGridOptions(representationId) {
         ...Array.from({length: 5}, (_, i) => ({
             id: `component_${i+1}_code`,
             element: `Строка ${i+1} Код компонента`,
-            fieldType: 'Строка',
+            fieldType: `Comp-${representationId}.${i+1}`,
             size: '3',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: false
         })),
         ...Array.from({length: 5}, (_, i) => ({
             id: `component_${i+1}_name`,
             element: `Строка ${i+1} Название компонента`,
-            fieldType: 'Строка',
+            fieldType: `Компонент ${representationId}.${i+1}`,
             size: '100',
             hasFlag: true,
-            flagEnabled: false,
+            flagEnabled: true,
             requiresFile: true,
             flagNote: 'НР'
         })),
@@ -106,8 +106,9 @@ function createRepresentationGridOptions(representationId) {
             },
             {
                 field: "fieldType",
-                headerName: "Тип поля",
-                flex: 1
+                headerName: "Название",
+                flex: 1,
+                editable: true
             },
             {
                 field: "size",
@@ -127,6 +128,7 @@ function createRepresentationGridOptions(representationId) {
         rowSelection: 'multiple',
         suppressRowClickSelection: true,
         headerHeight: 40,
+        undoRedoCellEditing: true,
         rowHeight: 40
     };
 
@@ -190,14 +192,21 @@ function initializeRepresentationTables() {
         container.id = containerId;
         container.className = 'gridContainer hiddenContainer';
         container.innerHTML = `
-            <h2>Настройки формы Представление ${i}</h2>
+            <h2 style="margin: 10px 0">Настройки формы Представление ${i}</h2>
             <div class="ag-grid-toolbar">
+                 <button class="toolbar-btn" id="undoBtnRep_${i}" title="Отменить (Ctrl+Z)">
+                     <span class="material-icons">undo</span>
+                 </button>
+                 <button class="toolbar-btn" id="redoBtnRep_${i}" title="Вернуть (Ctrl+Y)">
+                     <span class="material-icons">redo</span>
+                 </button>
+                 <div style="flex-grow: 1"></div>
                 <button class="toolbar-btn" id="saveRepresentationBtn_${i}" title="Сохранить">
                     <span class="material-icons">save</span>
                 </button>
             </div>
             <div id="representationGrid_${i}" class="ag-theme-alpine representation-grid" 
-                 style="height: 500px; width: 100%;"></div>
+                 style="height: 600px; width: 100%;"></div>
         `;
         
         document.getElementById('generalContainer').appendChild(container);
@@ -207,6 +216,7 @@ function initializeRepresentationTables() {
         representationGrids[i] = gridApi;
         
         setupRepresentationTableButtons(i);
+        setupRepresentationToComponentSync(i); // Add this line
     }
 }
 
@@ -216,13 +226,23 @@ function setupRepresentationTableButtons(representationId) {
     if (!saveBtn) return;
     
     saveBtn.addEventListener('click', () => {
-        const allData = [];
-        representationGrids[representationId].forEachNode(node => allData.push(node.data));
-        console.log('Сохранение данных представления:', allData);
-        showNotification(`Настройки Представления ${representationId} сохранены`);
-        
+        // const allData = [];
+        // representationGrids[representationId].forEachNode(node => allData.push(node.data));
+        // console.log('Сохранение данных представления:', allData);
+        // showNotification(`Настройки Представления ${representationId} сохранены`);
+        saveSettingsToStorage();
         // Здесь можно добавить отправку данных на сервер
         // saveRepresentationData(representationId, allData);
+    });
+    
+    const gridApi = representationGrids[representationId];
+    document.getElementById(`undoBtnRep_${representationId}`).addEventListener("click", () => {
+        gridApi.undoCellEditing();
+        console.log(`${representationId}`)
+    });
+    
+    document.getElementById(`redoBtnRep_${representationId}`).addEventListener("click", () => {
+        gridApi.redoCellEditing();
     });
 }
 
@@ -239,6 +259,47 @@ window.RepresentationTables = {
         }
     }
 };
+
+// Add this to representationTables.js
+function setupRepresentationToComponentSync(representationId) {
+    const gridApi = representationGrids[representationId];
+    
+    gridApi.addEventListener('cellValueChanged', (params) => {
+        // Check if we're editing a component name or code in representation table
+        if (params.data.id && params.data.id.includes('component_') && 
+            (params.data.id.includes('_name') || params.data.id.includes('_code'))) {
+            
+            // Extract component number from row ID (e.g., "component_1_name" -> 1)
+            const compNum = parseInt(params.data.id.split('_')[1]);
+            
+            // Get the corresponding component table
+            const componentKey = `${representationId}_${compNum}`;
+            const componentGrid = componentGrids[componentKey];
+            
+            if (componentGrid) {
+                // Get all component data
+                const componentData = [];
+                componentGrid.forEachNode(node => componentData.push(node.data));
+                
+                // Update either name or code in component table
+                if (params.data.id.includes('_name')) {
+                    const nameRow = componentData.find(row => row.id === 'component_name');
+                    if (nameRow) {
+                        nameRow.fieldType = params.value;
+                        componentGrid.applyTransaction({ update: [nameRow] });
+                    }
+                } 
+                else if (params.data.id.includes('_code')) {
+                    const codeRow = componentData.find(row => row.id === 'component_code');
+                    if (codeRow) {
+                        codeRow.fieldType = params.value;
+                        componentGrid.applyTransaction({ update: [codeRow] });
+                    }
+                }
+            }
+        }
+    });
+}
 
 // Инициализация при загрузке (если нужно)
  document.addEventListener('DOMContentLoaded', initializeRepresentationTables);

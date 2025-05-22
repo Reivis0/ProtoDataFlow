@@ -60,8 +60,8 @@
   }
   
   .toolbar-btn:hover {
-  background: #ffffff;
-  border: 2px solid rgb(200, 236, 253);
+  background: rgb(242, 252, 254);
+  border: 2px solid rgb(216, 243, 255);
   }
   
   .toolbar-btn .material-icons svg{

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     GlobalLogin = login;
 
     userData = JSON.parse(localStorage.getItem(`data-model`));
-    console.log(userData);
+    //console.log(userData);
 
     const inputs = [
         document.getElementById("concept"),
@@ -208,15 +208,15 @@ function setupActionButtons(inputs) {
 }
 
 // Настройка кнопок header
-function setupHeaderButtons() {
-    // document.getElementById("helpBtn").addEventListener("click", () => {
-    //     showToast("Раздел помощи будет реализован позже", "info");
-    // });
+// function setupHeaderButtons() {
+//     document.getElementById("helpBtn").addEventListener("click", () => {
+//         showToast("Раздел помощи будет реализован позже", "info");
+//     });
     
-    // document.getElementById("settingsBtn").addEventListener("click", () => {
-    //     showToast("Настройки будут доступны в следующей версии", "info");
-    // });
-}
+//     document.getElementById("settingsBtn").addEventListener("click", () => {
+//         showToast("Настройки будут доступны в следующей версии", "info");
+//     });
+// }
 
 // Настройка выпадающих меню
 function setupDropUpMenus() {

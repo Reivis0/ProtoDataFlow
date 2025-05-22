@@ -50,13 +50,23 @@ function createComplianceButtons(currentPage){
         button.textContent = name;
         button.addEventListener("click", (e) => {
             //sessionStorage.setItem("previousName", name);
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
+            const tempStruct = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+            let tempFlag = true;
+            if(tempStruct && tempStruct.flag){
+                tempFlag = false;
+            }
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: tempFlag ? currentPage : tempStruct.page, name: name, flag: true}));
             window.location.href = "compliance-matrix.html";
         });
         div.appendChild(button);
     });
     div.children[0].addEventListener("click", (e) => {
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: null, flag: true}));
+        const tempStruct = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+        let tempFlag = true;
+        if(tempStruct && tempStruct.flag){
+            tempFlag = false;
+        }
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page:  tempFlag ? currentPage : tempStruct.page, name: null, flag: true}));
         window.location.href = "compliance-matrix.html";
     });
 }
@@ -72,15 +82,24 @@ function createTraceabilityButtons(currentPage){
         button.className = "dropUpBtn";
         button.textContent = name;
         button.addEventListener("click", (e) => {
-            //sessionStorage.setItem("previousName", name);
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: name, flag: true}));
+            const tempStruct = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+            let tempFlag = true;
+            if(tempStruct && tempStruct.flag){
+                tempFlag = false;
+            }
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: tempFlag ? currentPage : tempStruct.page, name: name, flag: true}));
             window.location.href = "traceability-matrix.html";
         });
         div.appendChild(button);
     });
     div.children[0].addEventListener("click", (e) => {
         //sessionStorage.setItem("previousName", matrixName);
-        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: currentPage, name: null, flag: true}));
+        const tempStruct = JSON.parse(sessionStorage.getItem("matrix-navigation"));
+        let tempFlag = true;
+        if(tempStruct && tempStruct.flag){
+            tempFlag = false;
+        }
+        sessionStorage.setItem("matrix-navigation", JSON.stringify({count: 0, page: tempFlag ? currentPage : tempStruct.page, name: null, flag: true}));
         window.location.href = "traceability-matrix.html";
     });
 }
@@ -110,6 +129,26 @@ function toServerSave(){
     .catch(error => {
         console.error('Error fetching data:', error);
     });  
+}
+
+function setupHeaderButtons() {
+    document.getElementById("What2do").addEventListener("click", () => {
+        showToast("Раздел помощи будет реализован позже", "info");
+    });
+    
+    document.getElementById("How2do").addEventListener("click", () => {
+        showToast("Раздел помощи будет реализован позже", "info");
+    });
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.style.bottom = '75px';
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }
 
 let ServerAdress = "http://localhost:3000";

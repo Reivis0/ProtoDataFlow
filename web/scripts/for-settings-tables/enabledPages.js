@@ -71,72 +71,84 @@ function setupButtons1() {
 
     // Сохранение всей таблицы
     document.getElementById('saveAllBtn1').addEventListener('click', () => {
-        const allData = [];
-        gridApi1.forEachNode(node => allData.push(node.data));
-        enabeledPagesData = allData;
+        // const allData = [];
+        // gridApi1.forEachNode(node => allData.push(node.data));
+        // enabeledPagesData = allData;
 
-        message = {
-          ObjectTypes: [],
-          Views: []
-        }
+        // message = {
+        //   ObjectTypes: [],
+        //   Views: []
+        // }
 
-        for(let i = 0; i < 12; ++i){ //создание сообщения на сервер
-          message.ObjectTypes.push({name: (allData[i].name === "тип объекта " + (i+1) ? null : allData[i].name), enabled: allData[i].enabled});
-        }
-        for(let i = 0; i < 7; ++i){
-          message.Views.push({name: (allData[12+6*i].name === "Представление " + (i+1) ? null : allData[12+6*i].name), enabled: allData[12+6*i].enabled, Components: []});
-          for(let j = 1; j < 6; ++j) {
-            message.Views[i].Components.push({name: (allData[12+6*i+j].name === "Компонент " + (i+1) + "."+(j) ? null : allData[12+6*i+j].name), enabled: allData[12+6*i+j].enabled})
-          }
-        }
-        console.log('Saving all:', message);
+        // for(let i = 0; i < 12; ++i){ //создание сообщения на сервер
+        //   message.ObjectTypes.push({name: (allData[i].name === "тип объекта " + (i+1) ? null : allData[i].name), enabled: allData[i].enabled});
+        // }
+        // for(let i = 0; i < 7; ++i){
+        //   message.Views.push({name: (allData[12+6*i].name === "Представление " + (i+1) ? null : allData[12+6*i].name), enabled: allData[12+6*i].enabled, Components: []});
+        //   for(let j = 1; j < 6; ++j) {
+        //     message.Views[i].Components.push({name: (allData[12+6*i+j].name === "Компонент " + (i+1) + "."+(j) ? null : allData[12+6*i+j].name), enabled: allData[12+6*i+j].enabled})
+        //   }
+        // }
+        // console.log('Saving all:', message);
         
-        showSettingsOfEnabled(allData);
-        fetch('http://127.0.0.1:8080/api/auth', { 
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(message),
-        }
-        )
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json(); 
-        })
-        .then(answer => {
-            console.log(answer);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });  
-        showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
+        // showSettingsOfEnabled(allData);
+        // fetch('http://127.0.0.1:8080/api/auth', { 
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(message),
+        // }
+        // )
+        // .then(response => {
+        //     if (!response.ok) {
+        //         throw new Error(`HTTP error! status: ${response.status}`);
+        //     }
+        //     return response.json(); 
+        // })
+        // .then(answer => {
+        //     console.log(answer);
+        // })
+        // .catch(error => {
+        //     console.error('Error fetching data:', error);
+        // });  
+        // showNotification(`Сохранено строк: ${allData.length} (таблица доступных страниц)`);
+        saveSettingsToStorage();
     });
 }
 
 function convertToEnabled(jsonobj) { //переделать сообщение от сервера в таблицу
     let data = []
 
-    for(let i = 0; i < jsonobj.ObjectTypes.length; ++i) {
-        data.push({name: !(jsonobj.ObjectTypes[i].name === undefined || jsonobj.ObjectTypes[i].name === null || jsonobj.ObjectTypes[i].name === "") ?
-            jsonobj.ObjectTypes[i].name : "тип объекта " + (i+1), enabled: jsonobj.ObjectTypes[i].enabled });
+    // for(let i = 0; i < jsonobj.ObjectTypes.length; ++i) {
+    //     data.push({name: !(jsonobj.ObjectTypes[i].name === undefined || jsonobj.ObjectTypes[i].name === null || jsonobj.ObjectTypes[i].name === "") ?
+    //         jsonobj.ObjectTypes[i].name : "тип объекта " + (i+1), enabled: jsonobj.ObjectTypes[i].enabled });
+    // }
+
+    // for(let i = 0; i < jsonobj.Views.length; ++i) {
+    //     data.push({name: !(jsonobj.Views[i].name === undefined || jsonobj.Views[i].name === null || jsonobj.Views[i].name === "") ?
+    //         jsonobj.Views[i].name : "Представление " + (i+1), enabled: jsonobj.Views[i].enabled });
+    //     for(let j = 0; j < jsonobj.Views[i].Components.length; ++j) {
+    //         data.push({name: !(jsonobj.Views[i].Components[j].name === undefined | jsonobj.Views[i].Components[j].name === null || jsonobj.Views[i].Components[j].name === "") ?
+    //             jsonobj.Views[i].Components[j].name : "Компонент " + (i+1) + "."+(j+1), enabled: jsonobj.Views[i].Components[j].enabled });
+    //     }
+    // }
+
+     for(let i = 0; i < jsonobj.ObjectTypes.length; ++i) {
+        data.push({name: "тип объекта " + (i+1), enabled: jsonobj.ObjectTypes[i].enabled });
     }
 
     for(let i = 0; i < jsonobj.Views.length; ++i) {
-        data.push({name: !(jsonobj.Views[i].name === undefined || jsonobj.Views[i].name === null || jsonobj.Views[i].name === "") ?
-            jsonobj.Views[i].name : "Представление " + (i+1), enabled: jsonobj.Views[i].enabled });
+        data.push({name: "Представление " + (i+1), enabled: jsonobj.Views[i].enabled });
         for(let j = 0; j < jsonobj.Views[i].Components.length; ++j) {
-            data.push({name: !(jsonobj.Views[i].Components[j].name === undefined | jsonobj.Views[i].Components[j].name === null || jsonobj.Views[i].Components[j].name === "") ?
-                jsonobj.Views[i].Components[j].name : "Компонент " + (i+1) + "."+(j+1), enabled: jsonobj.Views[i].Components[j].enabled });
+            data.push({name: "Компонент " + (i+1) + "."+(j+1), enabled: jsonobj.Views[i].Components[j].enabled });
         }
     }
 
     return data
 }
 
-function tempData() {
+function tempData() { //потом вырезать, для старта без базы
     let message = {
         "ObjectTypes": [
           {
@@ -145,7 +157,7 @@ function tempData() {
           },
           {
             "name": null,
-            "enabled" : true
+            "enabled" : false
           },
     
           {
@@ -165,7 +177,7 @@ function tempData() {
     
           {
             "name": null,
-            "enabled" : true
+            "enabled" : false
           },
     
           {
@@ -175,7 +187,7 @@ function tempData() {
     
           {
             "name": null,
-            "enabled" : true
+            "enabled" : false
           },
     
           {
@@ -185,7 +197,7 @@ function tempData() {
     
           {
             "name": null,
-            "enabled" : true
+            "enabled" : false
           },
             
           {
@@ -206,48 +218,17 @@ function tempData() {
             "Components": [
                 {
                   "name": null,
-                  "enabled" : false
+                  "enabled" : true
                 },
     
                 {
                   "name": null,
-                  "enabled" : false
+                  "enabled" : true
                 },
     
                 {
                   "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
-                }
-    
-              ]
-          },
-          {
-            "name": null,
-            "enabled": true,
-            "Components": [
-                {
-                  "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
-                },
-    
-                {
-                  "name": null,
-                  "enabled" : false
+                  "enabled" : true
                 },
     
                 {
@@ -283,6 +264,37 @@ function tempData() {
     
                 {
                   "name": null,
+                  "enabled" : true
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : true
+                }
+    
+              ]
+          },
+          {
+            "name": null,
+            "enabled": false,
+            "Components": [
+                {
+                  "name": null,
+                  "enabled" : false
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : false
+                },
+    
+                {
+                  "name": null,
+                  "enabled" : false
+                },
+    
+                {
+                  "name": null,
                   "enabled" : false
                 },
     
@@ -295,7 +307,7 @@ function tempData() {
           },
           {
             "name": null,
-            "enabled": true,
+            "enabled": false,
             "Components": [
                 {
                   "name": null,
@@ -330,12 +342,12 @@ function tempData() {
             "Components": [
                 {
                   "name": null,
-                  "enabled" : false
+                  "enabled" : true
                 },
     
                 {
                   "name": null,
-                  "enabled" : false
+                  "enabled" : true
                 },
     
                 {
@@ -357,7 +369,7 @@ function tempData() {
           },
           {
             "name": null,
-            "enabled": true,
+            "enabled": false,
             "Components": [
                 {
                   "name": null,
@@ -388,7 +400,7 @@ function tempData() {
           },
           {
             "name": null,
-            "enabled": true,
+            "enabled": false,
             "Components": [
                 {
                   "name": null,

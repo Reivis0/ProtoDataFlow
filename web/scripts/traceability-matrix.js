@@ -40,6 +40,13 @@ let matrixName;
 let userData;
 const matrixNameInput = document.getElementById("matrixName");
 
+
+const undoArray = [];
+const redoArray = [];
+let undoIndex = 0;
+let redoIndex = 0;
+const undoRedoMaxSize = 30;
+
 document.addEventListener("DOMContentLoaded", (e) => {  //перебрасывать в начало если нет входа
      let login = sessionStorage.getItem("GlobalLogin");
      if(login === '' || login === null) {
@@ -63,6 +70,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
      if(navigationData.name){
         matrixName = navigationData.name;
         traceabilityData = traceabilityMatricies[navigationData.name]["data"];
+        localSaveData = structuredClone(traceabilityData);
         matrixNameInput.value = matrixName;
         document.getElementsByClassName(`level1 left`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][0]
         document.getElementsByClassName(`level1 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][1]
@@ -70,6 +78,38 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
         document.getElementsByClassName(`level2 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][3]
         document.getElementsByClassName(`level3 left`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][4]
         document.getElementsByClassName(`level3 right`)[0].parentElement.children[1].textContent = traceabilityMatricies[navigationData.name]["buttons"][5]
+
+        setTimeout(() => {
+            const table = document.getElementsByClassName("pvtTable")[0];
+        
+            const ws1 = XLSX.utils.aoa_to_sheet(
+                [
+                    [`Матрица трассировки ${matrixName}`],
+                ], { origin: "C1" }
+            );
+                
+            // Add data at A3
+            XLSX.utils.sheet_add_dom(ws1, table, {
+                skipHeader: true,
+                origin: "C3"
+            });
+                
+        
+            ws1['!merges'] = [{s: {r:0, c:2}, e: {r:0, c:8}}];
+    
+            let temp = JSON.parse(sessionStorage.getItem("exel_traceability"));
+    
+    
+            temp[matrixName] = {
+                    data: XLSX.utils.sheet_to_json(ws1, {header: 1}),
+                    merges: ws1['!merges'] || [],
+                    cols: ws1['!cols'] || [],
+                    rows: ws1['!rows'] || []
+                }
+    
+            sessionStorage.setItem("exel_traceability", JSON.stringify(temp));
+
+        }, 400)
      }
     
     forMatricies = JSON.parse(sessionStorage.getItem("for-matricies"));
@@ -95,36 +135,34 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
          for(let j = 0; j < 3; ++j){
             level1Pressed(level1s[i].children[j]);
         }
+        CreateLevel2Buttons(level1s[i].parentElement.children[1]);
      }
-     const views = Array.from(Object.keys(forMatricies[allObjects[0]].views))
+     //const views = Array.from(Object.keys(forMatricies[allObjects[0]].views))
      level2s =  Array.from(document.getElementsByClassName("level2"));
      //console.log(views);
-     for(let i = 0; i < level2s.length; ++i){
-         views.forEach(source => {
-             const newSource = document.createElement("button");
-             newSource.classList.add("dropdownBtn");
-             newSource.classList.add(i === 0 ? "left" : "right");
-             newSource.textContent = source;
-             level2Pressed(newSource);
-             level2s[i].appendChild(newSource);
-         });
-         level2s[i].children[0].textContent = "Все"
-         level2Pressed(level2s[i].children[0])
-     }
+    //  for(let i = 0; i < level2s.length; ++i){
+    //      views.forEach(source => {
+    //          const newSource = document.createElement("button");
+    //          newSource.classList.add("dropdownBtn");
+    //          newSource.classList.add(i === 0 ? "left" : "right");
+    //          newSource.textContent = source;
+    //          level2Pressed(newSource);
+    //          level2s[i].appendChild(newSource);
+    //      });
+    //      level2s[i].children[0].textContent = "Все"
+    //      level2Pressed(level2s[i].children[0])
+    //  }
      console.log(forMatricies);
      GlobalViews = JSON.parse(sessionStorage.getItem("Views"));
      GlobalViews.forEach(view => {
          viewToCode[view.header] = view.code;
      })
 
-     level3s =  Array.from(document.getElementsByClassName("level3"));
-     for(let i = 0; i < level2s.length; ++i){
-        level3Pressed(level3s[i].children[0]);
-    }
+    //  level3s =  Array.from(document.getElementsByClassName("level3"));
+    //  for(let i = 0; i < level2s.length; ++i){
+    //     level3Pressed(level3s[i].children[0]);
+    // }
     Update();
-    makeMatrix(false, false);
- 
-    makeTheTablePretty();
        
     const dropDowns = Array.from(document.getElementsByClassName("dropdown"));
      for (let i = 0; i < dropDowns.length; ++i) {
@@ -142,11 +180,12 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
          });
      }
 
-     setupButtons();
-     document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
-     createComplianceButtons("traceability-matrix.html");
-     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
-     createTraceabilityButtons("traceability-matrix.html");
+    setupButtons();
+    document.getElementById("equalsBtn").disabled = !IsComplianceEnabled();
+    createComplianceButtons("traceability-matrix.html");
+    document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
+    createTraceabilityButtons("traceability-matrix.html");
+    setupHeaderButtons();
 
 });
 
@@ -905,8 +944,15 @@ $(document).on('click', function(event) {
           }
           newValue.toFixed(1);
           
-  
-          traceabilityData[index].value = newValue;
+          if(traceabilityData[index][config.dataFields.val]!== newValue){
+            undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+            //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+            undoIndex+=1;
+            if(undoIndex === undoRedoMaxSize){
+                undoIndex = 0;
+            }
+          }
+          traceabilityData[index][config.dataFields.val] = newValue;
   
           calculateRow(td);
           calculateColumn();
@@ -1056,11 +1102,18 @@ function makeMatrix(leftIsRequrement, rightIsRequrement, typeOfLeft = false, typ
                                 return flag;
   
                               });
-  
-                              traceabilityData[index].value = newValue;
+                            if(traceabilityData[index][config.dataFields.val] !== newValue){
+                                undoArray[undoIndex] = {index: index, cell: structuredClone(traceabilityData[index])};
+                                //console.log(undoArray, undoArray[undoIndex]["cell"][config.dataFields.val], "undo")
+                                undoIndex+=1;
+                                if(undoIndex === undoRedoMaxSize){
+                                    undoIndex = 0;
+                                }
+                            }
+                            traceabilityData[index][config.dataFields.val] = newValue;
               
-                              calculateRow(e.srcElement);
-                              calculateColumn();
+                            calculateRow(e.srcElement);
+                            calculateColumn();
                           }
                       });
                   }
@@ -1229,7 +1282,8 @@ document.getElementById("backBtn").addEventListener("click", (e) => {
             window.location.href = "compliance-matrix.html"; 
         }
         else{
-            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"traceability-matrix.html", name: sessionStorage.getItem("previousName"), flag: false}));
+            const names = Array.from(Object.keys(traceabilityMatricies));
+            sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num - 1, page:"traceability-matrix.html", name: names[num-1], flag: false}));
             window.location.href = "traceability-matrix.html";
         }   
     }
@@ -1282,9 +1336,57 @@ document.getElementById("nextBtn").addEventListener("click", (e) => {
         sessionStorage.setItem("previousName", matrixName);
         //console.log(sessionStorage.getItem("previousName"));
         sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: null, flag: false}));
-        showNotification("Дальше последняя страница");
-        //window.location.href = "last-page.html";
+        //showNotification("Дальше последняя страница");
+        window.location.href = "last-page.html";
     }
+
+    // sessionStorage.setItem("previousName", matrixName);
+    // //console.log(sessionStorage.getItem("previousName"));
+    // sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: null, flag: false}));
+    // showNotification("Дальше последняя страница");
+    // window.location.href = "last-page.html";
+
+    //window.location.href = "all-objects.html";
+});
+
+document.getElementById("finish").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    if(traceabilityData.length !== localSaveData.length){
+        if(confirm(`Сохранить данные в табице?`)){
+            if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                showNotification("Введите название матрицы", false);
+                matrixNameInput.focus();
+                console.log("sdasd")
+                return
+            }
+            localSave();
+        }
+    }
+    else{
+        for(let i = 0; i < traceabilityData.length; ++i){
+            if(JSON.stringify(traceabilityData[i]) !== JSON.stringify(localSaveData[i])){
+                
+                if(confirm(`Сохранить данные в табице?`)){
+                    if(matrixNameInput.value === "" || matrixNameInput.value === null || matrixNameInput.value === undefined){
+                        showNotification("Введите название матрицы", false);
+                        matrixNameInput.focus();
+                        console.log("sdasd")
+                        return
+                    }
+                    localSave();
+                }
+                break
+            }
+        }
+    }
+
+    const num = document.getElementById("matrixVerification").children.length - 1;
+    sessionStorage.setItem("previousName", matrixName);
+    //console.log(sessionStorage.getItem("previousName"));
+    sessionStorage.setItem("matrix-navigation", JSON.stringify({count: num + 1, page:"traceability-matrix.html", name: null, flag: false}));
+    //showNotification("Дальше последняя страница");
+    window.location.href = "last-page.html";
 
     // sessionStorage.setItem("previousName", matrixName);
     // //console.log(sessionStorage.getItem("previousName"));
@@ -1305,13 +1407,44 @@ document.getElementById("exitBtn").addEventListener("click", (e) => {
 let tempFlag = false;
 
 document.getElementById("toServerBtn").addEventListener("click", (e) => {
-    localSave();
+    localSave(false);
     if(tempFlag){
+        const table = document.getElementsByClassName("pvtTable")[0];
+    
+        const ws1 = XLSX.utils.aoa_to_sheet(
+            [
+                [`Матрица трассировки ${matrixName}`],
+            ], { origin: "C1" }
+        );
+            
+        // Add data at A3
+        XLSX.utils.sheet_add_dom(ws1, table, {
+            skipHeader: true,
+            origin: "C3"
+        });
+            
+    
+        ws1['!merges'] = [{s: {r:0, c:2}, e: {r:0, c:8}}];
+
+        let temp = JSON.parse(sessionStorage.getItem("exel_traceability"));
+
+
+        temp[matrixName] = {
+                data: XLSX.utils.sheet_to_json(ws1, {header: 1}),
+                merges: ws1['!merges'] || [],
+                cols: ws1['!cols'] || [],
+                rows: ws1['!rows'] || []
+            }
+
+        sessionStorage.setItem("exel_traceability", JSON.stringify(temp));
+
         userData["data_awdfasda"]['traceability-matricies-data'] = JSON.parse(sessionStorage.getItem("traceability-matricies-data"));
+        userData["data_awdfasda"]["filesTrace"] = temp;
         localStorage.setItem(`data-model`, JSON.stringify(userData));
         console.log(JSON.parse(localStorage.getItem(`data-model`)));
         toServerSave();
         showNotification(`Сохранено ячеек в модели: ${localSaveData.length}`);
+        tempFlag = false;
     }
 });
 
@@ -1349,7 +1482,7 @@ function setupButtons() {
     
 }
 
-function localSave() {
+function localSave(flag = true) {
 
     if(!matrixName){
         showNotification("Введите название матрицы", false);
@@ -1368,8 +1501,10 @@ function localSave() {
     traceabilityMatricies[matrixNameInput.value]["buttons"] = [obj1, obj2, view1, view2, comp1, comp2]
     sessionStorage.setItem("traceability-matricies-data", JSON.stringify(traceabilityMatricies));
     //console.log('Saving all:', traceabilityData);
-    showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
-    showNotification("Не забудьте добавить данные в модель!");
+    if(flag){
+        showToast(`Сохранено ячеек: ${traceabilityData.length}`, 'success');
+        showNotification("Не забудьте добавить данные в модель!");
+    }
     createTraceabilityButtons();
     tempFlag = true;
     
@@ -1415,6 +1550,13 @@ matrixNameInput.addEventListener("change", (e) => {
             delete traceabilityMatricies[matrixName];
             traceabilityMatricies[e.target.value] = temp;
             sessionStorage.setItem("traceability-matricies-data", JSON.stringify(traceabilityMatricies));
+
+            let temp2 = JSON.parse(sessionStorage.getItem("exel_traceability"));
+            let file = temp2[matrixName]
+            delete temp2[matrixName]
+            temp2[e.target.value] = file
+            sessionStorage.setItem("exel_traceability", JSON.stringify(temp));
+
         }
         else{
             traceabilityMatricies[`${e.target.value}`] = {};
@@ -1436,3 +1578,86 @@ function showToast(message, type) {
     
     setTimeout(() => toast.remove(), 3000);
 }
+
+function undoFunction(){
+    let tempIndex;
+    if(undoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = undoIndex - 1
+    }
+    if(undoArray[tempIndex] === null || undoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[undoArray[tempIndex].index];
+    keys = Array.from(Object.keys(undoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== undoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("прeдыдущей измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    redoArray[redoIndex] = {index: undoArray[tempIndex].index, cell: structuredClone(traceabilityData[undoArray[tempIndex].index])};
+    //console.log(redoArray, redoArray[redoIndex]["cell"].value, "redo")
+    redoIndex += 1;
+    if(redoIndex === undoRedoMaxSize){
+        redoIndex = 0;
+    }
+    traceabilityData[undoArray[tempIndex].index][config.dataFields.val] = undoArray[tempIndex]["cell"][config.dataFields.val];
+    undoIndex = tempIndex;
+    undoArray[undoIndex] = undefined;
+    Update();
+    makeTheTablePretty();
+}
+
+document.getElementById("undoBtn").addEventListener("click", undoFunction);
+
+function redoFunction(){
+    let tempIndex;
+    if(redoIndex === 0){
+        tempIndex = undoRedoMaxSize - 1;
+    }
+    else{
+        tempIndex = redoIndex - 1
+    }
+    if(redoArray[tempIndex] === null || redoArray[tempIndex] === undefined){
+        return;
+    }    
+    const tempRow = traceabilityData[redoArray[tempIndex].index];
+    keys = Array.from(Object.keys(redoArray[tempIndex].cell));
+    for(let i = 0; i<keys.length; ++i){
+        if(keys[i] !== config.dataFields.val){
+            if(tempRow[keys[i]] !== redoArray[tempIndex]["cell"][keys[i]]){
+                showNotification("измененной ячейки нет в этой матрице", false);
+                return;
+            }
+        }
+    }
+    undoArray[undoIndex] = {index: redoArray[tempIndex].index, cell: structuredClone(traceabilityData[redoArray[tempIndex].index])};
+    //console.log(undoArray, undoArray[undoIndex]["cell"].value, "undo")
+    undoIndex+=1;
+    if(undoIndex === undoRedoMaxSize){
+        undoIndex = 0;
+    }
+    traceabilityData[redoArray[tempIndex].index][config.dataFields.val] = redoArray[tempIndex]["cell"][config.dataFields.val];
+    redoIndex = tempIndex;
+    redoArray[redoIndex] = undefined;
+    Update();
+    makeTheTablePretty();
+}
+
+document.getElementById("redoBtn").addEventListener("click", redoFunction);
+
+document.addEventListener('keydown', function(event) {
+    if(event.ctrlKey){
+        if(event.key === 'z'){
+            undoFunction();
+        }
+        else if(event.key === 'y'){
+            redoFunction();
+        }
+    }
+});

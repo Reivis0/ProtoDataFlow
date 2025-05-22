@@ -1,7 +1,7 @@
   .gridContainer{
     margin-bottom: 20px;
     /* background-color: aqua; */
-    height: 60vh;
+    /* height: 70vh; */
     padding: 20px;
   }
 
@@ -30,12 +30,22 @@
     display: none;
   }
 
-  .upload-em-btn {
+.upload-btn{
+  border: 2px transparent;
+}
+
+.upload-btn:hover{
+  background-color: #fefefe !important;
+  border: 2px transparent;
+}
+
+.upload-em-btn {
     background-color: #d6dde2 !important;
 }
 
 .upload-em-btn:hover {
     background-color: #c9d1d7 !important;
+    border: 2px transparent;
 }
 
 .view-row {
@@ -67,4 +77,18 @@
 .disabled-flag-row {
   color: #999;
   background-color: #eee;
+}
+
+label {
+  /* display: block; */
+  margin-left: 20%;
+  margin-right: 5px;
+  font-weight: 500;
+  font-size: large;
+  color: #444;
+}
+
+input{
+  width: 45%;
+  height: 120%;
 }

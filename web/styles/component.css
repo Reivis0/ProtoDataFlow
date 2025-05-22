@@ -5,16 +5,19 @@ body {
     margin: 0;
     height: 100%;
     overflow-x: hidden;
-  }
-  header{
-    display: block;
-  }
+}
+header{
+  display: block;
+}
+header div{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
 
-  header div{
-    justify-content: center;
-    display: flex;
-    align-items: center;
-  }
+.code{
+ width: 70px;
+}
 
 .gridContainer{
     margin-bottom: 20px;

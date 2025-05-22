@@ -409,10 +409,11 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
 
 
     userData = JSON.parse(localStorage.getItem(`data-model`));
-    let serverData = loadData();
     
     curView = JSON.parse(sessionStorage.getItem("currentView"));
-
+    // console.log(Views[JSON.parse(sessionStorage.getItem('counter1'))].components[JSON.parse(sessionStorage.getItem('counter2'))])
+    // let serverData = loadData();
+    let serverData = {information: curView.components[JSON.parse(sessionStorage.getItem('counter3'))]}
     document.getElementById("ViewCode").textContent = curView.code;
     document.getElementById("ViewName").textContent = curView.header;
     curComp = JSON.parse(sessionStorage.getItem("curComp"));
@@ -433,7 +434,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     
     localSaveData = forMatricies[currentObjAndType.Object]["views"][`${curView.header}`][`${curComp.name}`]
     
-        console.log(localSaveData);
+        //console.log(localSaveData);
         GrdOptions = returnGridOptions(serverData.information, localSaveData);
 
 
@@ -445,6 +446,7 @@ document.addEventListener("DOMContentLoaded", (e) => {  //перебрасыва
     createComplianceButtons("component.html");
     document.getElementById("verificationBtn").disabled = !IsTraceabilityEnabled();
     createTraceabilityButtons("component.html");
+    setupHeaderButtons();
     
 });
 
